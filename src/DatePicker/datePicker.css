@@ -1,0 +1,20 @@
+
+
+ .header{
+    border: 1px solid red;
+    margin-bottom: 15px;
+ }
+
+ .body{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-left: 15px;
+    width: 100%;
+ }
+
+ .day{
+    width: 35px;
+    background-color: transparent;
+    cursor: pointer;
+ }
