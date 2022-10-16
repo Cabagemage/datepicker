@@ -1,13 +1,10 @@
 import { DatePickerProps, DatePickerStyles } from "./DatePicker.typedef";
 import "./datePicker.css";
-import NextIcon from "../../public/defaultIcons/next.svg";
-import PrevIcon from "../../public/defaultIcons/prev.svg";
-
 import {
     defaultDaysOfTheWeek,
     getCurrentMonth, getFinalizedDates,
     getFormattedDay,
-    getFormattedMonth, getPreviousAndNextWeek,
+    getFormattedMonth,
 } from "../utils/dateHandlers"
 import {useEffect, useState} from "react";
 import classNames from "classnames";
