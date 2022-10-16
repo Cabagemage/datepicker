@@ -23,7 +23,10 @@
     background-color: transparent;
     cursor: pointer;
  }
-
+.selected{
+    border-radius: 50%;
+    background-color: #61dafb;
+}
  .flex{
      display: flex;
  }
