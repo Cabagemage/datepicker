@@ -1,20 +1,74 @@
 
 
  .header{
-    border: 1px solid red;
+     display: flex;
+     justify-content: space-between;
     margin-bottom: 15px;
  }
 
  .body{
     display: flex;
     flex-wrap: wrap;
+     box-sizing: border-box;
     gap: 8px;
-    padding-left: 15px;
     width: 100%;
  }
 
  .day{
-    width: 35px;
+     width: 41px;
+     padding: 0;
+     font-weight: 400;
+     font-size: 18px;
+     border: none;
     background-color: transparent;
     cursor: pointer;
  }
+
+ .flex{
+     display: flex;
+ }
+ .row{
+     flex-direction: row;
+ }
+ .col{
+     flex-direction: column;
+ }
+ .list{
+     list-style: none;
+     justify-content: space-between;
+     padding: 0;
+ }
+.list > li{
+    width: 41px;
+}
+
+.datepicker-header__time{
+    align-self: start;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.controls{
+    align-items: center;
+}
+
+.controller{
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    width: 37px;
+    height: 14px;
+}
+.next{
+    background-image: url("../../public/defaultIcons/next.svg");
+}
+
+.prev{
+     background-image: url("../../public/defaultIcons/prev.svg");
+}
+
+.greyText{
+    color: #808080;
+}
