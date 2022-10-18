@@ -2,7 +2,6 @@ import { DatePickerProps, DatePickerStyles } from "./DatePicker.typedef";
 import "./datePicker.css";
 import {
   defaultDaysOfTheWeek,
-  getCurrentMonth,
   getFinalizedDates,
   getFormattedDate,
   getFormattedDay,
@@ -34,7 +33,7 @@ const defaultStyles: DatePickerStyles = {
 };
 
 type DatePickerMode = "single" | "partial" | "interval";
-type DatePickerInterval = { start: Date; end: Date };
+type DatePickerInterval = { start: Date | null; end: Date | null };
 const DatePicker = <T,>(props: DatePickerProps<T>) => {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [month, setMonth] = useState(days);
@@ -44,8 +43,8 @@ const DatePicker = <T,>(props: DatePickerProps<T>) => {
   ]);
   const [currentMode, setCurrentMode] = useState<DatePickerMode>("single");
   const [datesInterval, setDatesInterval] = useState<DatePickerInterval>({
-    start: new Date(),
-    end: new Date(),
+    start: null,
+    end: null,
   });
   const isNumberOfMonthIsCorrect = currentMonth >= 0 && currentMonth <= 10;
   const getNextMonth = () => {
@@ -69,7 +68,6 @@ const DatePicker = <T,>(props: DatePickerProps<T>) => {
     if (currentMode === "partial") {
       if (selectedDates.includes(formattedDate)) {
         const filteredDates = selectedDates.filter((item) => {
-          console.info(item, formattedDate);
           return item !== formattedDate;
         });
         setSelectedDates(filteredDates);
@@ -90,7 +88,6 @@ const DatePicker = <T,>(props: DatePickerProps<T>) => {
   };
   useEffect(() => {
     const month = getFinalizedDates(new Date(), currentMonth);
-    console.info(month);
     setMonth(month);
   }, [currentMonth]);
 
@@ -102,6 +99,11 @@ const DatePicker = <T,>(props: DatePickerProps<T>) => {
   };
   const hoverEvent: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     if (currentMode === "interval") {
+      setInterval((prev) => {
+        return {
+          ...prev,
+        };
+      });
       selectDay(new Date(e.currentTarget.value));
     }
     console.info(e.currentTarget.value);
