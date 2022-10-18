@@ -19,17 +19,17 @@ type DateType = "string" | Date | null;
 
 const availableMonths = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
-export const getDaysInterval = ([start, end]: [Date, Date]) => {
-  let dateList: Array<Date> = [];
-  const startDate = start;
-  const endDate = end;
-  while (startDate < new Date(endDate)) {
-    dateList = [...dateList, new Date(startDate)];
-    startDate.setDate(startDate.getDate() + 1);
+// Returns array of dates
+export const getDatesInRange = (startDate: DateType, endDate: DateType) => {
+  if (startDate === null || endDate === null) {
+    throw new Error("Start date of end date wasnt passed");
   }
-  dateList = [...dateList, new Date(endDate)];
-  return dateList;
+  return eachDayOfInterval({
+    start: new Date(startDate),
+    end: new Date(endDate),
+  });
 };
+
 export const getCurrentMonth: GetCurrentMonth = ({
   year = new Date().getFullYear(),
   month = new Date().getMonth(),
@@ -72,14 +72,14 @@ export const getPreviousAndNextWeek = (
     { start: lastDayOfMonth, end: lastDayOfEndWeek },
     { weekStartsOn: 1 }
   );
-  const firstDatePickerWeek = getDaysInterval([
+  const firstDatePickerWeek = getDatesInRange(
     firstMonthWeek[0],
-    firstMonthWeek[1],
-  ]);
-  const lastDatePickerWeek = getDaysInterval([
+    firstMonthWeek[1]
+  );
+  const lastDatePickerWeek = getDatesInRange(
     lastMonthWeek[0],
-    lastMonthWeek[1],
-  ]);
+    lastMonthWeek[1]
+  );
 
   return {
     previousWeek: firstDatePickerWeek,
@@ -124,24 +124,17 @@ export const getFinalizedDates = (
   return result.sort(compareAsc);
 };
 export const getFormattedDay = (date: Date) => {
-  return format(date, "dd");
+  return format(date, "d");
 };
 export const getFormattedDate = (date: Date | string) => {
   const parsedToDate = new Date(date);
   return format(parsedToDate, "dd.MM.yyyy");
 };
 
-export const getDatesInRange = (startDate: DateType, endDate: DateType) => {
-  if (startDate === null || endDate === null) {
-    return;
-  }
-  return eachDayOfInterval({
-    start: new Date(startDate),
-    end: new Date(endDate),
-  });
-};
-
-export const getFormattedMonth = (month: Date, locale = "ru-RU") => {
+export const getFormattedMonth = (
+  month: Date,
+  locale: Intl.LocalesArgument
+) => {
   const formattedMonth = month.toLocaleDateString(locale, {
     month: "long",
     day: undefined,

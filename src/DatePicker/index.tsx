@@ -34,7 +34,9 @@ const defaultStyles: DatePickerStyles = {
 
 type DatePickerMode = "single" | "partial" | "interval";
 type DatePickerInterval = { start: Date | null; end: Date | null };
-const DatePicker = <T,>(props: DatePickerProps<T>) => {
+const DatePicker = <T,>({ locale, ...props }: DatePickerProps<T>) => {
+  const defaultLocale = locale === undefined ? "en-US" : locale;
+
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [month, setMonth] = useState(days);
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
@@ -46,13 +48,18 @@ const DatePicker = <T,>(props: DatePickerProps<T>) => {
     start: null,
     end: null,
   });
-  const isNumberOfMonthIsCorrect = currentMonth >= 0 && currentMonth <= 10;
+  const isNumberOfMonthIsCorrect = currentMonth >= 0 && currentMonth <= 11;
   const getNextMonth = () => {
     const nextMonth = isNumberOfMonthIsCorrect ? currentMonth + 1 : 0;
     setCurrentMonth(nextMonth);
   };
   const getPrevMonth = () => {
     const prevMonth = isNumberOfMonthIsCorrect ? currentMonth - 1 : 0;
+
+    if (currentMonth) {
+      console.info(prevMonth);
+      return;
+    }
     setCurrentMonth(prevMonth);
   };
 
@@ -108,23 +115,38 @@ const DatePicker = <T,>(props: DatePickerProps<T>) => {
     }
     console.info(e.currentTarget.value);
   };
+
   return (
-    <div style={defaultStyles.wrapper}>
-      <div className="header">
+    <div className={"datePicker-wrapper"}>
+      <div className="datePicker-header">
         <time className={"datepicker-header__time"}>
-          {getFormattedMonth(month[7])} {currentYear}
+          {getFormattedMonth(month[7], defaultLocale)} {currentYear}
         </time>
-        <div className={"flex controls"}>
-          <button className={"controller prev"} onClick={getPrevMonth} />
-          <button className={"controller next"} onClick={getNextMonth} />
+        <div className={"datePicker__controls"}>
+          <button
+            className={
+              "datePicker__controller datePicker__controller_type_prev"
+            }
+            onClick={getPrevMonth}
+          />
+          <button
+            className={
+              "datePicker__controller datePicker__controller_type_next"
+            }
+            onClick={getNextMonth}
+          />
         </div>
       </div>
-      <ul className={"list flex row"}>
+      <ul className={"datePicker-weekdays"}>
         {defaultDaysOfTheWeek.map((item) => {
-          return <li key={item}>{item}</li>;
+          return (
+            <li className={"datePicker-weekdays__day"} key={item}>
+              {item}
+            </li>
+          );
         })}
       </ul>
-      <div className="body">
+      <div className="datePicker-body">
         {month.map((item) => {
           const isDateNotRelatedToCurrentMonth =
             item.getMonth() !== currentMonth;
@@ -140,7 +162,7 @@ const DatePicker = <T,>(props: DatePickerProps<T>) => {
               }}
               onDoubleClick={doubleClickOnDay}
               className={classNames(
-                "day",
+                "datePicker-body__day",
                 {
                   greyText: isDateNotRelatedToCurrentMonth,
                 },
