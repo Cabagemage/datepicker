@@ -1,78 +1,76 @@
-import { DatePickerProps, DatePickerStyles } from "./DatePicker.typedef";
+import { DatePickerInterval, DatePickerProps } from "./DatePicker.typedef";
 import "./datePicker.css";
 import {
-  defaultDaysOfTheWeek,
+  DECEMBER_NUMBER,
+  getDatesInRange,
   getFinalizedDates,
-  getFormattedDate,
-  getFormattedDay,
-  getFormattedMonth,
-} from "../utils/dateHandlers";
-import { useEffect, useState } from "react";
-import classNames from "classnames";
-
-const days = getFinalizedDates();
-const defaultStyles: DatePickerStyles = {
-  header: {
-    width: "100%",
-    height: "350",
-    position: "relative",
-  },
-  wrapper: {
-    display: "flex",
-    flexWrap: "wrap",
-    flexDirection: "column",
-    width: "338px",
-    padding: "24px",
-    border: "1px solid #1890FF",
-    borderRadius: "16px",
-  },
-  body: {
-    width: "338px",
-  },
-  activeDay: {},
-};
-
-type DatePickerMode = "single" | "partial" | "interval";
-type DatePickerInterval = { start: Date | null; end: Date | null };
-const DatePicker = <T,>({ locale, ...props }: DatePickerProps<T>) => {
+  getFormattedDateToLocale,
+  getFormattedMonthToLocale,
+  getMonthsOfYear,
+  JANUARY_NUMBER,
+  MONTHS_IDX_LIST,
+  ONE_MONTH,
+  ONE_YEAR,
+  START_OF_NEW_MONTH_IDX,
+} from "../utils";
+import { useEffect, useMemo, useState } from "react";
+import add from "date-fns/add";
+import { sub } from "date-fns";
+import { MonthView } from "./MonthView";
+const INITIAL_MONTH_DATES = getFinalizedDates({
+  initialDate: new Date(),
+});
+const DatePicker = <T,>({
+  locale,
+  mode = "single",
+  ...props
+}: DatePickerProps<T>) => {
   const defaultLocale = locale === undefined ? "en-US" : locale;
+  const [view, setView] = useState(props.view);
 
-  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
-  const [month, setMonth] = useState(days);
-  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-  const [selectedDates, setSelectedDates] = useState([
-    getFormattedDate(new Date()),
+  const [currentMonthIdx, setCurrentMonthIdx] = useState(new Date().getMonth());
+  const [month, setMonth] = useState(INITIAL_MONTH_DATES);
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedDates, setSelectedDates] = useState<Array<string | Date>>([
+    getFormattedDateToLocale(currentDate),
   ]);
-  const [currentMode, setCurrentMode] = useState<DatePickerMode>("single");
   const [datesInterval, setDatesInterval] = useState<DatePickerInterval>({
     start: null,
     end: null,
   });
-  const isNumberOfMonthIsCorrect = currentMonth >= 0 && currentMonth <= 11;
-  const getNextMonth = () => {
-    const nextMonth = isNumberOfMonthIsCorrect ? currentMonth + 1 : 0;
-    setCurrentMonth(nextMonth);
-  };
-  const getPrevMonth = () => {
-    const prevMonth = isNumberOfMonthIsCorrect ? currentMonth - 1 : 0;
+  const yearMonths = getMonthsOfYear(currentDate);
 
-    if (currentMonth) {
-      console.info(prevMonth);
+  const getNextMonth = () => {
+    const nextMonth = currentMonthIdx + 1;
+    if (MONTHS_IDX_LIST.includes(nextMonth)) {
+      setCurrentMonthIdx(nextMonth);
       return;
     }
-    setCurrentMonth(prevMonth);
+    setCurrentDate((prev) => {
+      return add(prev, { years: ONE_YEAR });
+    });
+    setCurrentMonthIdx(JANUARY_NUMBER);
   };
 
-  const doubleClickOnDay = () => {
-    setCurrentMode("partial");
+  const getPrevMonth = () => {
+    const prevMonth = currentMonthIdx - ONE_MONTH;
+
+    if (MONTHS_IDX_LIST.includes(prevMonth)) {
+      setCurrentMonthIdx(prevMonth);
+      return;
+    }
+    setCurrentDate((prev) => {
+      return sub(prev, { years: ONE_YEAR });
+    });
+    setCurrentMonthIdx(DECEMBER_NUMBER);
   };
 
   const selectDay = (date: Date) => {
-    const formattedDate = getFormattedDate(date);
-    if (currentMode === "single") {
+    const formattedDate = getFormattedDateToLocale(date);
+    if (mode === "single") {
       setSelectedDates([formattedDate]);
     }
-    if (currentMode === "partial") {
+    if (mode === "partial") {
       if (selectedDates.includes(formattedDate)) {
         const filteredDates = selectedDates.filter((item) => {
           return item !== formattedDate;
@@ -83,45 +81,85 @@ const DatePicker = <T,>({ locale, ...props }: DatePickerProps<T>) => {
       setSelectedDates((prev) => {
         return [...prev, formattedDate];
       });
-      if (selectedDates.length < 1) {
-        setCurrentMode("single");
-      }
     }
-    if (currentMode === "interval") {
-      setSelectedDates((prev) => {
-        return [...prev, formattedDate];
+    if (mode === "interval") {
+      if (selectedDates.length >= 1 && datesInterval.end !== null) {
+        return;
+      }
+      setDatesInterval((prev) => {
+        return { ...prev, start: date };
       });
     }
   };
   useEffect(() => {
-    const month = getFinalizedDates(new Date(), currentMonth);
+    const month = getFinalizedDates({
+      initialDate: currentDate,
+      month: currentMonthIdx,
+    });
     setMonth(month);
-  }, [currentMonth]);
+  }, [currentMonthIdx, currentDate]);
 
-  const downKeyEvent: React.KeyboardEventHandler<HTMLButtonElement> = (e) => {
-    const currentKey = e.key;
-    if (currentKey === "Shift") {
-      setCurrentMode("interval");
-    }
-  };
   const hoverEvent: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    if (currentMode === "interval") {
-      setInterval((prev) => {
-        return {
-          ...prev,
-        };
+    const lastTriggeredDate = new Date(e.currentTarget.value);
+    if (mode === "interval" && datesInterval.start !== null) {
+      setDatesInterval((prev) => {
+        return { ...prev, end: lastTriggeredDate };
       });
-      selectDay(new Date(e.currentTarget.value));
+      const formattedDates = getDatesInRange(
+        datesInterval.start,
+        lastTriggeredDate
+      ).map((item) => {
+        return getFormattedDateToLocale(item);
+      });
+      setSelectedDates(formattedDates);
     }
-    console.info(e.currentTarget.value);
   };
+
+  const changeCurrentCalendarView = () => {
+    switch (view) {
+      case "month":
+        return setView("year");
+      case "year":
+        return setView("years");
+      default:
+        return setView("month");
+    }
+  };
+  const clickMonth = (date: Date) => {
+    const daysOfMonth = getFinalizedDates({ initialDate: date });
+    setMonth(daysOfMonth);
+    const newMonthIdx = new Date(
+      daysOfMonth[START_OF_NEW_MONTH_IDX]
+    ).getMonth();
+    setCurrentMonthIdx(newMonthIdx);
+    setView("month");
+  };
+  const headerViewTogglerText = useMemo(() => {
+    switch (view) {
+      case "month":
+        return `${getFormattedMonthToLocale({
+          month: month[START_OF_NEW_MONTH_IDX],
+          locale: defaultLocale,
+        })} ${currentDate.getFullYear()}`;
+      case "year":
+        return `${currentDate.getFullYear()}`;
+      default:
+        return "test";
+    }
+  }, [currentDate, view, month, defaultLocale]);
 
   return (
     <div className={"datePicker-wrapper"}>
       <div className="datePicker-header">
-        <time className={"datepicker-header__time"}>
-          {getFormattedMonth(month[7], defaultLocale)} {currentYear}
-        </time>
+        <button
+          className={"datePicker-header__togler"}
+          onClick={changeCurrentCalendarView}
+        >
+          <time className={"datepicker-header__time"}>
+            {headerViewTogglerText}
+          </time>
+        </button>
+
         <div className={"datePicker__controls"}>
           <button
             className={
@@ -137,44 +175,37 @@ const DatePicker = <T,>({ locale, ...props }: DatePickerProps<T>) => {
           />
         </div>
       </div>
-      <ul className={"datePicker-weekdays"}>
-        {defaultDaysOfTheWeek.map((item) => {
-          return (
-            <li className={"datePicker-weekdays__day"} key={item}>
-              {item}
-            </li>
-          );
-        })}
-      </ul>
-      <div className="datePicker-body">
-        {month.map((item) => {
-          const isDateNotRelatedToCurrentMonth =
-            item.getMonth() !== currentMonth;
-          return (
-            <button
-              onClick={() => {
-                return selectDay(item);
-              }}
-              onKeyDown={downKeyEvent}
-              value={item.toString()}
-              onMouseEnter={(e) => {
-                return hoverEvent(e);
-              }}
-              onDoubleClick={doubleClickOnDay}
-              className={classNames(
-                "datePicker-body__day",
-                {
-                  greyText: isDateNotRelatedToCurrentMonth,
-                },
-                { selected: selectedDates.includes(getFormattedDate(item)) }
-              )}
-              key={item.toString()}
-            >
-              {getFormattedDay(item)}
-            </button>
-          );
-        })}
-      </div>
+      {view === "month" && (
+        <MonthView
+          month={month}
+          className="datePicker-body"
+          currentMonth={currentMonthIdx}
+          selectedDates={selectedDates}
+          onSelectDay={selectDay}
+          onHoverDay={hoverEvent}
+        />
+      )}
+      {view === "year" && (
+        <div className={"datePicker-body"}>
+          {yearMonths.map((item) => {
+            return (
+              <button
+                onClick={() => {
+                  return clickMonth(item);
+                }}
+                className={"datePicker-body__month-cell"}
+                key={item.toString()}
+              >
+                {getFormattedMonthToLocale({
+                  month: item,
+                  locale: defaultLocale,
+                  format: "long",
+                })}
+              </button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };
