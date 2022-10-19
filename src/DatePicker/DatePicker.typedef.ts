@@ -7,8 +7,10 @@ export type DatePickerStyles = {
   activeDay: CSSProperties;
 };
 
-type CalendarViews = "month" | "week" | "year";
+type CalendarViews = "month" | "week" | "year" | "years";
+type DatePickerMode = "single" | "partial" | "interval";
 
+export type DatePickerInterval = { start: Date | null; end: Date | null };
 export interface DatePickerProps<T> {
   activeDate: Date;
   locale?: Intl.LocalesArgument;
@@ -18,8 +20,10 @@ export interface DatePickerProps<T> {
     value: { date: Date },
     e: ChangeEvent<HTMLButtonElement>
   ) => void;
+  onChange: (value: Array<Date>) => void;
   onToggleNextMonth: () => void;
   onTogglePrevMonth: () => void;
+  mode?: DatePickerMode;
   style?: DatePickerStyles;
   customDayCell?: JSX.Element;
   customMonthCell?: JSX.Element;
