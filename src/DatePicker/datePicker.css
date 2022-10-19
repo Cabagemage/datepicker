@@ -1,5 +1,3 @@
-
-
 .datePicker-wrapper{
     display: flex;
     flex-wrap: wrap;
@@ -9,6 +7,7 @@
     border: 1px solid #1890FF;
     border-radius: 16px;
 }
+
  .datePicker-header{
      display: flex;
      justify-content: space-between;
@@ -46,6 +45,7 @@
      flex-direction: column;
  }
  .datePicker-weekdays{
+     width: 100%;
      display: flex;
      list-style: none;
      justify-content: space-between;
@@ -83,6 +83,21 @@
      background-image: url("../../public/defaultIcons/prev.svg");
 }
 
+.datePicker-header__togler{
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
 .greyText{
     color: #808080;
+}
+
+.datePicker-body__month-cell{
+    all: unset;
+    width: 106px;
+    text-align: center;
+    cursor: pointer;
+    height: 50px;
+    border: none;
 }
