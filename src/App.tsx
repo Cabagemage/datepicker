@@ -1,5 +1,4 @@
 import React from "react";
-import logo from "./logo.svg";
 import "./App.css";
 import DatePicker from "./DatePicker";
 
@@ -8,11 +7,13 @@ function App() {
     <div className="App">
       <DatePicker
         locale={"ru-RU"}
+        onChange={console.info}
         onDateClick={console.info}
         onTogglePrevMonth={console.info}
         onToggleNextMonth={console.info}
         activeDate={new Date()}
         view="month"
+        mode={"interval"}
       />
     </div>
   );
