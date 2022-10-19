@@ -3,24 +3,26 @@ import add from "date-fns/add";
 import {
   compareAsc,
   eachDayOfInterval,
+  eachMonthOfInterval,
   eachWeekOfInterval,
   endOfMonth,
+  endOfYear,
   previousMonday,
+  startOfYear,
 } from "date-fns";
+import { MONDAY, MONTHS_IDX_LIST, ONE_WEEK } from "../constants";
+import {
+  GetCurrentMonth,
+  GetDatesInRange,
+  GetFormattedShortDay,
+  GetFormattedMonthToLocale,
+  GetPreviousAndNextWeekForMonth,
+  GetMonthsOfYear,
+  GetFormattedDayToLocale,
+  GetFinalizedDatesArray,
+} from "../types/commonTypes";
 
-type GetCurrentMonth = ({
-  year,
-  month,
-}: {
-  year?: number;
-  month?: number;
-}) => Array<Date>;
-type DateType = "string" | Date | null;
-
-const availableMonths = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
-
-// Returns array of dates
-export const getDatesInRange = (startDate: DateType, endDate: DateType) => {
+export const getDatesInRange: GetDatesInRange = (startDate, endDate) => {
   if (startDate === null || endDate === null) {
     throw new Error("Start date of end date wasnt passed");
   }
@@ -30,11 +32,11 @@ export const getDatesInRange = (startDate: DateType, endDate: DateType) => {
   });
 };
 
-export const getCurrentMonth: GetCurrentMonth = ({
+const getCurrentMonth: GetCurrentMonth = ({
   year = new Date().getFullYear(),
   month = new Date().getMonth(),
 }) => {
-  if (!availableMonths.includes(month)) {
+  if (!MONTHS_IDX_LIST.includes(month)) {
     throw new Error("Please, add month between 0 - 11");
   }
   const date = new Date(year, month, 1);
@@ -48,11 +50,11 @@ export const getCurrentMonth: GetCurrentMonth = ({
 
   return dates;
 };
-export const getPreviousAndNextWeek = (
+const getPreviousAndNextWeek: GetPreviousAndNextWeekForMonth = ({
   initialDate = new Date(),
-  month?: number,
-  year?: number
-) => {
+  month,
+  year,
+}) => {
   const startDate = new Date(
     year ?? initialDate.getFullYear(),
     month ?? initialDate.getMonth(),
@@ -60,17 +62,17 @@ export const getPreviousAndNextWeek = (
   );
   const previousMondayOfMonthStart = previousMonday(startDate);
   const lastDayOfMonth = endOfMonth(startDate);
-  const lastDayOfEndWeek = add(lastDayOfMonth, { days: 7 });
-  const lastDayOfPrevWeek = add(previousMondayOfMonthStart, { days: 7 });
+  const lastDayOfEndWeek = add(lastDayOfMonth, { days: ONE_WEEK });
+  const lastDayOfPrevWeek = add(previousMondayOfMonthStart, { days: ONE_WEEK });
   // Первая неделя месяца
   const firstMonthWeek = eachWeekOfInterval(
     { start: previousMondayOfMonthStart, end: lastDayOfPrevWeek },
-    { weekStartsOn: 1 }
+    { weekStartsOn: MONDAY }
   );
   // Последняя неделя месяца.
   const lastMonthWeek = eachWeekOfInterval(
     { start: lastDayOfMonth, end: lastDayOfEndWeek },
-    { weekStartsOn: 1 }
+    { weekStartsOn: MONDAY }
   );
   const firstDatePickerWeek = getDatesInRange(
     firstMonthWeek[0],
@@ -86,16 +88,16 @@ export const getPreviousAndNextWeek = (
     nextWeek: lastDatePickerWeek,
   };
 };
-export const getFinalizedDates = (
+export const getFinalizedDates: GetFinalizedDatesArray = ({
   initialDate = new Date(),
-  month?: number,
-  year?: number
-) => {
-  const { previousWeek, nextWeek } = getPreviousAndNextWeek(
+  month,
+  year,
+}) => {
+  const { previousWeek, nextWeek } = getPreviousAndNextWeek({
     initialDate,
     month,
-    year
-  );
+    year,
+  });
   const currentMonth = getCurrentMonth({
     year: year ?? initialDate.getFullYear(),
     month: month ?? initialDate.getMonth(),
@@ -110,6 +112,7 @@ export const getFinalizedDates = (
         if (item.getDay() !== 0 && item.getDay() !== 6) {
           updatedArray.push(item);
         }
+        return item;
       });
     }
   });
@@ -123,23 +126,34 @@ export const getFinalizedDates = (
   });
   return result.sort(compareAsc);
 };
-export const getFormattedDay = (date: Date) => {
+
+// returns number in format 1, 2,3, 4, 5 casted to string;
+export const getFormattedShortDay: GetFormattedShortDay = (date) => {
   return format(date, "d");
 };
-export const getFormattedDate = (date: Date | string) => {
+
+// return date in format day.month.yyyy (20.05.2022)
+export const getFormattedDateToLocale: GetFormattedDayToLocale = (date) => {
   const parsedToDate = new Date(date);
   return format(parsedToDate, "dd.MM.yyyy");
 };
 
-export const getFormattedMonth = (
-  month: Date,
-  locale: Intl.LocalesArgument
-) => {
+// return formattedDate to short or long format. output: Oct / October
+export const getFormattedMonthToLocale: GetFormattedMonthToLocale = ({
+  month,
+  format,
+  locale,
+}) => {
+  const monthFormat = format === undefined ? "long" : format;
   const formattedMonth = month.toLocaleDateString(locale, {
-    month: "long",
+    month: monthFormat,
     day: undefined,
   });
   return formattedMonth[0].toUpperCase() + formattedMonth.slice(1);
 };
 
-export const defaultDaysOfTheWeek = ["ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ", "ВС"];
+export const getMonthsOfYear: GetMonthsOfYear = (date) => {
+  const getStartOfYear = startOfYear(date);
+  const getEndOfYear = endOfYear(date);
+  return eachMonthOfInterval({ start: getStartOfYear, end: getEndOfYear });
+};
