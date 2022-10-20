@@ -18,12 +18,15 @@
     display: flex;
     flex-wrap: wrap;
      box-sizing: border-box;
-    gap: 8px;
+    row-gap: 8px;
+     column-gap: 16px;
+     justify-content: flex-start;
     width: 100%;
  }
 
  .datePicker-body__day{
-     width: 41px;
+     width: 32px;
+     height: 32px;
      padding: 0;
      font-weight: 400;
      font-size: 18px;
@@ -31,9 +34,11 @@
     background-color: transparent;
     cursor: pointer;
  }
+
 .selected{
+    color: #FFF;
     border-radius: 50%;
-    background-color: #61dafb;
+    background-color: #1D87AC;
 }
  .flex{
      display: flex;
@@ -49,10 +54,10 @@
      display: flex;
      list-style: none;
      justify-content: space-between;
-     padding: 0;
+     padding: 0 16px 0 0;
  }
 .datePicker-weekdays > .datePicker-weekdays__day{
-    width: 41px;
+    width: 32px;
 }
 
 .datepicker-header__time{
@@ -89,6 +94,11 @@
     cursor: pointer;
 }
 
+
+.selected > .datePicker-body__day-text  {
+    color: #FFF;
+}
+
 .greyText{
     color: #808080;
 }
@@ -100,4 +110,9 @@
     cursor: pointer;
     height: 50px;
     border: none;
+}
+
+.datePicker-body__day_disabled{
+    color: #000000;
+    opacity: 0.2;
 }

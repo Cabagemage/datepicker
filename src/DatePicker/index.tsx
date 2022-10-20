@@ -178,6 +178,7 @@ const DatePicker = <T,>({
       {view === "month" && (
         <MonthView
           month={month}
+          minDate={new Date()}
           className="datePicker-body"
           currentMonth={currentMonthIdx}
           selectedDates={selectedDates}

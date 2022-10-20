@@ -5,6 +5,7 @@ import {
   getFormattedShortDay,
 } from "../utils";
 import { MouseEventHandler } from "react";
+import { isEndTimeEarlierThanStartTime } from "../utils/handlers/dateHandlers";
 
 export type MonthViewProps = {
   className?: HTMLDivElement["className"];
@@ -13,6 +14,7 @@ export type MonthViewProps = {
   onSelectDay: (date: Date) => void;
   onHoverDay: MouseEventHandler<HTMLButtonElement>;
   selectedDates: Array<string | Date>;
+  minDate?: Date;
 };
 export const MonthView = ({
   month,
@@ -21,6 +23,7 @@ export const MonthView = ({
   onSelectDay,
   onHoverDay,
   className,
+  minDate,
 }: MonthViewProps) => {
   return (
     <div className={className}>
@@ -36,6 +39,13 @@ export const MonthView = ({
       </ul>
       {month.map((item) => {
         const isDateNotRelatedToCurrentMonth = item.getMonth() !== currentMonth;
+        const isDisabled =
+          minDate !== undefined
+            ? isEndTimeEarlierThanStartTime(item, minDate)
+            : false;
+        const isSelected = selectedDates.includes(
+          getFormattedDateToLocale(item)
+        );
         return (
           <button
             onClick={() => {
@@ -51,14 +61,16 @@ export const MonthView = ({
                 greyText: isDateNotRelatedToCurrentMonth,
               },
               {
-                selected: selectedDates.includes(
-                  getFormattedDateToLocale(item)
-                ),
+                selected: isSelected,
+                "datePicker-body__day_disabled": isDisabled,
               }
             )}
             key={item.toString()}
+            disabled={isDisabled}
           >
-            {getFormattedShortDay(item)}
+            <span className={"datePicker-body__day-text"}>
+              {getFormattedShortDay(item)}
+            </span>
           </button>
         );
       })}

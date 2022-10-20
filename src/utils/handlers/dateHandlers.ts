@@ -157,3 +157,17 @@ export const getMonthsOfYear: GetMonthsOfYear = (date) => {
   const getEndOfYear = endOfYear(date);
   return eachMonthOfInterval({ start: getStartOfYear, end: getEndOfYear });
 };
+
+// Функция, определяющая, что переданная дата меньше, чем дата конца
+export const isEndTimeEarlierThanStartTime = (
+  start: Date | string,
+  end: Date | string
+): boolean => {
+  const endTime = new Date(end);
+  const startTime = new Date(start);
+  const today = new Date().toLocaleDateString();
+  return (
+    startTime.getTime() <= endTime.getTime() &&
+    today !== startTime.toLocaleDateString()
+  );
+};
