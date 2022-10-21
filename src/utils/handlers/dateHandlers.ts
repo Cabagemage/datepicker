@@ -10,7 +10,12 @@ import {
   previousMonday,
   startOfYear,
 } from "date-fns";
-import { MONDAY, MONTHS_IDX_LIST, ONE_WEEK } from "../constants";
+import {
+  MAX_DATES_LENGTH,
+  MONDAY,
+  MONTHS_IDX_LIST,
+  ONE_WEEK,
+} from "../constants";
 import {
   GetCurrentMonth,
   GetDatesInRange,
@@ -102,29 +107,20 @@ export const getFinalizedDates: GetFinalizedDatesArray = ({
     year: year ?? initialDate.getFullYear(),
     month: month ?? initialDate.getMonth(),
   });
-  const firstWeekOfCurrentMonth = currentMonth.slice(0, 7);
 
-  const updatedArray: Array<Date> = [];
-  firstWeekOfCurrentMonth.forEach((item, idx, arr) => {
-    const day = arr[idx];
-    if (idx === 0 && day.getDay() !== 1) {
-      previousWeek.filter((item) => {
-        if (item.getDay() !== 0 && item.getDay() !== 6) {
-          updatedArray.push(item);
-        }
-        return item;
-      });
-    }
-  });
-  const temporaryArray = updatedArray.concat(currentMonth).concat(nextWeek);
-  const result = temporaryArray.filter((day, idx, array) => {
+  const temporaryArray = previousWeek.concat(currentMonth).concat(nextWeek);
+  const excludeRepeatedElements = temporaryArray.filter((day, idx, array) => {
     return (
       array.findIndex((value) => {
         return format(value, "MM dd yyyy") === format(day, "MM dd yyyy");
       }) === idx
     );
   });
-  return result.sort(compareAsc);
+  const sortedDates = excludeRepeatedElements.sort(compareAsc);
+  const slicedDates = MAX_DATES_LENGTH.includes(sortedDates.length)
+    ? sortedDates.slice(0, -1)
+    : sortedDates;
+  return slicedDates;
 };
 
 // returns number in format 1, 2,3, 4, 5 casted to string;
@@ -159,7 +155,7 @@ export const getMonthsOfYear: GetMonthsOfYear = (date) => {
 };
 
 // Функция, определяющая, что переданная дата меньше, чем дата конца
-export const isEndTimeEarlierThanStartTime = (
+export const isFirstDateEarlierThanSecondOne = (
   start: Date | string,
   end: Date | string
 ): boolean => {

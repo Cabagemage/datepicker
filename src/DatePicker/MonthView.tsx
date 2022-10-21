@@ -1,11 +1,12 @@
 import classNames from "classnames";
 import {
+  DAYS_IDX_LIST,
   DEFAULT_TRANSLATED_DAYS_OF_WEEK,
   getFormattedDateToLocale,
   getFormattedShortDay,
 } from "../utils";
 import { MouseEventHandler } from "react";
-import { isEndTimeEarlierThanStartTime } from "../utils/handlers/dateHandlers";
+import { isFirstDateEarlierThanSecondOne } from "../utils/handlers/dateHandlers";
 
 export type MonthViewProps = {
   className?: HTMLDivElement["className"];
@@ -15,6 +16,8 @@ export type MonthViewProps = {
   onHoverDay: MouseEventHandler<HTMLButtonElement>;
   selectedDates: Array<string | Date>;
   minDate?: Date;
+  disabledDates?: Array<Date | string>;
+  weekendDates?: typeof DAYS_IDX_LIST;
 };
 export const MonthView = ({
   month,
@@ -24,7 +27,12 @@ export const MonthView = ({
   onHoverDay,
   className,
   minDate,
+  disabledDates,
+  weekendDates,
 }: MonthViewProps) => {
+  const mappedBannedDates = disabledDates?.map((item) => {
+    return getFormattedDateToLocale(item);
+  });
   return (
     <div className={className}>
       <ul className={"datePicker-weekdays"}>
@@ -41,11 +49,16 @@ export const MonthView = ({
         const isDateNotRelatedToCurrentMonth = item.getMonth() !== currentMonth;
         const isDisabled =
           minDate !== undefined
-            ? isEndTimeEarlierThanStartTime(item, minDate)
+            ? isFirstDateEarlierThanSecondOne(item, minDate)
             : false;
         const isSelected = selectedDates.includes(
           getFormattedDateToLocale(item)
         );
+        const isDateDisabled =
+          mappedBannedDates !== undefined &&
+          mappedBannedDates.includes(getFormattedDateToLocale(item));
+        const isWeekendDay =
+          weekendDates !== undefined && weekendDates.includes(item.getDay());
         return (
           <button
             onClick={() => {
@@ -61,12 +74,13 @@ export const MonthView = ({
                 greyText: isDateNotRelatedToCurrentMonth,
               },
               {
-                selected: isSelected,
-                "datePicker-body__day_disabled": isDisabled,
+                selected: isSelected && !isDateDisabled && !isWeekendDay,
+                "datePicker-body__day_disabled":
+                  isDisabled || isDateDisabled || isWeekendDay,
               }
             )}
             key={item.toString()}
-            disabled={isDisabled}
+            disabled={isDisabled || isDateDisabled || isWeekendDay}
           >
             <span className={"datePicker-body__day-text"}>
               {getFormattedShortDay(item)}

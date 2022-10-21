@@ -8,4 +8,6 @@ export {
   DEFAULT_TRANSLATED_DAYS_OF_WEEK,
   ONE_WEEK,
   MONDAY,
+  DAYS_IDX_LIST,
+  MAX_DATES_LENGTH,
 } from "./constants";

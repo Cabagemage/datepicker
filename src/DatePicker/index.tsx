@@ -17,6 +17,7 @@ import { useEffect, useMemo, useState } from "react";
 import add from "date-fns/add";
 import { sub } from "date-fns";
 import { MonthView } from "./MonthView";
+import { isFirstDateEarlierThanSecondOne } from "../utils/handlers/dateHandlers";
 const INITIAL_MONTH_DATES = getFinalizedDates({
   initialDate: new Date(),
 });
@@ -30,6 +31,7 @@ const DatePicker = <T,>({
 
   const [currentMonthIdx, setCurrentMonthIdx] = useState(new Date().getMonth());
   const [month, setMonth] = useState(INITIAL_MONTH_DATES);
+
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDates, setSelectedDates] = useState<Array<string | Date>>([
     getFormattedDateToLocale(currentDate),
@@ -83,12 +85,23 @@ const DatePicker = <T,>({
       });
     }
     if (mode === "interval") {
-      if (selectedDates.length >= 1 && datesInterval.end !== null) {
-        return;
+      if (datesInterval.start === null) {
+        setDatesInterval((prev) => {
+          return { ...prev, start: date };
+        });
+        setSelectedDates([date]);
       }
-      setDatesInterval((prev) => {
-        return { ...prev, start: date };
-      });
+      if (datesInterval.start !== null && datesInterval.end === null) {
+        setDatesInterval((prev) => {
+          return { ...prev, end: date };
+        });
+      }
+      if (datesInterval.end && datesInterval.start) {
+        console.info("boba");
+        setDatesInterval((prev) => {
+          return { ...prev, start: date, end: null };
+        });
+      }
     }
   };
   useEffect(() => {
@@ -100,11 +113,13 @@ const DatePicker = <T,>({
   }, [currentMonthIdx, currentDate]);
 
   const hoverEvent: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+    if (datesInterval.start !== null && datesInterval.end !== null) {
+      return;
+    }
+
     const lastTriggeredDate = new Date(e.currentTarget.value);
+
     if (mode === "interval" && datesInterval.start !== null) {
-      setDatesInterval((prev) => {
-        return { ...prev, end: lastTriggeredDate };
-      });
       const formattedDates = getDatesInRange(
         datesInterval.start,
         lastTriggeredDate
@@ -178,9 +193,9 @@ const DatePicker = <T,>({
       {view === "month" && (
         <MonthView
           month={month}
-          minDate={new Date()}
           className="datePicker-body"
           currentMonth={currentMonthIdx}
+          weekendDates={[6, 0]}
           selectedDates={selectedDates}
           onSelectDay={selectDay}
           onHoverDay={hoverEvent}

@@ -105,7 +105,7 @@
 
 .datePicker-body__month-cell{
     all: unset;
-    width: 106px;
+    width: 100px;
     text-align: center;
     cursor: pointer;
     height: 50px;
