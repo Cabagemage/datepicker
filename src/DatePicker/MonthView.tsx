@@ -59,6 +59,7 @@ export const MonthView = ({
           mappedBannedDates.includes(getFormattedDateToLocale(item));
         const isWeekendDay =
           weekendDates !== undefined && weekendDates.includes(item.getDay());
+
         return (
           <button
             onClick={() => {

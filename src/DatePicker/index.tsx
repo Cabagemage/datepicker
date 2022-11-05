@@ -17,13 +17,15 @@ import { useEffect, useMemo, useState } from "react";
 import add from "date-fns/add";
 import { sub } from "date-fns";
 import { MonthView } from "./MonthView";
-import { isFirstDateEarlierThanSecondOne } from "../utils/handlers/dateHandlers";
+import { getWeekDays } from "../utils/handlers/dateHandlers";
+import YearView from "./YearView";
 const INITIAL_MONTH_DATES = getFinalizedDates({
   initialDate: new Date(),
 });
 const DatePicker = <T,>({
   locale,
   mode = "single",
+  onChange,
   ...props
 }: DatePickerProps<T>) => {
   const defaultLocale = locale === undefined ? "en-US" : locale;
@@ -33,9 +35,7 @@ const DatePicker = <T,>({
   const [month, setMonth] = useState(INITIAL_MONTH_DATES);
 
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDates, setSelectedDates] = useState<Array<string | Date>>([
-    getFormattedDateToLocale(currentDate),
-  ]);
+  const [selectedDates, setSelectedDates] = useState<Array<string | Date>>([]);
   const [datesInterval, setDatesInterval] = useState<DatePickerInterval>({
     start: null,
     end: null,
@@ -83,6 +83,7 @@ const DatePicker = <T,>({
       setSelectedDates((prev) => {
         return [...prev, formattedDate];
       });
+      onChange([...selectedDates, formattedDate]);
     }
     if (mode === "interval") {
       if (datesInterval.start === null) {
@@ -96,11 +97,19 @@ const DatePicker = <T,>({
           return { ...prev, end: date };
         });
       }
-      if (datesInterval.end && datesInterval.start) {
-        console.info("boba");
-        setDatesInterval((prev) => {
-          return { ...prev, start: date, end: null };
+      if (datesInterval.start && datesInterval.end) {
+        setDatesInterval({ start: null, end: null });
+      }
+    }
+    if (mode === "week") {
+      if (datesInterval.start === null) {
+        setDatesInterval({
+          start: new Date(selectedDates[0]),
+          end: new Date(selectedDates[selectedDates.length - 1]),
         });
+        onChange([selectedDates[0], selectedDates[selectedDates.length - 1]]);
+      } else {
+        setDatesInterval({ start: null, end: null });
       }
     }
   };
@@ -124,6 +133,12 @@ const DatePicker = <T,>({
         datesInterval.start,
         lastTriggeredDate
       ).map((item) => {
+        return getFormattedDateToLocale(item);
+      });
+      setSelectedDates(formattedDates);
+    }
+    if (mode === "week") {
+      const formattedDates = getWeekDays(lastTriggeredDate).map((item) => {
         return getFormattedDateToLocale(item);
       });
       setSelectedDates(formattedDates);
@@ -195,32 +210,20 @@ const DatePicker = <T,>({
           month={month}
           className="datePicker-body"
           currentMonth={currentMonthIdx}
-          weekendDates={[6, 0]}
+          disabledDates={[new Date()]}
           selectedDates={selectedDates}
           onSelectDay={selectDay}
           onHoverDay={hoverEvent}
         />
       )}
       {view === "year" && (
-        <div className={"datePicker-body"}>
-          {yearMonths.map((item) => {
-            return (
-              <button
-                onClick={() => {
-                  return clickMonth(item);
-                }}
-                className={"datePicker-body__month-cell"}
-                key={item.toString()}
-              >
-                {getFormattedMonthToLocale({
-                  month: item,
-                  locale: defaultLocale,
-                  format: "long",
-                })}
-              </button>
-            );
-          })}
-        </div>
+        <YearView
+          months={yearMonths}
+          selectedDates={selectedDates}
+          minDate={new Date("nov")}
+          onMonthClick={clickMonth}
+          defaultLocale={"ru-RU"}
+        />
       )}
     </div>
   );

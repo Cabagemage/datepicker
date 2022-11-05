@@ -108,10 +108,14 @@
     width: 100px;
     text-align: center;
     cursor: pointer;
-    height: 50px;
+    height: 55px;
     border: none;
 }
-
+.datePicker-body__month-cell:hover{
+    background: #1890FF;
+    border-radius: 16px;
+    color: #FFFFFF;
+}
 .datePicker-body__day_disabled{
     color: #000000;
     opacity: 0.2;

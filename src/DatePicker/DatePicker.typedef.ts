@@ -8,7 +8,7 @@ export type DatePickerStyles = {
 };
 
 type CalendarViews = "month" | "week" | "year" | "years";
-type DatePickerMode = "single" | "partial" | "interval";
+type DatePickerMode = "single" | "partial" | "interval" | "week";
 
 export type DatePickerInterval = { start: Date | null; end: Date | null };
 export interface DatePickerProps<T> {
@@ -20,7 +20,9 @@ export interface DatePickerProps<T> {
     value: { date: Date },
     e: ChangeEvent<HTMLButtonElement>
   ) => void;
-  onChange: (value: Array<Date>) => void;
+  onMonthClick?: (value: Date) => void;
+  onYearClick?: (value: Date) => void;
+  onChange: (value: Array<Date | string>) => void;
   onToggleNextMonth: () => void;
   onTogglePrevMonth: () => void;
   mode?: DatePickerMode;

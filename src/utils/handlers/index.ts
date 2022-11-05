@@ -5,4 +5,5 @@ export {
   getFormattedShortDay,
   getDatesInRange,
   getMonthsOfYear,
+  getWeekOfYear,
 } from "./dateHandlers";

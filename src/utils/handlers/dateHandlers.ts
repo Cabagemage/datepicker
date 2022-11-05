@@ -6,8 +6,10 @@ import {
   eachMonthOfInterval,
   eachWeekOfInterval,
   endOfMonth,
+  endOfWeek,
   endOfYear,
   previousMonday,
+  startOfWeek,
   startOfYear,
 } from "date-fns";
 import {
@@ -166,4 +168,15 @@ export const isFirstDateEarlierThanSecondOne = (
     startTime.getTime() <= endTime.getTime() &&
     today !== startTime.toLocaleDateString()
   );
+};
+
+export const getWeekOfYear = (date: Date | string) => {
+  return format(new Date(date), "w", { weekStartsOn: 1 });
+};
+
+export const getWeekDays = (date: Date) => {
+  const beginningOfWeek = startOfWeek(date, { weekStartsOn: 1 });
+  const weekEnd = endOfWeek(date, { weekStartsOn: 1 });
+
+  return getDatesInRange(beginningOfWeek, weekEnd);
 };
