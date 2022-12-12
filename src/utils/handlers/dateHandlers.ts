@@ -1,8 +1,7 @@
 import format from "date-fns/format";
-import add from "date-fns/add";
+import { add } from "./add";
 import {
   compareAsc,
-  eachDayOfInterval,
   eachMonthOfInterval,
   eachWeekOfInterval,
   endOfMonth,
@@ -20,7 +19,6 @@ import {
 } from "../constants";
 import {
   GetCurrentMonth,
-  GetDatesInRange,
   GetFormattedShortDay,
   GetFormattedMonthToLocale,
   GetPreviousAndNextWeekForMonth,
@@ -28,16 +26,7 @@ import {
   GetFormattedDayToLocale,
   GetFinalizedDatesArray,
 } from "../types/commonTypes";
-
-export const getDatesInRange: GetDatesInRange = (startDate, endDate) => {
-  if (startDate === null || endDate === null) {
-    throw new Error("Start date of end date wasnt passed");
-  }
-  return eachDayOfInterval({
-    start: new Date(startDate),
-    end: new Date(endDate),
-  });
-};
+import { getDatesInRange } from "./getDatesInRange";
 
 const getCurrentMonth: GetCurrentMonth = ({
   year = new Date().getFullYear(),
@@ -69,8 +58,16 @@ const getPreviousAndNextWeek: GetPreviousAndNextWeekForMonth = ({
   );
   const previousMondayOfMonthStart = previousMonday(startDate);
   const lastDayOfMonth = endOfMonth(startDate);
-  const lastDayOfEndWeek = add(lastDayOfMonth, { days: ONE_WEEK });
-  const lastDayOfPrevWeek = add(previousMondayOfMonthStart, { days: ONE_WEEK });
+  const lastDayOfEndWeek = add({
+    date: lastDayOfMonth,
+    type: "week",
+    count: ONE_WEEK,
+  });
+  const lastDayOfPrevWeek = add({
+    date: previousMondayOfMonthStart,
+    type: "week",
+    count: ONE_WEEK,
+  });
   // Первая неделя месяца
   const firstMonthWeek = eachWeekOfInterval(
     { start: previousMondayOfMonthStart, end: lastDayOfPrevWeek },
@@ -85,6 +82,7 @@ const getPreviousAndNextWeek: GetPreviousAndNextWeekForMonth = ({
     firstMonthWeek[0],
     firstMonthWeek[1]
   );
+
   const lastDatePickerWeek = getDatesInRange(
     lastMonthWeek[0],
     lastMonthWeek[1]
@@ -133,7 +131,11 @@ export const getFormattedShortDay: GetFormattedShortDay = (date) => {
 // return date in format day.month.yyyy (20.05.2022)
 export const getFormattedDateToLocale: GetFormattedDayToLocale = (date) => {
   const parsedToDate = new Date(date);
-  return format(parsedToDate, "dd.MM.yyyy");
+  return parsedToDate.toLocaleDateString("ru-RU", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
 };
 
 // return formattedDate to short or long format. output: Oct / October

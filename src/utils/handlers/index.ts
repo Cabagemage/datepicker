@@ -3,7 +3,6 @@ export {
   getFormattedDateToLocale,
   getFinalizedDates,
   getFormattedShortDay,
-  getDatesInRange,
   getMonthsOfYear,
   getWeekOfYear,
 } from "./dateHandlers";

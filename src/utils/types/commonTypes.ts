@@ -35,3 +35,4 @@ export type GetMonthsOfYear = (date: Date) => Array<Date>;
 
 export type GetFormattedShortDay = (date: Date) => string;
 export type GetFormattedDayToLocale = (date: Date | string) => string;
+export type DateUnit = "month" | "year" | "day" | "week";

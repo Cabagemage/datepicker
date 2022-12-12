@@ -1,24 +1,24 @@
 import { DatePickerInterval, DatePickerProps } from "./DatePicker.typedef";
 import "./datePicker.css";
 import {
-  DECEMBER_NUMBER,
-  getDatesInRange,
+  DECEMBER_ORDINAL_NUMBER,
   getFinalizedDates,
   getFormattedDateToLocale,
   getFormattedMonthToLocale,
   getMonthsOfYear,
-  JANUARY_NUMBER,
+  JANUARY_ORDINAL_NUMBER,
   MONTHS_IDX_LIST,
   ONE_MONTH,
   ONE_YEAR,
   START_OF_NEW_MONTH_IDX,
 } from "../utils";
 import { useEffect, useMemo, useState } from "react";
-import add from "date-fns/add";
-import { sub } from "date-fns";
 import { MonthView } from "./MonthView";
 import { getWeekDays } from "../utils/handlers/dateHandlers";
 import YearView from "./YearView";
+import { subtract } from "../utils/handlers/subtract";
+import { add } from "../utils/handlers/add";
+import { getDatesInRange } from "../utils/handlers/getDatesInRange";
 const INITIAL_MONTH_DATES = getFinalizedDates({
   initialDate: new Date(),
 });
@@ -30,10 +30,8 @@ const DatePicker = <T,>({
 }: DatePickerProps<T>) => {
   const defaultLocale = locale === undefined ? "en-US" : locale;
   const [view, setView] = useState(props.view);
-
   const [currentMonthIdx, setCurrentMonthIdx] = useState(new Date().getMonth());
   const [month, setMonth] = useState(INITIAL_MONTH_DATES);
-
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDates, setSelectedDates] = useState<Array<string | Date>>([]);
   const [datesInterval, setDatesInterval] = useState<DatePickerInterval>({
@@ -49,9 +47,9 @@ const DatePicker = <T,>({
       return;
     }
     setCurrentDate((prev) => {
-      return add(prev, { years: ONE_YEAR });
+      return add({ date: prev, type: "year", count: 1 });
     });
-    setCurrentMonthIdx(JANUARY_NUMBER);
+    setCurrentMonthIdx(JANUARY_ORDINAL_NUMBER);
   };
 
   const getPrevMonth = () => {
@@ -62,9 +60,9 @@ const DatePicker = <T,>({
       return;
     }
     setCurrentDate((prev) => {
-      return sub(prev, { years: ONE_YEAR });
+      return subtract({ date: prev, type: "year", count: ONE_YEAR });
     });
-    setCurrentMonthIdx(DECEMBER_NUMBER);
+    setCurrentMonthIdx(DECEMBER_ORDINAL_NUMBER);
   };
 
   const selectDay = (date: Date) => {
