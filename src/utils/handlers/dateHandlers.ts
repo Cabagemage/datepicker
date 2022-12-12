@@ -1,16 +1,6 @@
 import format from "date-fns/format";
 import { add } from "./add";
-import {
-  compareAsc,
-  eachMonthOfInterval,
-  eachWeekOfInterval,
-  endOfMonth,
-  endOfWeek,
-  endOfYear,
-  previousMonday,
-  startOfWeek,
-  startOfYear,
-} from "date-fns";
+import { compareAsc, eachMonthOfInterval, eachWeekOfInterval } from "date-fns";
 import {
   MAX_DATES_LENGTH,
   MONDAY,
@@ -27,6 +17,10 @@ import {
   GetFinalizedDatesArray,
 } from "../types/commonTypes";
 import { getDatesInRange } from "./getDatesInRange";
+import { getMonday } from "./getMonday";
+import { getLastDateOfMonth } from "./getLastDateOfMonth";
+import { getSunday } from "./getSunday";
+import { getFirstDateOfMonth } from "./getFirstDateOfMonth";
 
 const getCurrentMonth: GetCurrentMonth = ({
   year = new Date().getFullYear(),
@@ -56,8 +50,8 @@ const getPreviousAndNextWeek: GetPreviousAndNextWeekForMonth = ({
     month ?? initialDate.getMonth(),
     1
   );
-  const previousMondayOfMonthStart = previousMonday(startDate);
-  const lastDayOfMonth = endOfMonth(startDate);
+  const previousMondayOfMonthStart = getMonday(startDate);
+  const lastDayOfMonth = getLastDateOfMonth(startDate);
   const lastDayOfEndWeek = add({
     date: lastDayOfMonth,
     type: "week",
@@ -68,11 +62,17 @@ const getPreviousAndNextWeek: GetPreviousAndNextWeekForMonth = ({
     type: "week",
     count: ONE_WEEK,
   });
+  const firstDayOfMonth = getFirstDateOfMonth(initialDate);
+  const mondayFromFirstDayOfMonth = getMonday(firstDayOfMonth);
+  const newMondayFromFirstDayOfMonth = getMonday(
+    new Date(initialDate?.getFullYear(), initialDate?.getMonth(), 7)
+  );
   // Первая неделя месяца
   const firstMonthWeek = eachWeekOfInterval(
     { start: previousMondayOfMonthStart, end: lastDayOfPrevWeek },
     { weekStartsOn: MONDAY }
   );
+  console.info(newMondayFromFirstDayOfMonth);
   // Последняя неделя месяца.
   const lastMonthWeek = eachWeekOfInterval(
     { start: lastDayOfMonth, end: lastDayOfEndWeek },
@@ -82,7 +82,7 @@ const getPreviousAndNextWeek: GetPreviousAndNextWeekForMonth = ({
     firstMonthWeek[0],
     firstMonthWeek[1]
   );
-
+  console.info(firstDatePickerWeek);
   const lastDatePickerWeek = getDatesInRange(
     lastMonthWeek[0],
     lastMonthWeek[1]
@@ -153,8 +153,8 @@ export const getFormattedMonthToLocale: GetFormattedMonthToLocale = ({
 };
 
 export const getMonthsOfYear: GetMonthsOfYear = (date) => {
-  const getStartOfYear = startOfYear(date);
-  const getEndOfYear = endOfYear(date);
+  const getStartOfYear = new Date(date.getFullYear(), 0, 1);
+  const getEndOfYear = new Date(date.getFullYear(), 11, 31);
   return eachMonthOfInterval({ start: getStartOfYear, end: getEndOfYear });
 };
 
@@ -177,8 +177,8 @@ export const getWeekOfYear = (date: Date | string) => {
 };
 
 export const getWeekDays = (date: Date) => {
-  const beginningOfWeek = startOfWeek(date, { weekStartsOn: 1 });
-  const weekEnd = endOfWeek(date, { weekStartsOn: 1 });
-
+  const beginningOfWeek = getMonday(date);
+  const weekEnd = getSunday(date);
+  console.info(weekEnd);
   return getDatesInRange(beginningOfWeek, weekEnd);
 };

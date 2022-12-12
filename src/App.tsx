@@ -24,7 +24,7 @@ function App() {
           onToggleNextMonth={console.info}
           activeDate={new Date()}
           view="month"
-          mode={"interval"}
+          mode={"week"}
         />
       )}
     </div>
