@@ -1,25 +1,28 @@
 import { DatePickerInterval, DatePickerProps } from "./DatePicker.typedef";
 import "./datePicker.css";
 import {
-  DECEMBER_ORDINAL_NUMBER,
-  getFinalizedDates,
+  getMonthCalendarViewDates,
   getFormattedDateToLocale,
   getFormattedMonthToLocale,
+  add,
+  getMonthsOfYear,
+  subtract,
+  getDatesInRange,
+  getWeekDays,
+} from "../utils/handlers";
+import {
   JANUARY_ORDINAL_NUMBER,
   MONTHS_IDX_LIST,
   ONE_MONTH,
   ONE_YEAR,
   START_OF_NEW_MONTH_IDX,
-} from "../utils";
+  DECEMBER_ORDINAL_NUMBER,
+} from "../utils/constants";
 import { useEffect, useMemo, useState } from "react";
 import { MonthView } from "./MonthView";
-import { getWeekDays } from "../utils/handlers/dateHandlers";
 import YearView from "./YearView";
-import { subtract } from "../utils/handlers/subtract";
-import { add } from "../utils/handlers/add";
-import { getDatesInRange } from "../utils/handlers/getDatesInRange";
-import { getMonthsOfYear } from "../utils/handlers/getMonthsOfYear";
-const INITIAL_MONTH_DATES = getFinalizedDates({
+
+const INITIAL_MONTH_DATES = getMonthCalendarViewDates({
   initialDate: new Date(),
 });
 const DatePicker = <T,>({
@@ -112,7 +115,7 @@ const DatePicker = <T,>({
     }
   };
   useEffect(() => {
-    const month = getFinalizedDates({
+    const month = getMonthCalendarViewDates({
       initialDate: currentDate,
       month: currentMonthIdx,
     });
@@ -153,7 +156,7 @@ const DatePicker = <T,>({
     }
   };
   const clickMonth = (date: Date) => {
-    const daysOfMonth = getFinalizedDates({ initialDate: date });
+    const daysOfMonth = getMonthCalendarViewDates({ initialDate: date });
     setMonth(daysOfMonth);
     const newMonthIdx = new Date(
       daysOfMonth[START_OF_NEW_MONTH_IDX]

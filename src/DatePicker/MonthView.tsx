@@ -3,10 +3,10 @@ import {
   DAYS_IDX_LIST,
   DEFAULT_TRANSLATED_DAYS_OF_WEEK,
   getFormattedDateToLocale,
-  getFormattedShortDay,
+  getFormattedShortDayForMonthView,
+  isFirstDateEarlierThanSecondOne,
 } from "../utils";
 import { MouseEventHandler } from "react";
-import { isFirstDateEarlierThanSecondOne } from "../utils/handlers/dateHandlers";
 
 export type MonthViewProps = {
   className?: HTMLDivElement["className"];
@@ -84,7 +84,7 @@ export const MonthView = ({
             disabled={isDisabled || isDateDisabled || isWeekendDay}
           >
             <span className={"datePicker-body__day-text"}>
-              {getFormattedShortDay(item)}
+              {getFormattedShortDayForMonthView(item)}
             </span>
           </button>
         );

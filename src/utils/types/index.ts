@@ -5,5 +5,4 @@ export type {
   GetFormattedShortDay,
   GetMonthsOfYear,
   GetDatesInRange,
-  GetPreviousAndNextWeekForMonth,
 } from "./commonTypes";

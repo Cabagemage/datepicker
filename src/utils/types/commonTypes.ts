@@ -10,7 +10,7 @@ export type DateType = "string" | Date | null;
 
 export type GetDatesInRange = (start: DateType, end: DateType) => Array<Date>;
 
-type GetDatesOptions = {
+export type GetDatesOptions = {
   initialDate?: Date;
   month?: number;
   year?: number;
@@ -26,11 +26,9 @@ export type GetFormattedMonthToLocale = (
   params: GetFormattedMonthParams
 ) => string;
 
-export type GetPreviousAndNextWeekForMonth = (args: GetDatesOptions) => {
-  nextWeek: Array<Date>;
-  previousWeek: Array<Date>;
-};
-export type GetFinalizedDatesArray = (params: GetDatesOptions) => Array<Date>;
+export type GetMonthCalendarViewDates = (
+  params: GetDatesOptions
+) => Array<Date>;
 export type GetMonthsOfYear = (date: Date) => Array<Date>;
 
 export type GetFormattedShortDay = (date: Date) => string;

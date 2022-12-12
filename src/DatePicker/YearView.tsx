@@ -1,5 +1,9 @@
-import { getFormattedDateToLocale, getFormattedMonthToLocale } from "../utils";
-import { isFirstDateEarlierThanSecondOne } from "../utils/handlers/dateHandlers";
+import {
+  getFormattedDateToLocale,
+  getFormattedMonthToLocale,
+  isFirstDateEarlierThanSecondOne,
+} from "../utils";
+
 import classNames from "classnames";
 
 type YearViewProps = {
