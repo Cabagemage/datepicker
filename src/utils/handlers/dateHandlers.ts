@@ -1,18 +1,10 @@
-import format from "date-fns/format";
 import { add } from "./add";
-import { compareAsc, eachMonthOfInterval, eachWeekOfInterval } from "date-fns";
-import {
-  MAX_DATES_LENGTH,
-  MONDAY,
-  MONTHS_IDX_LIST,
-  ONE_WEEK,
-} from "../constants";
+import { MAX_DATES_LENGTH, MONTHS_IDX_LIST } from "../constants";
 import {
   GetCurrentMonth,
   GetFormattedShortDay,
   GetFormattedMonthToLocale,
   GetPreviousAndNextWeekForMonth,
-  GetMonthsOfYear,
   GetFormattedDayToLocale,
   GetFinalizedDatesArray,
 } from "../types/commonTypes";
@@ -21,6 +13,9 @@ import { getMonday } from "./getMonday";
 import { getLastDateOfMonth } from "./getLastDateOfMonth";
 import { getSunday } from "./getSunday";
 import { getFirstDateOfMonth } from "./getFirstDateOfMonth";
+import { subtract } from "./subtract";
+import { getWeek } from "./getWeek";
+import { formatDate } from "./formatDate";
 
 const getCurrentMonth: GetCurrentMonth = ({
   year = new Date().getFullYear(),
@@ -50,42 +45,30 @@ const getPreviousAndNextWeek: GetPreviousAndNextWeekForMonth = ({
     month ?? initialDate.getMonth(),
     1
   );
-  const previousMondayOfMonthStart = getMonday(startDate);
   const lastDayOfMonth = getLastDateOfMonth(startDate);
-  const lastDayOfEndWeek = add({
-    date: lastDayOfMonth,
-    type: "week",
-    count: ONE_WEEK,
-  });
-  const lastDayOfPrevWeek = add({
-    date: previousMondayOfMonthStart,
-    type: "week",
-    count: ONE_WEEK,
-  });
-  const firstDayOfMonth = getFirstDateOfMonth(initialDate);
-  const mondayFromFirstDayOfMonth = getMonday(firstDayOfMonth);
-  const newMondayFromFirstDayOfMonth = getMonday(
-    new Date(initialDate?.getFullYear(), initialDate?.getMonth(), 7)
+  const firstDayOfMonth = getFirstDateOfMonth(startDate);
+  const lastMondayOfMonth = getMonday(lastDayOfMonth);
+  const mondayFromPreviousMonthOrCurrentMonth = getMonday(firstDayOfMonth);
+  const nextMonthAfterPreviousMonthOrCurrentMonthMonday = getMonday(
+    new Date(startDate?.getFullYear(), startDate?.getMonth(), 7)
   );
-  // Первая неделя месяца
-  const firstMonthWeek = eachWeekOfInterval(
-    { start: previousMondayOfMonthStart, end: lastDayOfPrevWeek },
-    { weekStartsOn: MONDAY }
+  const firstMondayOfNextMonth = getMonday(
+    add({ date: lastMondayOfMonth, type: "day", count: 7 })
   );
-  console.info(newMondayFromFirstDayOfMonth);
-  // Последняя неделя месяца.
-  const lastMonthWeek = eachWeekOfInterval(
-    { start: lastDayOfMonth, end: lastDayOfEndWeek },
-    { weekStartsOn: MONDAY }
-  );
+  // Если понедельник совпадает с первым числом месяца, то мы получаем последний понедельник предыдущего месяца.
+  const finalStartMonday =
+    mondayFromPreviousMonthOrCurrentMonth.toUTCString() ===
+    nextMonthAfterPreviousMonthOrCurrentMonthMonday.toUTCString()
+      ? getMonday(subtract({ date: firstDayOfMonth, count: 7, type: "day" }))
+      : mondayFromPreviousMonthOrCurrentMonth;
+
   const firstDatePickerWeek = getDatesInRange(
-    firstMonthWeek[0],
-    firstMonthWeek[1]
+    finalStartMonday,
+    nextMonthAfterPreviousMonthOrCurrentMonthMonday
   );
-  console.info(firstDatePickerWeek);
   const lastDatePickerWeek = getDatesInRange(
-    lastMonthWeek[0],
-    lastMonthWeek[1]
+    lastMondayOfMonth,
+    firstMondayOfNextMonth
   );
 
   return {
@@ -112,20 +95,20 @@ export const getFinalizedDates: GetFinalizedDatesArray = ({
   const excludeRepeatedElements = temporaryArray.filter((day, idx, array) => {
     return (
       array.findIndex((value) => {
-        return format(value, "MM dd yyyy") === format(day, "MM dd yyyy");
+        return formatDate(value) === formatDate(day);
       }) === idx
     );
   });
-  const sortedDates = excludeRepeatedElements.sort(compareAsc);
-  const slicedDates = MAX_DATES_LENGTH.includes(sortedDates.length)
-    ? sortedDates.slice(0, -1)
-    : sortedDates;
+
+  const slicedDates = MAX_DATES_LENGTH.includes(excludeRepeatedElements.length)
+    ? excludeRepeatedElements.slice(0, -1)
+    : excludeRepeatedElements;
   return slicedDates;
 };
 
 // returns number in format 1, 2,3, 4, 5 casted to string;
 export const getFormattedShortDay: GetFormattedShortDay = (date) => {
-  return format(date, "d");
+  return date.toLocaleDateString("ru-RU", { day: "numeric" });
 };
 
 // return date in format day.month.yyyy (20.05.2022)
@@ -152,12 +135,6 @@ export const getFormattedMonthToLocale: GetFormattedMonthToLocale = ({
   return formattedMonth[0].toUpperCase() + formattedMonth.slice(1);
 };
 
-export const getMonthsOfYear: GetMonthsOfYear = (date) => {
-  const getStartOfYear = new Date(date.getFullYear(), 0, 1);
-  const getEndOfYear = new Date(date.getFullYear(), 11, 31);
-  return eachMonthOfInterval({ start: getStartOfYear, end: getEndOfYear });
-};
-
 // Функция, определяющая, что переданная дата меньше, чем дата конца
 export const isFirstDateEarlierThanSecondOne = (
   start: Date | string,
@@ -173,12 +150,11 @@ export const isFirstDateEarlierThanSecondOne = (
 };
 
 export const getWeekOfYear = (date: Date | string) => {
-  return format(new Date(date), "w", { weekStartsOn: 1 });
+  return getWeek(new Date(date));
 };
 
 export const getWeekDays = (date: Date) => {
   const beginningOfWeek = getMonday(date);
   const weekEnd = getSunday(date);
-  console.info(weekEnd);
   return getDatesInRange(beginningOfWeek, weekEnd);
 };

@@ -5,7 +5,6 @@ import {
   getFinalizedDates,
   getFormattedDateToLocale,
   getFormattedMonthToLocale,
-  getMonthsOfYear,
   JANUARY_ORDINAL_NUMBER,
   MONTHS_IDX_LIST,
   ONE_MONTH,
@@ -19,6 +18,7 @@ import YearView from "./YearView";
 import { subtract } from "../utils/handlers/subtract";
 import { add } from "../utils/handlers/add";
 import { getDatesInRange } from "../utils/handlers/getDatesInRange";
+import { getMonthsOfYear } from "../utils/handlers/getMonthsOfYear";
 const INITIAL_MONTH_DATES = getFinalizedDates({
   initialDate: new Date(),
 });
@@ -123,9 +123,7 @@ const DatePicker = <T,>({
     if (datesInterval.start !== null && datesInterval.end !== null) {
       return;
     }
-
     const lastTriggeredDate = new Date(e.currentTarget.value);
-
     if (mode === "interval" && datesInterval.start !== null) {
       const formattedDates = getDatesInRange(
         datesInterval.start,
@@ -135,6 +133,7 @@ const DatePicker = <T,>({
       });
       setSelectedDates(formattedDates);
     }
+
     if (mode === "week") {
       const formattedDates = getWeekDays(lastTriggeredDate).map((item) => {
         return getFormattedDateToLocale(item);
