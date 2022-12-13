@@ -1,4 +1,4 @@
-import type { ChangeEvent, CSSProperties } from "react";
+import type { CSSProperties } from "react";
 
 export type DatePickerStyles = {
   wrapper: CSSProperties;
@@ -11,18 +11,26 @@ type CalendarViews = "month" | "week" | "year" | "years";
 type DatePickerMode = "single" | "partial" | "interval" | "week";
 
 export type DatePickerInterval = { start: Date | null; end: Date | null };
+export type DatePickerChangeHandler = ({
+  value,
+}: {
+  value: Array<Date> | Date;
+}) => void;
+
+export type CustomizedDate = {
+  className: HTMLButtonElement["className"];
+  date: Date;
+  isDisabled?: boolean;
+};
+
 export interface DatePickerProps<T> {
   activeDate: Date;
   locale?: Intl.LocalesArgument;
   defaultDate?: Date;
-  dates?: Array<T>;
-  onDateClick: (
-    value: { date: Date },
-    e: ChangeEvent<HTMLButtonElement>
-  ) => void;
+  customizedDates?: Array<CustomizedDate>;
   onMonthClick?: (value: Date) => void;
   onYearClick?: (value: Date) => void;
-  onChange: (value: Array<Date | string>) => void;
+  onDateClick: DatePickerChangeHandler;
   onToggleNextMonth: () => void;
   onTogglePrevMonth: () => void;
   mode?: DatePickerMode;

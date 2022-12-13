@@ -2,7 +2,7 @@ import {
   getFormattedDateToLocale,
   getFormattedMonthToLocale,
   isFirstDateEarlierThanSecondOne,
-} from "../utils";
+} from "../core";
 
 import classNames from "classnames";
 

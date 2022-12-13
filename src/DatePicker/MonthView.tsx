@@ -2,15 +2,18 @@ import classNames from "classnames";
 import {
   DAYS_IDX_LIST,
   DEFAULT_TRANSLATED_DAYS_OF_WEEK,
+  formatDate,
   getFormattedDateToLocale,
   getFormattedShortDayForMonthView,
   isFirstDateEarlierThanSecondOne,
-} from "../utils";
+} from "../core";
 import { MouseEventHandler } from "react";
+import { CustomizedDate } from "./DatePicker.typedef";
 
 export type MonthViewProps = {
   className?: HTMLDivElement["className"];
   month: Array<Date>;
+  customizedDates?: Array<CustomizedDate>;
   currentMonth: number;
   onSelectDay: (date: Date) => void;
   onHoverDay: MouseEventHandler<HTMLButtonElement>;
@@ -24,6 +27,7 @@ export const MonthView = ({
   currentMonth,
   selectedDates,
   onSelectDay,
+  customizedDates,
   onHoverDay,
   className,
   minDate,
@@ -32,6 +36,9 @@ export const MonthView = ({
 }: MonthViewProps) => {
   const mappedBannedDates = disabledDates?.map((item) => {
     return getFormattedDateToLocale(item);
+  });
+  const formattedSelectedDates = selectedDates.map((item) => {
+    return formatDate(new Date(item));
   });
   return (
     <div className={className}>
@@ -47,19 +54,21 @@ export const MonthView = ({
       </ul>
       {month.map((item) => {
         const isDateNotRelatedToCurrentMonth = item.getMonth() !== currentMonth;
+        const customizedDate = customizedDates?.find((customizedDate) => {
+          return formatDate(item) === formatDate(customizedDate.date);
+        });
         const isDisabled =
           minDate !== undefined
             ? isFirstDateEarlierThanSecondOne(item, minDate)
             : false;
-        const isSelected = selectedDates.includes(
-          getFormattedDateToLocale(item)
-        );
+        const isSelected = formattedSelectedDates.includes(formatDate(item));
         const isDateDisabled =
           mappedBannedDates !== undefined &&
           mappedBannedDates.includes(getFormattedDateToLocale(item));
         const isWeekendDay =
           weekendDates !== undefined && weekendDates.includes(item.getDay());
-
+        const selectedClassName =
+          customizedDate !== undefined ? customizedDate.className : "";
         return (
           <button
             onClick={() => {
@@ -70,7 +79,12 @@ export const MonthView = ({
               return onHoverDay(e);
             }}
             className={classNames(
-              "datePicker-body__day",
+              `datePicker-body__day`,
+              selectedClassName,
+              {
+                "datePicker-body__day_transparent":
+                  customizedDate === undefined,
+              },
               {
                 greyText: isDateNotRelatedToCurrentMonth,
               },

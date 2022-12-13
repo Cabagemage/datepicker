@@ -31,10 +31,11 @@
      font-weight: 400;
      font-size: 18px;
      border: none;
-    background-color: transparent;
     cursor: pointer;
  }
-
+ .datePicker-body__day_transparent{
+     background-color: transparent;
+ }
 .selected{
     color: #FFF;
     border-radius: 50%;

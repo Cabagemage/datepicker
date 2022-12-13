@@ -9,7 +9,8 @@ import {
   subtract,
   getDatesInRange,
   getWeekDays,
-} from "../utils/handlers";
+  formatDate,
+} from "../core/handlers";
 import {
   JANUARY_ORDINAL_NUMBER,
   MONTHS_IDX_LIST,
@@ -17,7 +18,7 @@ import {
   ONE_YEAR,
   START_OF_NEW_MONTH_IDX,
   DECEMBER_ORDINAL_NUMBER,
-} from "../utils/constants";
+} from "../core/constants";
 import { useEffect, useMemo, useState } from "react";
 import { MonthView } from "./MonthView";
 import YearView from "./YearView";
@@ -25,10 +26,13 @@ import YearView from "./YearView";
 const INITIAL_MONTH_DATES = getMonthCalendarViewDates({
   initialDate: new Date(),
 });
+
 const DatePicker = <T,>({
   locale,
   mode = "single",
-  onChange,
+  onDateClick,
+  customizedDates,
+  onMonthClick,
   ...props
 }: DatePickerProps<T>) => {
   const defaultLocale = locale === undefined ? "en-US" : locale;
@@ -43,77 +47,130 @@ const DatePicker = <T,>({
   });
   const yearMonths = getMonthsOfYear(currentDate);
 
-  const getNextMonth = () => {
-    const nextMonth = currentMonthIdx + 1;
-    if (MONTHS_IDX_LIST.includes(nextMonth)) {
-      setCurrentMonthIdx(nextMonth);
-      return;
+  const changeYear = (action: "add" | "subtract") => {
+    if (action === "add") {
+      setCurrentDate((prev) => {
+        return add({ date: prev, type: "year", count: 1 });
+      });
     }
-    setCurrentDate((prev) => {
-      return add({ date: prev, type: "year", count: 1 });
-    });
-    setCurrentMonthIdx(JANUARY_ORDINAL_NUMBER);
+    if (action === "subtract") {
+      setCurrentDate((prev) => {
+        return subtract({ date: prev, type: "year", count: ONE_YEAR });
+      });
+    }
+  };
+  const toNextUnitNavAction = () => {
+    if (view === "month") {
+      const nextMonth = currentMonthIdx + ONE_MONTH;
+      const isCurrentMonthIsDecember = currentMonthIdx === 11;
+      if (MONTHS_IDX_LIST.includes(nextMonth)) {
+        setCurrentMonthIdx(nextMonth);
+      }
+      if (isCurrentMonthIsDecember) {
+        changeYear("add");
+        setCurrentMonthIdx(JANUARY_ORDINAL_NUMBER);
+      }
+    }
+    if (view === "year") {
+      changeYear("add");
+    }
   };
 
-  const getPrevMonth = () => {
-    const prevMonth = currentMonthIdx - ONE_MONTH;
+  const toPrevUnitNavAction = () => {
+    if (view === "month") {
+      const prevMonth = currentMonthIdx - ONE_MONTH;
+      if (MONTHS_IDX_LIST.includes(prevMonth)) {
+        setCurrentMonthIdx(prevMonth);
+      }
+      const isCurrentMonthIdxIsJanuary = currentMonthIdx === 0;
+      if (isCurrentMonthIdxIsJanuary) {
+        changeYear("subtract");
+        setCurrentMonthIdx(DECEMBER_ORDINAL_NUMBER);
+      }
+    }
+    if (view === "year") {
+      changeYear("subtract");
+    }
+  };
 
-    if (MONTHS_IDX_LIST.includes(prevMonth)) {
-      setCurrentMonthIdx(prevMonth);
+  const selectDayForInterval = (date: Date) => {
+    if (datesInterval.start && datesInterval.end) {
+      setDatesInterval({ start: null, end: null });
+      setSelectedDates([]);
+    }
+    if (datesInterval.start === null) {
+      setDatesInterval((prev) => {
+        return { ...prev, start: date };
+      });
+      setSelectedDates([date]);
+      onDateClick({ value: [date] });
+    }
+    if (datesInterval.start !== null && datesInterval.end === null) {
+      setDatesInterval((prev) => {
+        return { ...prev, end: date };
+      });
+      const start =
+        new Date(datesInterval.start) < date ? datesInterval.start : date;
+      const end =
+        new Date(date) > datesInterval.start ? date : datesInterval.start;
+      onDateClick({ value: [start, end] });
+    }
+  };
+  const selectDayForWeek = () => {
+    if (datesInterval.start === null) {
+      const firstDate = new Date(selectedDates[0]);
+      const lastDate = new Date(selectedDates[selectedDates.length - 1]);
+      setDatesInterval({
+        start: firstDate < lastDate ? firstDate : lastDate,
+        end: lastDate > firstDate ? lastDate : firstDate,
+      });
+      onDateClick({
+        value: [firstDate, lastDate],
+      });
+    } else {
+      setDatesInterval({ start: null, end: null });
+    }
+  };
+  const selectSingleDate = (date: Date, formattedDate: string) => {
+    setSelectedDates([formattedDate]);
+    onDateClick({ value: date });
+  };
+  const mappedSelectedDatesToFormattedValue = selectedDates.map((item) => {
+    return formatDate(new Date(item));
+  });
+  const selectDayForPartial = (date: Date) => {
+    if (mappedSelectedDatesToFormattedValue.includes(formatDate(date))) {
+      const filteredDates = selectedDates.filter((item) => {
+        return formatDate(new Date(date)) !== formatDate(new Date(item));
+      });
+      setSelectedDates(filteredDates);
       return;
     }
-    setCurrentDate((prev) => {
-      return subtract({ date: prev, type: "year", count: ONE_YEAR });
+    setSelectedDates((prev) => {
+      return [...prev, date];
     });
-    setCurrentMonthIdx(DECEMBER_ORDINAL_NUMBER);
+    const mappedSelectedDatesToRawDates = selectedDates.map((item) => {
+      return new Date(item);
+    });
+    onDateClick({ value: [...mappedSelectedDatesToRawDates, new Date(date)] });
   };
 
   const selectDay = (date: Date) => {
     const formattedDate = getFormattedDateToLocale(date);
     if (mode === "single") {
-      setSelectedDates([formattedDate]);
+      selectSingleDate(date, formattedDate);
     }
     if (mode === "partial") {
-      if (selectedDates.includes(formattedDate)) {
-        const filteredDates = selectedDates.filter((item) => {
-          return item !== formattedDate;
-        });
-        setSelectedDates(filteredDates);
-        return;
-      }
-      setSelectedDates((prev) => {
-        return [...prev, formattedDate];
-      });
-      onChange([...selectedDates, formattedDate]);
+      selectDayForPartial(date);
     }
     if (mode === "interval") {
-      if (datesInterval.start === null) {
-        setDatesInterval((prev) => {
-          return { ...prev, start: date };
-        });
-        setSelectedDates([date]);
-      }
-      if (datesInterval.start !== null && datesInterval.end === null) {
-        setDatesInterval((prev) => {
-          return { ...prev, end: date };
-        });
-      }
-      if (datesInterval.start && datesInterval.end) {
-        setDatesInterval({ start: null, end: null });
-      }
+      selectDayForInterval(date);
     }
     if (mode === "week") {
-      if (datesInterval.start === null) {
-        setDatesInterval({
-          start: new Date(selectedDates[0]),
-          end: new Date(selectedDates[selectedDates.length - 1]),
-        });
-        onChange([selectedDates[0], selectedDates[selectedDates.length - 1]]);
-      } else {
-        setDatesInterval({ start: null, end: null });
-      }
+      selectDayForWeek();
     }
   };
+
   useEffect(() => {
     const month = getMonthCalendarViewDates({
       initialDate: currentDate,
@@ -128,11 +185,16 @@ const DatePicker = <T,>({
     }
     const lastTriggeredDate = new Date(e.currentTarget.value);
     if (mode === "interval" && datesInterval.start !== null) {
-      const formattedDates = getDatesInRange(
-        datesInterval.start,
-        lastTriggeredDate
-      ).map((item) => {
-        return getFormattedDateToLocale(item);
+      const start =
+        new Date(datesInterval.start) < lastTriggeredDate
+          ? datesInterval.start
+          : lastTriggeredDate;
+      const end =
+        new Date(lastTriggeredDate) > datesInterval.start
+          ? lastTriggeredDate
+          : datesInterval.start;
+      const formattedDates = getDatesInRange(start, end).map((item) => {
+        return formatDate(item);
       });
       setSelectedDates(formattedDates);
     }
@@ -156,6 +218,9 @@ const DatePicker = <T,>({
     }
   };
   const clickMonth = (date: Date) => {
+    if (onMonthClick) {
+      onMonthClick(date);
+    }
     const daysOfMonth = getMonthCalendarViewDates({ initialDate: date });
     setMonth(daysOfMonth);
     const newMonthIdx = new Date(
@@ -195,22 +260,23 @@ const DatePicker = <T,>({
             className={
               "datePicker__controller datePicker__controller_type_prev"
             }
-            onClick={getPrevMonth}
+            onClick={toPrevUnitNavAction}
           />
           <button
             className={
               "datePicker__controller datePicker__controller_type_next"
             }
-            onClick={getNextMonth}
+            onClick={toNextUnitNavAction}
           />
         </div>
       </div>
       {view === "month" && (
         <MonthView
           month={month}
+          customizedDates={customizedDates}
           className="datePicker-body"
           currentMonth={currentMonthIdx}
-          disabledDates={[new Date()]}
+          disabledDates={[]}
           selectedDates={selectedDates}
           onSelectDay={selectDay}
           onHoverDay={hoverEvent}
