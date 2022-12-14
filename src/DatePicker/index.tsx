@@ -46,7 +46,7 @@ const DatePicker = <T,>({
     end: null,
   });
   const yearMonths = getMonthsOfYear(currentDate);
-
+console.log(getWeekDays(new Date()))
   const changeYear = (action: "add" | "subtract") => {
     if (action === "add") {
       setCurrentDate((prev) => {
