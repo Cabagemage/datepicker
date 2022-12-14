@@ -41,7 +41,7 @@
      background-color: transparent;
  }
 
-.selected {
+.datePicker__selectedDate {
     color: #FFF;
     border-radius: 50%;
     background-color: #1D87AC;
@@ -109,7 +109,7 @@
 }
 
 
-.selected > .datePicker-body__day-text  {
+.datePicker__selectedDate > .datePicker-body__day-text  {
     color: #FFF;
 }
 

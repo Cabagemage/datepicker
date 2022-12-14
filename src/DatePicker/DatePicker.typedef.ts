@@ -9,6 +9,7 @@ export type DatePickerStyles = {
 
 type CalendarViews = "month" | "week" | "year" | "years";
 type DatePickerMode = "single" | "partial" | "interval" | "week";
+
 export type DatePickerInterval = { start: Date | null; end: Date | null };
 export type DatePickerChangeHandler = ({
   value,
@@ -22,21 +23,27 @@ export type CustomizedDate = {
   isDisabled?: boolean;
   textOnHover?: string;
 };
+
 export type DatePickerMonthViewClassNames = {
   monthViewMonthBody: HTMLDivElement["className"];
   monthViewWeekDays: HTMLUListElement["className"];
   monthViewDay: HTMLButtonElement["className"];
   monthViewDayActive: HTMLButtonElement["className"];
+  monthViewDayDefaultBackgroundClassName: HTMLButtonElement["className"];
+  monthViewDayDayText: HTMLSpanElement["className"];
   monthViewDisabledDate: HTMLButtonElement["className"];
   monthViewWeekDaysListItem: HTMLLIElement["className"];
 };
+
 export type DatePickerYearViewClassNames = {
-  yearViewMonth: HTMLButtonElement["className"];
+  yearViewMonthCell: HTMLButtonElement["className"];
 };
+
 export type DatePickerCommonClassNames = {
   wrapper: HTMLDivElement["className"];
   header: HTMLDivElement["className"];
 };
+
 export type DatePickerClassNames = {
   month: Partial<DatePickerMonthViewClassNames>;
   common: Partial<DatePickerCommonClassNames>;

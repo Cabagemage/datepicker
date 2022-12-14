@@ -6,8 +6,8 @@ import {
   getFormattedShortDayForMonthView,
   isFirstDateEarlierThanSecondOne,
 } from "../core";
-import { MouseEventHandler } from "react";
-import {
+import type { MouseEventHandler } from "react";
+import type {
   CustomizedDate,
   DatePickerMonthViewClassNames,
 } from "./DatePicker.typedef";
@@ -44,17 +44,42 @@ export const MonthView = ({
     return formatDate(new Date(item));
   });
 
+  const monthDayCellClassName = customMonthClassNames?.monthViewDay
+    ? customMonthClassNames.monthViewDay
+    : `datePicker-body__day`;
+
+  const monthDayCellActiveClassName =
+    customMonthClassNames?.monthViewDayActive !== undefined
+      ? customMonthClassNames.monthViewDayActive
+      : "datePicker__selectedDate";
+
+  const monthDayCellDisabledClassName =
+    customMonthClassNames?.monthViewDisabledDate
+      ? customMonthClassNames.monthViewDisabledDate
+      : "datePicker-body__day_disabled";
+
+  const monthDayCellTextClassName = customMonthClassNames?.monthViewDayDayText
+    ? customMonthClassNames.monthViewDayDayText
+    : "datePicker-body__day-text";
+
+  const defaultMonthDayCellBackgroundClassName =
+    customMonthClassNames?.monthViewDayDefaultBackgroundClassName
+      ? customMonthClassNames.monthViewDayDefaultBackgroundClassName
+      : "datePicker-body__day_transparent";
+
   return (
     <div
       className={
-        customMonthClassNames !== undefined
+        customMonthClassNames !== undefined &&
+        customMonthClassNames.monthViewMonthBody !== undefined
           ? customMonthClassNames.monthViewMonthBody
           : "datePicker-body"
       }
     >
       <ul
         className={
-          customMonthClassNames !== undefined
+          customMonthClassNames !== undefined &&
+          customMonthClassNames.monthViewWeekDays !== undefined
             ? customMonthClassNames.monthViewWeekDays
             : "datePicker-weekdays"
         }
@@ -64,7 +89,8 @@ export const MonthView = ({
           return (
             <li
               className={
-                customMonthClassNames !== undefined
+                customMonthClassNames !== undefined &&
+                customMonthClassNames.monthViewWeekDaysListItem !== undefined
                   ? customMonthClassNames.monthViewWeekDaysListItem
                   : "datePicker-weekdays__day"
               }
@@ -95,6 +121,7 @@ export const MonthView = ({
           weekendDates !== undefined && weekendDates.includes(item.getDay());
         const customizedDateClassName =
           customizedDate !== undefined ? customizedDate.className : "";
+
         return (
           <button
             onClick={() => {
@@ -108,25 +135,26 @@ export const MonthView = ({
               return onHoverDay(e);
             }}
             className={classNames(
-              `datePicker-body__day`,
+              [monthDayCellClassName],
               customizedDateClassName,
               {
-                "datePicker-body__day_transparent":
+                [defaultMonthDayCellBackgroundClassName]:
                   customizedDate === undefined,
               },
               {
                 greyText: isDateNotRelatedToCurrentMonth,
               },
               {
-                selected: isSelected && !isDateDisabled && !isWeekendDay,
-                "datePicker-body__day_disabled":
+                [monthDayCellActiveClassName]:
+                  isSelected && !isDateDisabled && !isWeekendDay,
+                [monthDayCellDisabledClassName]:
                   isDisabled || isDateDisabled || isWeekendDay,
               }
             )}
             key={item.toString()}
             disabled={isDisabled || isDateDisabled || isWeekendDay}
           >
-            <span className={"datePicker-body__day-text"}>
+            <span className={monthDayCellTextClassName}>
               {getFormattedShortDayForMonthView(item)}
             </span>
           </button>

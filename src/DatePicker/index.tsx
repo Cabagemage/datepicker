@@ -274,7 +274,6 @@ const DatePicker = ({
         <MonthView
           month={month}
           customizedDates={customizedDates}
-          customMonthClassNames={customizationClassNames?.month}
           currentMonth={currentMonthIdx}
           disabledDates={[]}
           selectedDates={selectedDates}
