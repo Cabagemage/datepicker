@@ -12,7 +12,6 @@ type Subtract = ({
 
 export const subtract: Subtract = ({ date, count, type }) => {
   const resultDate = new Date(date);
-
   switch (type) {
     case "day": {
       const msDayCount = 1000 * count;

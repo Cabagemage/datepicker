@@ -4,11 +4,12 @@
     flex-direction: column;
     max-width: 338px;
     padding: 24px;
-    border: 1px solid #1890FF;
+    border: 2px solid #1890FF;
     border-radius: 16px;
 }
 
  .datePicker-header{
+     user-select: none;
      display: flex;
      justify-content: space-between;
     margin-bottom: 15px;
@@ -25,6 +26,8 @@
  }
 
  .datePicker-body__day{
+     user-select: none;
+     position: relative;
      width: 32px;
      height: 32px;
      padding: 0;
@@ -33,30 +36,38 @@
      border: none;
     cursor: pointer;
  }
+
  .datePicker-body__day_transparent{
      background-color: transparent;
  }
-.selected{
+
+.selected {
     color: #FFF;
     border-radius: 50%;
     background-color: #1D87AC;
 }
+
  .flex{
      display: flex;
  }
+
  .row{
      flex-direction: row;
  }
+
  .col{
      flex-direction: column;
  }
+
  .datePicker-weekdays{
      width: 100%;
      display: flex;
      list-style: none;
+     user-select: none;
      justify-content: space-between;
      padding: 0 16px 0 0;
  }
+
 .datePicker-weekdays > .datePicker-weekdays__day{
     width: 32px;
 }
@@ -81,12 +92,14 @@
     width: 37px;
     height: 14px;
 }
+
 .datePicker__controller_type_next{
-    background-image: url("../../public/defaultIcons/next.svg");
+    background-image: url("../static/defaultIcons/arrow.svg");
 }
 
 .datePicker__controller_type_prev{
-     background-image: url("../../public/defaultIcons/prev.svg");
+     background-image: url("../static/defaultIcons/arrow.svg");
+     rotate: 180deg;
 }
 
 .datePicker-header__togler{

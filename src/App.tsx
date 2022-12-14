@@ -10,10 +10,13 @@ function App() {
     {
       date: new Date(),
       className: "selected__test",
+      isDisabled: true,
+      textOnHover: "Мастер работает в другом офисе",
     },
     {
       date: new Date("Sat Dec 17 2022 00:00:00 GMT+0300 (Moscow Standard Time"),
       className: "selected__test",
+      textOnHover: "Мастер не работает в ето время",
     },
     {
       date: new Date("Sat Dec 16 2022 00:00:00 GMT+0300 (Moscow Standard Time"),

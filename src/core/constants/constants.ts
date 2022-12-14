@@ -1,7 +1,7 @@
 export const START_OF_NEW_MONTH_IDX = 7;
 export const ONE_YEAR = 1;
 export const ONE_MONTH = 1;
-export const MONDAY = 1;
+export const MONDAY_ORDINAL_NUMBER = 1;
 export const ONE_WEEK = 7;
 export const DECEMBER_ORDINAL_NUMBER = 11;
 export const JANUARY_ORDINAL_NUMBER = 0;

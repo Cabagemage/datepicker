@@ -4,5 +4,5 @@ import { GetFormattedShortDay } from "../../types";
 export const getFormattedShortDayForMonthView: GetFormattedShortDay = (
   date
 ) => {
-  return date.toLocaleDateString("ru-RU", { day: "numeric" });
+  return date.getDate().toString();
 };

@@ -3,7 +3,6 @@ export { formatDate } from "./formatDate";
 export { getCurrentMonth } from "./getCurrentMonth";
 export { getSunday } from "./getSunday";
 export { getDatesInRange } from "./getDatesInRange";
-export { getFormattedDateToLocale } from "./getFormattedDateToLocale";
 export { getFirstDateOfMonth } from "./getFirstDateOfMonth";
 export { getFormattedMonthToLocale } from "./getFormattedMonthToLocale";
 export { getFormattedShortDayForMonthView } from "./getFormattedShortDayForMonthView";
@@ -15,5 +14,5 @@ export { getOrdinalNumberOfWeek } from "./getOrdinalNumberOfWeek";
 export { getWeekDays } from "./getWeekDays";
 export { isFirstDateEarlierThanSecondOne } from "./isFirstDateEarlierThanSecondOne";
 export { subtract } from "./subtract";
-export {getFirstWeekOfMonth} from "./getFirstWeekOfMonth"
-export {getLastWeekOfMonth} from "./getLastWeekOfMonth"
+export { getFirstWeekOfMonth } from "./getFirstWeekOfMonth";
+export { getLastWeekOfMonth } from "./getLastWeekOfMonth";

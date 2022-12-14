@@ -3,16 +3,18 @@ import {
   DAYS_IDX_LIST,
   DEFAULT_TRANSLATED_DAYS_OF_WEEK,
   formatDate,
-  getFormattedDateToLocale,
   getFormattedShortDayForMonthView,
   isFirstDateEarlierThanSecondOne,
 } from "../core";
 import { MouseEventHandler } from "react";
-import { CustomizedDate } from "./DatePicker.typedef";
+import {
+  CustomizedDate,
+  DatePickerMonthViewClassNames,
+} from "./DatePicker.typedef";
 
 export type MonthViewProps = {
-  className?: HTMLDivElement["className"];
   month: Array<Date>;
+  customMonthClassNames?: Partial<DatePickerMonthViewClassNames>;
   customizedDates?: Array<CustomizedDate>;
   currentMonth: number;
   onSelectDay: (date: Date) => void;
@@ -29,24 +31,45 @@ export const MonthView = ({
   onSelectDay,
   customizedDates,
   onHoverDay,
-  className,
+  customMonthClassNames,
   minDate,
   disabledDates,
   weekendDates,
 }: MonthViewProps) => {
   const mappedBannedDates = disabledDates?.map((item) => {
-    return getFormattedDateToLocale(item);
+    return formatDate(new Date(item));
   });
+
   const formattedSelectedDates = selectedDates.map((item) => {
     return formatDate(new Date(item));
   });
+
   return (
-    <div className={className}>
-      <ul className={"datePicker-weekdays"}>
-        {/*TODO: Подумать насчет перевода дней недели */}
+    <div
+      className={
+        customMonthClassNames !== undefined
+          ? customMonthClassNames.monthViewMonthBody
+          : "datePicker-body"
+      }
+    >
+      <ul
+        className={
+          customMonthClassNames !== undefined
+            ? customMonthClassNames.monthViewWeekDays
+            : "datePicker-weekdays"
+        }
+      >
+        {/* TODO: Think about translations for days of week */}
         {DEFAULT_TRANSLATED_DAYS_OF_WEEK.map((item) => {
           return (
-            <li className={"datePicker-weekdays__day"} key={item}>
+            <li
+              className={
+                customMonthClassNames !== undefined
+                  ? customMonthClassNames.monthViewWeekDaysListItem
+                  : "datePicker-weekdays__day"
+              }
+              key={item}
+            >
               {item}
             </li>
           );
@@ -62,25 +85,31 @@ export const MonthView = ({
             ? isFirstDateEarlierThanSecondOne(item, minDate)
             : false;
         const isSelected = formattedSelectedDates.includes(formatDate(item));
+        const isCustomizedDateIsDisabled =
+          customizedDate !== undefined ? customizedDate.isDisabled : false;
         const isDateDisabled =
-          mappedBannedDates !== undefined &&
-          mappedBannedDates.includes(getFormattedDateToLocale(item));
+          (mappedBannedDates !== undefined &&
+            mappedBannedDates.includes(formatDate(item))) ||
+          isCustomizedDateIsDisabled;
         const isWeekendDay =
           weekendDates !== undefined && weekendDates.includes(item.getDay());
-        const selectedClassName =
+        const customizedDateClassName =
           customizedDate !== undefined ? customizedDate.className : "";
         return (
           <button
             onClick={() => {
               return onSelectDay(item);
             }}
+            title={
+              customizedDate !== undefined ? customizedDate.textOnHover : ""
+            }
             value={item.toString()}
             onMouseEnter={(e) => {
               return onHoverDay(e);
             }}
             className={classNames(
               `datePicker-body__day`,
-              selectedClassName,
+              customizedDateClassName,
               {
                 "datePicker-body__day_transparent":
                   customizedDate === undefined,

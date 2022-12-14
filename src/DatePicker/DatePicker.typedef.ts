@@ -9,7 +9,6 @@ export type DatePickerStyles = {
 
 type CalendarViews = "month" | "week" | "year" | "years";
 type DatePickerMode = "single" | "partial" | "interval" | "week";
-
 export type DatePickerInterval = { start: Date | null; end: Date | null };
 export type DatePickerChangeHandler = ({
   value,
@@ -21,12 +20,34 @@ export type CustomizedDate = {
   className: HTMLButtonElement["className"];
   date: Date;
   isDisabled?: boolean;
+  textOnHover?: string;
+};
+export type DatePickerMonthViewClassNames = {
+  monthViewMonthBody: HTMLDivElement["className"];
+  monthViewWeekDays: HTMLUListElement["className"];
+  monthViewDay: HTMLButtonElement["className"];
+  monthViewDayActive: HTMLButtonElement["className"];
+  monthViewDisabledDate: HTMLButtonElement["className"];
+  monthViewWeekDaysListItem: HTMLLIElement["className"];
+};
+export type DatePickerYearViewClassNames = {
+  yearViewMonth: HTMLButtonElement["className"];
+};
+export type DatePickerCommonClassNames = {
+  wrapper: HTMLDivElement["className"];
+  header: HTMLDivElement["className"];
+};
+export type DatePickerClassNames = {
+  month: Partial<DatePickerMonthViewClassNames>;
+  common: Partial<DatePickerCommonClassNames>;
+  year: Partial<DatePickerYearViewClassNames>;
 };
 
-export interface DatePickerProps<T> {
+export interface DatePickerProps {
   activeDate: Date;
   locale?: Intl.LocalesArgument;
   defaultDate?: Date;
+  customizationClassNames?: Partial<DatePickerClassNames>;
   customizedDates?: Array<CustomizedDate>;
   onMonthClick?: (value: Date) => void;
   onYearClick?: (value: Date) => void;
@@ -35,7 +56,5 @@ export interface DatePickerProps<T> {
   onTogglePrevMonth: () => void;
   mode?: DatePickerMode;
   style?: DatePickerStyles;
-  customDayCell?: JSX.Element;
-  customMonthCell?: JSX.Element;
   view: CalendarViews;
 }

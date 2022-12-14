@@ -1,5 +1,5 @@
 import {
-  getFormattedDateToLocale,
+  formatDate,
   getFormattedMonthToLocale,
   isFirstDateEarlierThanSecondOne,
 } from "../core";
@@ -28,9 +28,7 @@ const YearView = ({
           minDate !== undefined
             ? isFirstDateEarlierThanSecondOne(item, minDate)
             : false;
-        const isSelected = selectedDates.includes(
-          getFormattedDateToLocale(item)
-        );
+        const isSelected = selectedDates.includes(formatDate(item));
         return (
           <button
             onClick={() => {

@@ -2,14 +2,14 @@ import { DatePickerInterval, DatePickerProps } from "./DatePicker.typedef";
 import "./datePicker.css";
 import {
   getMonthCalendarViewDates,
-  getFormattedDateToLocale,
   getFormattedMonthToLocale,
   add,
   getMonthsOfYear,
   subtract,
   getDatesInRange,
-  getWeekDays,
   formatDate,
+  getMonday,
+  getSunday,
 } from "../core/handlers";
 import {
   JANUARY_ORDINAL_NUMBER,
@@ -19,7 +19,7 @@ import {
   START_OF_NEW_MONTH_IDX,
   DECEMBER_ORDINAL_NUMBER,
 } from "../core/constants";
-import { useEffect, useMemo, useState } from "react";
+import { MouseEventHandler, useEffect, useMemo, useState } from "react";
 import { MonthView } from "./MonthView";
 import YearView from "./YearView";
 
@@ -27,15 +27,16 @@ const INITIAL_MONTH_DATES = getMonthCalendarViewDates({
   initialDate: new Date(),
 });
 
-const DatePicker = <T,>({
+const DatePicker = ({
   locale,
   mode = "single",
   onDateClick,
   customizedDates,
+  customizationClassNames,
   onMonthClick,
   ...props
-}: DatePickerProps<T>) => {
-  const defaultLocale = locale === undefined ? "en-US" : locale;
+}: DatePickerProps) => {
+  const defaultLocale = locale === undefined ? "ru-RU" : locale;
   const [view, setView] = useState(props.view);
   const [currentMonthIdx, setCurrentMonthIdx] = useState(new Date().getMonth());
   const [month, setMonth] = useState(INITIAL_MONTH_DATES);
@@ -46,7 +47,6 @@ const DatePicker = <T,>({
     end: null,
   });
   const yearMonths = getMonthsOfYear(currentDate);
-console.log(getWeekDays(new Date()))
   const changeYear = (action: "add" | "subtract") => {
     if (action === "add") {
       setCurrentDate((prev) => {
@@ -94,9 +94,14 @@ console.log(getWeekDays(new Date()))
   };
 
   const selectDayForInterval = (date: Date) => {
-    if (datesInterval.start && datesInterval.end) {
+    const isDateIncluded = selectedDates.includes(date);
+    if (datesInterval.start && datesInterval.end && isDateIncluded) {
       setDatesInterval({ start: null, end: null });
       setSelectedDates([]);
+    }
+    if (datesInterval.start && datesInterval.end && !isDateIncluded) {
+      setDatesInterval({ start: date, end: null });
+      setSelectedDates([date]);
     }
     if (datesInterval.start === null) {
       setDatesInterval((prev) => {
@@ -105,10 +110,12 @@ console.log(getWeekDays(new Date()))
       setSelectedDates([date]);
       onDateClick({ value: [date] });
     }
+
     if (datesInterval.start !== null && datesInterval.end === null) {
       setDatesInterval((prev) => {
         return { ...prev, end: date };
       });
+
       const start =
         new Date(datesInterval.start) < date ? datesInterval.start : date;
       const end =
@@ -116,20 +123,20 @@ console.log(getWeekDays(new Date()))
       onDateClick({ value: [start, end] });
     }
   };
-  const selectDayForWeek = () => {
-    if (datesInterval.start === null) {
-      const firstDate = new Date(selectedDates[0]);
-      const lastDate = new Date(selectedDates[selectedDates.length - 1]);
-      setDatesInterval({
-        start: firstDate < lastDate ? firstDate : lastDate,
-        end: lastDate > firstDate ? lastDate : firstDate,
-      });
-      onDateClick({
-        value: [firstDate, lastDate],
-      });
-    } else {
-      setDatesInterval({ start: null, end: null });
-    }
+  const selectDayForWeek = (date: Date) => {
+    const firstDate = getMonday(date);
+    const lastDate = getSunday(date);
+    setDatesInterval({
+      start: firstDate,
+      end: lastDate,
+    });
+    const formattedDates = getDatesInRange(firstDate, lastDate).map((item) => {
+      return formatDate(item);
+    });
+    setSelectedDates(formattedDates);
+    onDateClick({
+      value: [firstDate, lastDate],
+    });
   };
   const selectSingleDate = (date: Date, formattedDate: string) => {
     setSelectedDates([formattedDate]);
@@ -156,7 +163,7 @@ console.log(getWeekDays(new Date()))
   };
 
   const selectDay = (date: Date) => {
-    const formattedDate = getFormattedDateToLocale(date);
+    const formattedDate = formatDate(date);
     if (mode === "single") {
       selectSingleDate(date, formattedDate);
     }
@@ -167,10 +174,9 @@ console.log(getWeekDays(new Date()))
       selectDayForInterval(date);
     }
     if (mode === "week") {
-      selectDayForWeek();
+      selectDayForWeek(date);
     }
   };
-
   useEffect(() => {
     const month = getMonthCalendarViewDates({
       initialDate: currentDate,
@@ -179,7 +185,7 @@ console.log(getWeekDays(new Date()))
     setMonth(month);
   }, [currentMonthIdx, currentDate]);
 
-  const hoverEvent: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+  const hoverEvent: MouseEventHandler<HTMLButtonElement> = (e) => {
     if (datesInterval.start !== null && datesInterval.end !== null) {
       return;
     }
@@ -195,13 +201,6 @@ console.log(getWeekDays(new Date()))
           : datesInterval.start;
       const formattedDates = getDatesInRange(start, end).map((item) => {
         return formatDate(item);
-      });
-      setSelectedDates(formattedDates);
-    }
-
-    if (mode === "week") {
-      const formattedDates = getWeekDays(lastTriggeredDate).map((item) => {
-        return getFormattedDateToLocale(item);
       });
       setSelectedDates(formattedDates);
     }
@@ -222,10 +221,11 @@ console.log(getWeekDays(new Date()))
       onMonthClick(date);
     }
     const daysOfMonth = getMonthCalendarViewDates({ initialDate: date });
-    setMonth(daysOfMonth);
     const newMonthIdx = new Date(
       daysOfMonth[START_OF_NEW_MONTH_IDX]
     ).getMonth();
+
+    setMonth(daysOfMonth);
     setCurrentMonthIdx(newMonthIdx);
     setView("month");
   };
@@ -274,7 +274,7 @@ console.log(getWeekDays(new Date()))
         <MonthView
           month={month}
           customizedDates={customizedDates}
-          className="datePicker-body"
+          customMonthClassNames={customizationClassNames?.month}
           currentMonth={currentMonthIdx}
           disabledDates={[]}
           selectedDates={selectedDates}
