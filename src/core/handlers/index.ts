@@ -11,7 +11,9 @@ export { getLastDateOfMonth } from "./getLastDateOfMonth";
 export { getMonday } from "./getMonday";
 export { getMonthCalendarViewDates } from "./getMonthCalendarViewDates";
 export { getMonthsOfYear } from "./getMonthsOfYear";
-export { getWeek } from "./getWeek";
+export { getOrdinalNumberOfWeek } from "./getOrdinalNumberOfWeek";
 export { getWeekDays } from "./getWeekDays";
 export { isFirstDateEarlierThanSecondOne } from "./isFirstDateEarlierThanSecondOne";
 export { subtract } from "./subtract";
+export {getFirstWeekOfMonth} from "./getFirstWeekOfMonth"
+export {getLastWeekOfMonth} from "./getLastWeekOfMonth"

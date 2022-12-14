@@ -1,4 +1,4 @@
-export const getWeek = (date: Date) => {
+export const getOrdinalNumberOfWeek = (date: Date) => {
   const millisecondsInDay = 86400000;
   const yearStart = +new Date(date.getFullYear(), 0, 1);
   const today = +new Date(date.getFullYear(), date.getMonth(), date.getDate());

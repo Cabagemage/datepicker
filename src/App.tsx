@@ -47,7 +47,7 @@ function App() {
           onToggleNextMonth={console.info}
           activeDate={new Date()}
           view="month"
-          mode={"partial"}
+          mode={"interval"}
         />
       )}
     </div>
