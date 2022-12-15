@@ -1,0 +1,82 @@
+import { Meta } from '@storybook/addon-docs';
+import Code from './assets/code-brackets.svg';
+import Colors from './assets/colors.svg';
+import Comments from './assets/comments.svg';
+import Direction from './assets/direction.svg';
+import Flow from './assets/flow.svg';
+import Plugin from './assets/plugin.svg';
+import Repo from './assets/repo.svg';
+import StackAlt from './assets/stackalt.svg';
+
+<Meta title="DatePicker/Introduction" />
+
+<style>
+  {`
+    .subheading {
+      --mediumdark: '#999999';
+      font-weight: 900;
+      font-size: 13px;
+      color: #999;
+      letter-spacing: 6px;
+      line-height: 24px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      margin-top: 40px;
+    }
+
+  `}
+</style>
+
+# JokaBoka React DatePicker 0.5.0
+
+Simple and magnificent Date Picker dedicated to Joka and his son Boka - authors of cryptography algorithm
+
+<div className="subheading">Features</div>
+<ul>
+<li>You can customize everything in this datepicker different ways.</li>
+<li>Pass customized dates</li>
+<li>Different modes: partial, single, interval, week</li>
+<li>Flexible configuration</li>
+<li>Much more amazing and real cool things</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl" target="_blank">Multi-languages support</a>, just pass locale string</li>
+</ul>
+
+<div className="subheading">Requirements</div>
+
+- <a href="https://www.npmjs.com/package/classnames" target="_blank">classNames</a>
+- React >= 17.0.0
+
+
+<div className="subheading">Road map</div>
+
+- Write end-to-end tests (at this moment only unit-tests included)
+- Feature to select controls on keyboard (up/down arrow to change year/decade, left-right arrows to change month)
+- Feature to select specific days of week for all month. (You need to click to tuesday to get all tuesdays in month);
+- Simplify customization.
+- Add render prop for month/year/decade cell.
+- Add week view.
+- Simplify and speed up core logic.
+- Remove classNames dependency to be more independent
+- Migrate to plain JavaScript
+
+<div className="subheading">API</div>
+
+Attention. Its beta version of date picker, possible it'll be changed later
+
+| Property | Type | Additional information | Example
+| :--- | :----: | ----: | ----: |
+| locale    |  ``` Intl.LocalesArgument```    |  <a href="https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry" target="_blank">supported languages</a> | ru-RU, en-US, en
+| date      |   ```Date```           | - | ```new Date()```;
+| minDate   | ```{date: Date, options?: {isPassedDateIncluded?: boolean}}``` | flag need to decide disable until or include passed date | -
+| disabledDates | ```Array<Date>``` | dates that should be disabled | -
+| customHeaderRenderProp | ```(props: DatePickerControlsProps) => JSX.Element ``` | <a href="https://reactjs.org/docs/render-props.html" target="_blank">pattern implementation for header customization</a> | -
+| weekendDates | ```[0,1,2,3,4,5,6]``` | pass array with days of week to disable it as weekend. | ```[6,0]``` all saturdays and sundays will be disabled
+| customizationClassNames | ```Partial<DatePickerClassNames>``` | Object of objects with classNames for all parts of datePicker. You can pass classNames to custom parts only you need. | ```{{common: {header: "customHeaderClassName"}}}```
+| changeCalendarView | ```() => void``` | This argument is required if you want to change view. DatePicker doesnt know about triggers that should change his view. | -
+| customizedDates | ```Array<CustomizedDate>``` | Custom date can have another className, be disabled or not. Possible logic of custom dates will be refactored later. Watch examples to get additional info. | -
+| defaultSelectedDates | ```Array<Date>``` | array of default dates. It can be helpful when you need to make dates checked on date picker open. | -
+| defaultSelectedInterval | ```{start: Date or null, end: Date or null}``` | same that defaultSelectedDates. It can'be helpful if you want to make start date selected by default | -
+| onMonthClick | ```(date: Date) => void``` | event will fire when user click on month cell. | -
+| onYearClick | ```(date: Date) => void``` | event will fire when user click on year cell. | -
+| mode | ``` "single" or "partial" or "interval" or "week" ``` | strategy for dates selection. Watch examples to see usage | -
+| view | ```"month" or "week" or "year" or "decade"``` | - | -

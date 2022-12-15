@@ -28,8 +28,8 @@ export type DatePickerYearViewClassNames = {
 	yearViewMonthCell: HTMLButtonElement["className"];
 };
 export type DatePickerDecadeViewClassNames = {
-	body: HTMLDivElement["className"]
-}
+	body: HTMLDivElement["className"];
+};
 export type DatePickerCommonClassNames = {
 	wrapper: HTMLDivElement["className"];
 	header: HTMLDivElement["className"];
@@ -41,7 +41,7 @@ export type DatePickerClassNames = Partial<{
 	month: Partial<DatePickerMonthViewClassNames>;
 	common: Partial<DatePickerCommonClassNames>;
 	year: Partial<DatePickerYearViewClassNames>;
-	decade: Partial<DatePickerDecadeViewClassNames>
+	decade: Partial<DatePickerDecadeViewClassNames>;
 }>;
 
 export type MinDateOptions = {
@@ -56,7 +56,7 @@ export type DatePickerControlsProps = {
 };
 export interface DatePickerProps {
 	locale?: Intl.LocalesArgument;
-	date: Date;
+	date?: Date;
 	minDate?: MinDate;
 	disabledDates?: Array<Date>;
 	customHeaderRenderProp?: (props: DatePickerControlsProps) => JSX.Element;
@@ -64,8 +64,8 @@ export interface DatePickerProps {
 	customizationClassNames?: Partial<DatePickerClassNames>;
 	changeCalendarView: () => void;
 	customizedDates?: Array<CustomizedDate>;
-	defaultSelectedDates?: Array<Date>;
-	defaultSelectedInterval?: DatePickerInterval;
+	selectedDates?: Array<Date>;
+	selectedInterval?: DatePickerInterval;
 	onMonthClick?: (value: Date) => void;
 	onYearClick?: (value: Date) => void;
 	onDateClick: DatePickerChangeHandler;

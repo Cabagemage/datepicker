@@ -1,5 +1,5 @@
 import { useState } from "react";
-import {DatePicker} from "./index";
+import { DatePicker } from "./index";
 import { CalendarViews, CustomizedDate, DatePickerChangeHandler } from "./core";
 
 function App() {
@@ -71,6 +71,7 @@ function App() {
 					onYearClick={onYearClick}
 					changeCalendarView={changeCurrentCalendarView}
 					locale={"ru-RU"}
+					customizationClassNames={{ common: { header: "customHeaderClassName" } }}
 					customizedDates={customizedDates}
 					onDateClick={change}
 					onMonthClick={changeViewToMonth}
