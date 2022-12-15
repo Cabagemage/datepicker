@@ -1,18 +1,24 @@
 import classNames from "classnames";
 import {
+  add,
   DAYS_IDX_LIST,
-  DEFAULT_TRANSLATED_DAYS_OF_WEEK,
   formatDate,
+  getDatesInRange,
   getFormattedShortDayForMonthView,
+  getMonday,
+  getSunday,
   isFirstDateEarlierThanSecondOne,
 } from "../core";
 import type { MouseEventHandler } from "react";
 import type {
   CustomizedDate,
   DatePickerMonthViewClassNames,
+  MinDate,
 } from "./DatePicker.typedef";
+import { formatDayOfWeek } from "../core/handlers/formatDayOfWeek/formatDayOfWeek";
 
 export type MonthViewProps = {
+  locale: Intl.LocalesArgument;
   month: Array<Date>;
   customMonthClassNames?: Partial<DatePickerMonthViewClassNames>;
   customizedDates?: Array<CustomizedDate>;
@@ -20,11 +26,21 @@ export type MonthViewProps = {
   onSelectDay: (date: Date) => void;
   onHoverDay: MouseEventHandler<HTMLButtonElement>;
   selectedDates: Array<string | Date>;
-  minDate?: Date;
+  minDate?: MinDate;
   disabledDates?: Array<Date | string>;
   weekendDates?: typeof DAYS_IDX_LIST;
 };
+
+const daysOfWeek = () => {
+  const startDate = getMonday(new Date());
+  const endDate = getSunday(new Date());
+  const dates = getDatesInRange(startDate, endDate);
+  return dates;
+};
+const week = daysOfWeek();
+
 export const MonthView = ({
+  locale,
   month,
   currentMonth,
   selectedDates,
@@ -66,37 +82,25 @@ export const MonthView = ({
     customMonthClassNames?.monthViewDayDefaultBackgroundClassName
       ? customMonthClassNames.monthViewDayDefaultBackgroundClassName
       : "datePicker-body__day_transparent";
+  const monthViewMonthBodyClassName =
+    customMonthClassNames?.monthViewMonthBody !== undefined
+      ? customMonthClassNames.monthViewMonthBody
+      : "datePicker-body";
+  const monthViewWeekDaysClassName = customMonthClassNames?.monthViewWeekDays
+    ? customMonthClassNames.monthViewWeekDays
+    : "datePicker-weekdays";
+  const monthViewWeekDaysListItemClassName =
+    customMonthClassNames?.monthViewWeekDaysListItem
+      ? customMonthClassNames.monthViewWeekDaysListItem
+      : "datePicker-weekdays__day";
 
   return (
-    <div
-      className={
-        customMonthClassNames !== undefined &&
-        customMonthClassNames.monthViewMonthBody !== undefined
-          ? customMonthClassNames.monthViewMonthBody
-          : "datePicker-body"
-      }
-    >
-      <ul
-        className={
-          customMonthClassNames !== undefined &&
-          customMonthClassNames.monthViewWeekDays !== undefined
-            ? customMonthClassNames.monthViewWeekDays
-            : "datePicker-weekdays"
-        }
-      >
-        {/* TODO: Think about translations for days of week */}
-        {DEFAULT_TRANSLATED_DAYS_OF_WEEK.map((item) => {
+    <div className={monthViewMonthBodyClassName}>
+      <ul className={monthViewWeekDaysClassName}>
+        {week.map((item, idx) => {
           return (
-            <li
-              className={
-                customMonthClassNames !== undefined &&
-                customMonthClassNames.monthViewWeekDaysListItem !== undefined
-                  ? customMonthClassNames.monthViewWeekDaysListItem
-                  : "datePicker-weekdays__day"
-              }
-              key={item}
-            >
-              {item}
+            <li className={monthViewWeekDaysListItemClassName} key={idx}>
+              {formatDayOfWeek(item, locale)}
             </li>
           );
         })}
@@ -106,9 +110,18 @@ export const MonthView = ({
         const customizedDate = customizedDates?.find((customizedDate) => {
           return formatDate(item) === formatDate(customizedDate.date);
         });
+        const endDate =
+          minDate?.options?.isPassedDateIncluded === true
+            ? add({
+                date: minDate?.date ?? new Date(),
+                type: "day",
+                count: 1,
+              })
+            : minDate?.date ?? new Date();
+
         const isDisabled =
           minDate !== undefined
-            ? isFirstDateEarlierThanSecondOne(item, minDate)
+            ? isFirstDateEarlierThanSecondOne(item, endDate)
             : false;
         const isSelected = formattedSelectedDates.includes(formatDate(item));
         const isCustomizedDateIsDisabled =
@@ -142,7 +155,7 @@ export const MonthView = ({
                   customizedDate === undefined,
               },
               {
-                greyText: isDateNotRelatedToCurrentMonth,
+                "datePicker__inactive-text": isDateNotRelatedToCurrentMonth,
               },
               {
                 [monthDayCellActiveClassName]:

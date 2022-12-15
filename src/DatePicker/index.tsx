@@ -23,34 +23,50 @@ import { MouseEventHandler, useEffect, useMemo, useState } from "react";
 import { MonthView } from "./MonthView";
 import YearView from "./YearView";
 
-const INITIAL_MONTH_DATES = getMonthCalendarViewDates({
-  initialDate: new Date(),
-});
-
 const DatePicker = ({
   locale,
   mode = "single",
+  minDate,
+  disabledDates,
+  onYearClick,
+  onTogglePrevMonth,
+  onToggleNextMonth,
+  weekendDates,
   onDateClick,
   customizedDates,
   customizationClassNames,
+  defaultSelectedDates,
+  date,
+  defaultSelectedInterval,
   onMonthClick,
-  ...props
+  view,
+  changeCalendarView,
 }: DatePickerProps) => {
   const defaultLocale = locale === undefined ? "ru-RU" : locale;
-  const [view, setView] = useState(props.view);
-  const [currentMonthIdx, setCurrentMonthIdx] = useState(new Date().getMonth());
-  const [month, setMonth] = useState(INITIAL_MONTH_DATES);
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDates, setSelectedDates] = useState<Array<string | Date>>([]);
-  const [datesInterval, setDatesInterval] = useState<DatePickerInterval>({
-    start: null,
-    end: null,
+  const INITIAL_MONTH_DATES = getMonthCalendarViewDates({
+    initialDate: date,
+    year: date.getFullYear(),
+    month: date.getMonth(),
   });
+
+  const [currentMonthIdx, setCurrentMonthIdx] = useState(date.getMonth());
+  const [month, setMonth] = useState(INITIAL_MONTH_DATES);
+  const [currentDate, setCurrentDate] = useState(date);
+  const [selectedDates, setSelectedDates] = useState<Array<string | Date>>(
+    defaultSelectedDates ?? [date]
+  );
+  const [datesInterval, setDatesInterval] = useState<DatePickerInterval>(
+    defaultSelectedInterval ?? {
+      start: null,
+      end: null,
+    }
+  );
+
   const yearMonths = getMonthsOfYear(currentDate);
   const changeYear = (action: "add" | "subtract") => {
     if (action === "add") {
       setCurrentDate((prev) => {
-        return add({ date: prev, type: "year", count: 1 });
+        return add({ date: prev, type: "year", count: ONE_YEAR });
       });
     }
     if (action === "subtract") {
@@ -62,7 +78,8 @@ const DatePicker = ({
   const toNextUnitNavAction = () => {
     if (view === "month") {
       const nextMonth = currentMonthIdx + ONE_MONTH;
-      const isCurrentMonthIsDecember = currentMonthIdx === 11;
+      const isCurrentMonthIsDecember =
+        currentMonthIdx === DECEMBER_ORDINAL_NUMBER;
       if (MONTHS_IDX_LIST.includes(nextMonth)) {
         setCurrentMonthIdx(nextMonth);
       }
@@ -82,7 +99,8 @@ const DatePicker = ({
       if (MONTHS_IDX_LIST.includes(prevMonth)) {
         setCurrentMonthIdx(prevMonth);
       }
-      const isCurrentMonthIdxIsJanuary = currentMonthIdx === 0;
+      const isCurrentMonthIdxIsJanuary =
+        currentMonthIdx === JANUARY_ORDINAL_NUMBER;
       if (isCurrentMonthIdxIsJanuary) {
         changeYear("subtract");
         setCurrentMonthIdx(DECEMBER_ORDINAL_NUMBER);
@@ -206,16 +224,6 @@ const DatePicker = ({
     }
   };
 
-  const changeCurrentCalendarView = () => {
-    switch (view) {
-      case "month":
-        return setView("year");
-      case "year":
-        return setView("years");
-      default:
-        return setView("month");
-    }
-  };
   const clickMonth = (date: Date) => {
     if (onMonthClick) {
       onMonthClick(date);
@@ -227,7 +235,6 @@ const DatePicker = ({
 
     setMonth(daysOfMonth);
     setCurrentMonthIdx(newMonthIdx);
-    setView("month");
   };
   const headerViewTogglerText = useMemo(() => {
     switch (view) {
@@ -248,7 +255,7 @@ const DatePicker = ({
       <div className="datePicker-header">
         <button
           className={"datePicker-header__togler"}
-          onClick={changeCurrentCalendarView}
+          onClick={changeCalendarView}
         >
           <time className={"datepicker-header__time"}>
             {headerViewTogglerText}
@@ -272,10 +279,14 @@ const DatePicker = ({
       </div>
       {view === "month" && (
         <MonthView
+          locale={defaultLocale}
           month={month}
           customizedDates={customizedDates}
           currentMonth={currentMonthIdx}
-          disabledDates={[]}
+          disabledDates={disabledDates}
+          weekendDates={weekendDates}
+          minDate={minDate}
+          customMonthClassNames={customizationClassNames?.month}
           selectedDates={selectedDates}
           onSelectDay={selectDay}
           onHoverDay={hoverEvent}
@@ -285,9 +296,9 @@ const DatePicker = ({
         <YearView
           months={yearMonths}
           selectedDates={selectedDates}
-          minDate={new Date("nov")}
+          minDate={new Date("2022.11.15")}
           onMonthClick={clickMonth}
-          defaultLocale={"ru-RU"}
+          defaultLocale={defaultLocale}
         />
       )}
     </div>

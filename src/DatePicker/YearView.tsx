@@ -9,7 +9,7 @@ import classNames from "classnames";
 type YearViewProps = {
   months: Array<Date>;
   onMonthClick: (date: Date) => void;
-  defaultLocale: string;
+  defaultLocale: Intl.LocalesArgument;
   minDate: Date | string;
   selectedDates: Array<string | Date>;
 };

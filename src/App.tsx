@@ -1,16 +1,20 @@
 import React, { useState } from "react";
 import "./App.css";
 import DatePicker from "./DatePicker";
-import { CustomizedDate } from "./DatePicker/DatePicker.typedef";
+import {
+  CalendarViews,
+  CustomizedDate,
+  DatePickerChangeHandler,
+} from "./DatePicker/DatePicker.typedef";
 
 function App() {
   const [show, setShow] = useState(false);
-
+  const [date, setDate] = useState(new Date());
+  const [view, setView] = useState<CalendarViews>("month");
   const customizedDates: Array<CustomizedDate> = [
     {
       date: new Date(),
       className: "selected__test",
-      isDisabled: true,
       textOnHover: "Мастер работает в другом офисе",
     },
     {
@@ -31,26 +35,46 @@ function App() {
       className: "selected__test2",
     },
   ];
-  const change = (args: any) => {
-    console.info(args);
+  const change: DatePickerChangeHandler = (args) => {
+    if (!Array.isArray(args.value)) {
+      setDate(args.value);
+    }
   };
   const getShow = () => {
-    setShow(true);
+    setShow(!show);
+  };
+  const changeCurrentCalendarView = () => {
+    switch (view) {
+      case "month":
+        return setView("year");
+      case "year":
+        return setView("years");
+      default:
+        return setView("month");
+    }
+  };
+  const changeViewToMonth = () => {
+    setView("month");
   };
   return (
     <div className="App">
       <button onClick={getShow}>НАЖМИ МЕНЯ</button>
       {show && (
         <DatePicker
+          date={date}
+          changeCalendarView={changeCurrentCalendarView}
           locale={"ru-RU"}
           customizedDates={customizedDates}
           onDateClick={change}
-          defaultDate={new Date()}
+          onMonthClick={changeViewToMonth}
+          minDate={{
+            date: new Date(),
+            options: { isPassedDateIncluded: false },
+          }}
           onTogglePrevMonth={console.info}
           onToggleNextMonth={console.info}
-          activeDate={new Date()}
-          view="month"
-          mode={"interval"}
+          view={view}
+          mode={"week"}
         />
       )}
     </div>
