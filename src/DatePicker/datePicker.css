@@ -15,7 +15,7 @@
     margin-bottom: 15px;
  }
 
- .datePicker-body{
+.datePicker-body{
     display: flex;
     flex-wrap: wrap;
      box-sizing: border-box;
@@ -25,7 +25,7 @@
     width: 100%;
  }
 
- .datePicker-body__day{
+.datePicker-body__day{
      user-select: none;
      position: relative;
      width: 32px;
@@ -37,29 +37,17 @@
     cursor: pointer;
  }
 
- .datePicker-body__day_transparent{
+.datePicker-body__day_transparent{
      background-color: transparent;
  }
 
 .datePicker__selectedDate {
     color: #FFF;
     border-radius: 50%;
-    background-color: #1D87AC;
+    background-color: #1890FF;
 }
 
- .flex{
-     display: flex;
- }
-
- .row{
-     flex-direction: row;
- }
-
- .col{
-     flex-direction: column;
- }
-
- .datePicker-weekdays{
+.datePicker-weekdays{
      width: 100%;
      display: flex;
      list-style: none;
@@ -113,24 +101,27 @@
     color: #FFF;
 }
 
-.greyText{
+.datePicker__inactive-text{
     color: #808080;
 }
 
 .datePicker-body__month-cell{
     all: unset;
+    user-select: none;
     width: 100px;
     text-align: center;
     cursor: pointer;
     height: 55px;
     border: none;
 }
-.datePicker-body__month-cell:hover{
+
+.datePicker-body__month-cell:not(:disabled):hover{
     background: #1890FF;
     border-radius: 16px;
     color: #FFFFFF;
 }
 .datePicker-body__day_disabled{
+    cursor: not-allowed;
     color: #000000;
     opacity: 0.2;
 }
