@@ -1,13 +1,6 @@
-import type { CSSProperties } from "react";
+import { DAYS_IDX_LIST } from "../core";
 
-export type DatePickerStyles = {
-  wrapper: CSSProperties;
-  header: CSSProperties;
-  body: CSSProperties;
-  activeDay: CSSProperties;
-};
-
-type CalendarViews = "month" | "week" | "year" | "years";
+export type CalendarViews = "month" | "week" | "year" | "years";
 type DatePickerMode = "single" | "partial" | "interval" | "week";
 
 export type DatePickerInterval = { start: Date | null; end: Date | null };
@@ -50,18 +43,27 @@ export type DatePickerClassNames = {
   year: Partial<DatePickerYearViewClassNames>;
 };
 
+export type MinDateOptions = {
+  isPassedDateIncluded?: boolean;
+};
+export type MinDate = { date: Date; options?: MinDateOptions };
+
 export interface DatePickerProps {
-  activeDate: Date;
   locale?: Intl.LocalesArgument;
-  defaultDate?: Date;
+  date: Date;
+  minDate?: MinDate;
+  disabledDates?: Array<Date>;
+  weekendDates?: typeof DAYS_IDX_LIST;
   customizationClassNames?: Partial<DatePickerClassNames>;
+  changeCalendarView: () => void;
   customizedDates?: Array<CustomizedDate>;
+  defaultSelectedDates?: Array<Date>;
+  defaultSelectedInterval?: DatePickerInterval;
   onMonthClick?: (value: Date) => void;
   onYearClick?: (value: Date) => void;
   onDateClick: DatePickerChangeHandler;
   onToggleNextMonth: () => void;
   onTogglePrevMonth: () => void;
   mode?: DatePickerMode;
-  style?: DatePickerStyles;
   view: CalendarViews;
 }
