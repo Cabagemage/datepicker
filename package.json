@@ -2,6 +2,7 @@
 	"name": "datepicker",
 	"license": "MIT",
 	"author": "Andrey Zaitsev",
+	"homepage": "http://cabagemage.github.io/loyal-react-datePicker",
 	"version": "0.5.0",
 	"private": true,
 	"main": "lib/index.js",
@@ -18,7 +19,9 @@
 		"test": "react-scripts test",
 		"prettier": "prettier --write .",
 		"storybook": "start-storybook -p 6006",
-		"build-storybook": "build-storybook"
+		"build-storybook": "build-storybook",
+		"predeploy": "npm run build-storybook",
+		"deploy-storybook": "gh-pages -d storybook-static"
 	},
 	"eslintConfig": {
 		"extends": [
@@ -57,6 +60,7 @@
 		"@types/react-dom": "^18.0.6",
 		"babel-loader": "^8.3.0",
 		"classnames": "^2.3.1",
+		"gh-pages": "^4.0.0",
 		"jest": "^27.5.1",
 		"prettier": "^2.7.1",
 		"react": "^18.2.0",
