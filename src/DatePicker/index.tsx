@@ -21,7 +21,7 @@ import {
 	DECEMBER_ORDINAL_NUMBER,
 	ONE_DECADE,
 } from "../core";
-import { forwardRef, MouseEventHandler, useEffect, useMemo, useState } from "react";
+import { forwardRef, MouseEventHandler, useCallback, useEffect, useMemo, useState } from "react";
 import { MonthView } from "./MonthView";
 import YearView from "./YearView";
 import DecadeView from "./DecadeView";
@@ -45,6 +45,12 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 			view,
 			changeCalendarView,
 			customHeaderRenderProp,
+			customDecadeViewRenderProp,
+			customMonthCellRenderProp,
+			customMonthViewRenderProp,
+			customYearViewRenderProp,
+			customYearCellRenderProp,
+			customDayCellRenderProp,
 		},
 		ref
 	) => {
@@ -257,22 +263,25 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 			}
 		};
 
-		const hoverEvent: MouseEventHandler<HTMLButtonElement> = (e) => {
-			if (datesInterval.start !== null && datesInterval.end !== null) {
-				return;
-			}
-			const lastTriggeredDate = new Date(e.currentTarget.value);
-			if (mode === "interval" && datesInterval.start !== null) {
-				const start =
-					new Date(datesInterval.start) < lastTriggeredDate ? datesInterval.start : lastTriggeredDate;
-				const end =
-					new Date(lastTriggeredDate) > datesInterval.start ? lastTriggeredDate : datesInterval.start;
-				const formattedDates = getDatesInRange(start, end).map((item) => {
-					return formatDate(item);
-				});
-				setUpdatedSelectedDates(formattedDates);
-			}
-		};
+		const hoverEvent: MouseEventHandler<HTMLButtonElement> = useCallback(
+			(e) => {
+				if (datesInterval.start !== null && datesInterval.end !== null) {
+					return;
+				}
+				const lastTriggeredDate = new Date(e.currentTarget.value);
+				if (mode === "interval" && datesInterval.start !== null) {
+					const start =
+						new Date(datesInterval.start) < lastTriggeredDate ? datesInterval.start : lastTriggeredDate;
+					const end =
+						new Date(lastTriggeredDate) > datesInterval.start ? lastTriggeredDate : datesInterval.start;
+					const formattedDates = getDatesInRange(start, end).map((item) => {
+						return formatDate(item);
+					});
+					setUpdatedSelectedDates(formattedDates);
+				}
+			},
+			[updatedSelectedDates]
+		);
 
 		const clickMonth = (date: Date) => {
 			if (onMonthClick) {
@@ -338,10 +347,24 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 						</div>
 					</div>
 				)}
-				{view === "month" && (
+				{customMonthViewRenderProp !== undefined &&
+					customMonthViewRenderProp({
+						locale: defaultLocale,
+						month: month,
+						customizedDates: customizedDates,
+						currentMonth: currentMonthIdx,
+						disabledDates: disabledDates,
+						minDate: minDate,
+						customMonthClassNames: customizationClassNames?.month,
+						selectedDates: updatedSelectedDates,
+						onSelectDay: selectDay,
+						onHoverDay: hoverEvent,
+					})}
+				{view === "month" && customMonthViewRenderProp === undefined && (
 					<MonthView
 						locale={defaultLocale}
 						month={month}
+						customDayCellRenderProp={customDayCellRenderProp}
 						customizedDates={customizedDates}
 						currentMonth={currentMonthIdx}
 						disabledDates={disabledDates}
@@ -353,16 +376,36 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 						onHoverDay={hoverEvent}
 					/>
 				)}
-				{view === "year" && (
+				{customYearViewRenderProp !== undefined &&
+					customYearViewRenderProp({
+						months: monthsOfYear,
+						selectedDates: updatedSelectedDates,
+						minDate: minDate,
+						onMonthClick: clickMonth,
+						defaultLocale: defaultLocale,
+					})}
+				{view === "year" && customYearViewRenderProp === undefined && (
 					<YearView
 						months={monthsOfYear}
 						selectedDates={updatedSelectedDates}
+						customYearClassNames={customizationClassNames?.year}
 						minDate={minDate}
+						customMonthCellRenderProp={customMonthCellRenderProp}
 						onMonthClick={clickMonth}
 						defaultLocale={defaultLocale}
 					/>
 				)}
-				{view === "decade" && <DecadeView minDate={minDate} onYearClick={clickYear} years={decadeYears} />}
+				{customDecadeViewRenderProp !== undefined &&
+					customDecadeViewRenderProp({ minDate: minDate, onYearClick: clickYear, years: decadeYears })}
+				{view === "decade" && customDecadeViewRenderProp === undefined && (
+					<DecadeView
+						minDate={minDate}
+						onYearClick={clickYear}
+						years={decadeYears}
+						customYearCellRenderProp={customYearCellRenderProp}
+						customDecadeClassNames={customizationClassNames?.decade}
+					/>
+				)}
 			</div>
 		);
 	}

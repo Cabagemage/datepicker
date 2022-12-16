@@ -1,19 +1,27 @@
 import { formatDate, getFormattedMonthToLocale, isFirstDateEarlierThanSecondOne, subtract } from "../core";
-
 import classNames from "classnames";
-import type { MinDate } from "../core";
+import { YearViewProps } from "../core/types/DatePicker.typedef";
 
-type YearViewProps = {
-	months: Array<Date>;
-	onMonthClick: (date: Date) => void;
-	defaultLocale: Intl.LocalesArgument;
-	minDate?: MinDate;
-	selectedDates: Array<string | Date>;
-};
-
-const YearView = ({ months, onMonthClick, defaultLocale, minDate, selectedDates }: YearViewProps) => {
+const YearView = ({
+	months,
+	onMonthClick,
+	defaultLocale,
+	minDate,
+	selectedDates,
+	customYearClassNames,
+	customMonthCellRenderProp,
+}: YearViewProps) => {
+	const yearViewBodyClassName = customYearClassNames?.yearViewBody
+		? customYearClassNames.yearViewBody
+		: "datePicker-body";
+	const yearViewMonthCellClassName = customYearClassNames?.yearViewMonthCell
+		? customYearClassNames.yearViewMonthCell
+		: "datePicker-body__month-cell";
+	const yearViewMonthCellDisabledClassName = customYearClassNames?.yearViewCellDisabled
+		? customYearClassNames.yearViewCellDisabled
+		: "datePicker-body__day_disabled";
 	return (
-		<div className={"datePicker-body"}>
+		<div className={yearViewBodyClassName}>
 			{months.map((item) => {
 				const lastDateInMonth = new Date(item.getFullYear(), item.getMonth() + 1, 0);
 				// we don't want to disable month for chose month have not passed
@@ -25,6 +33,11 @@ const YearView = ({ months, onMonthClick, defaultLocale, minDate, selectedDates 
 				const isDisabled =
 					minDate !== undefined ? isFirstDateEarlierThanSecondOne(item, disabledMonth) : false;
 				const isSelected = selectedDates.includes(formatDate(item));
+
+				if (customMonthCellRenderProp !== undefined) {
+					customMonthCellRenderProp({ date: item });
+				}
+
 				return (
 					<button
 						onClick={() => {
@@ -32,9 +45,9 @@ const YearView = ({ months, onMonthClick, defaultLocale, minDate, selectedDates 
 						}}
 						type="button"
 						disabled={isDisabled}
-						className={classNames("datePicker-body__month-cell", {
+						className={classNames(yearViewMonthCellClassName, {
 							selected: isSelected && !isDisabled,
-							"datePicker-body__day_disabled": isDisabled,
+							[yearViewMonthCellDisabledClassName]: isDisabled,
 						})}
 						key={item.toString()}
 					>

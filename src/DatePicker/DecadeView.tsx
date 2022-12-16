@@ -1,16 +1,26 @@
-import type { MinDate } from "../core";
 import { isFirstDateEarlierThanSecondOne, ONE_YEAR, subtract } from "../core";
 import classNames from "classnames";
+import { DecadeViewProps } from "../core/types/DatePicker.typedef";
 
-type YearViewProps = {
-	years: Array<Date>;
-	onYearClick: (date: Date) => void;
-	minDate?: MinDate;
-};
+const DecadeView = ({
+	years,
+	onYearClick,
+	minDate,
+	customDecadeClassNames,
+	customYearCellRenderProp,
+}: DecadeViewProps) => {
+	const yearViewBodyClassName = customDecadeClassNames?.body
+		? customDecadeClassNames.body
+		: "datePicker-body";
+	const yearViewYearCellClassName = customDecadeClassNames?.decadeViewYearCell
+		? customDecadeClassNames.decadeViewYearCell
+		: "datePicker-body__month-cell";
+	const yearViewMonthCellDisabledClassName = customDecadeClassNames?.decadeViewCellDisabled
+		? customDecadeClassNames.decadeViewCellDisabled
+		: "datePicker-body__day_disabled";
 
-const DecadeView = ({ years, onYearClick, minDate }: YearViewProps) => {
 	return (
-		<div className={"datePicker-body"}>
+		<div className={yearViewBodyClassName}>
 			{years.map((item) => {
 				const lastDateInMonth = new Date(item.getFullYear(), item.getMonth() + 1, 0);
 				// we don't want to disable year for chose year have not passed
@@ -20,6 +30,11 @@ const DecadeView = ({ years, onYearClick, minDate }: YearViewProps) => {
 					? minDate.date
 					: subtract({ date: new Date(minDate?.date ?? new Date()), type: "year", count: ONE_YEAR });
 				const isDisabled = minDate !== undefined ? isFirstDateEarlierThanSecondOne(item, year) : false;
+
+				if (customYearCellRenderProp !== undefined) {
+					customYearCellRenderProp({ date: item });
+				}
+
 				return (
 					<button
 						type="button"
@@ -27,8 +42,8 @@ const DecadeView = ({ years, onYearClick, minDate }: YearViewProps) => {
 							return onYearClick(item);
 						}}
 						disabled={isDisabled}
-						className={classNames("datePicker-body__month-cell", {
-							"datePicker-body__day_disabled": isDisabled,
+						className={classNames(yearViewYearCellClassName, {
+							[yearViewMonthCellDisabledClassName]: isDisabled,
 						})}
 						key={item.toString()}
 					>
