@@ -50,6 +50,12 @@ export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
 	) => {
 		const defaultLocale = locale === undefined ? "ru-RU" : locale;
 		const defineDefaultSelectedDates = () => {
+			if (selectedDates !== undefined) {
+				return selectedDates;
+			}
+			if (date !== undefined) {
+				return [date];
+			}
 			if (selectedInterval?.start && selectedInterval?.end) {
 				return getDatesInRange(selectedInterval.start, selectedInterval.end);
 			}

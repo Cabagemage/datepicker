@@ -77,7 +77,7 @@ const SingleTemplate: ComponentStory<typeof DatePicker> = () => {
 	return (
 		<section>
 			<div style={{ display: "flex", gap: "25px", alignItems: "center" }}>
-				<PreparedDatePicker date={date} onDateClick={change} locale={"UA"} mode={"single"} view={"month"} />
+				<PreparedDatePicker date={date} onDateClick={change} locale={"en"} mode={"single"} view={"month"} />
 				<input readOnly value={date.toLocaleDateString()} style={{ height: 50 }} />
 			</div>
 		</section>
