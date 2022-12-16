@@ -48,8 +48,16 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 		},
 		ref
 	) => {
-		const defaultLocale = locale === undefined ? "ru-RU" : locale;
+		const defaultLocale = locale === undefined ? "en" : locale;
 		const defineDefaultSelectedDates = () => {
+			if (mode === "week" && date !== undefined) {
+				const monday = getMonday(date);
+				const sunday = getSunday(date);
+				const formattedDates = getDatesInRange(monday, sunday).map((item) => {
+					return formatDate(item);
+				});
+				return formattedDates;
+			}
 			if (selectedDates !== undefined) {
 				return selectedDates;
 			}
@@ -99,7 +107,6 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 
 		const clickYear = (date: Date) => {
 			const updatedDate = new Date(date.getFullYear(), currentDate.getMonth(), currentDate.getDate());
-			setCurrentDate(updatedDate);
 			if (onYearClick !== undefined) {
 				onYearClick(updatedDate);
 			}
@@ -277,7 +284,7 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 			setMonth(daysOfMonth);
 			setCurrentMonthIdx(newMonthIdx);
 		};
-		const headerViewTogglerText = useMemo(() => {
+		const headerText = useMemo(() => {
 			const previousDecadeStart = subtract({ date: currentDate, count: ONE_DECADE, type: "year" });
 			switch (view) {
 				case "month":
@@ -319,11 +326,11 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 		return (
 			<div className={datePickerWrapperCn} ref={ref}>
 				{customHeaderRenderProp !== undefined ? (
-					customHeaderRenderProp({ changeCalendarView, toNextUnitNavAction, toPrevUnitNavAction })
+					customHeaderRenderProp({ changeCalendarView, toNextUnitNavAction, toPrevUnitNavAction, headerText })
 				) : (
 					<div className={datePickerHeaderCn}>
 						<button className={"datePicker-header__toggler"} onClick={changeCalendarView}>
-							<time className={"datepicker-header__time"}>{headerViewTogglerText}</time>
+							<time className={"datepicker-header__time"}>{headerText}</time>
 						</button>
 						<div className={"datePicker__controls"}>
 							<button className={datePickerArrowLeftCn} type="button" onClick={toPrevUnitNavAction} />

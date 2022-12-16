@@ -1,0 +1,54 @@
+.customDate__1 {
+	user-select: none;
+	border-radius: 16px;
+	position: relative;
+	width: 32px;
+	height: 32px;
+	padding: 0;
+	font-weight: 400;
+	font-size: 18px;
+	border: none;
+	cursor: pointer;
+	background: #18f0ff;
+	color: red;
+}
+.customDate__1:hover {
+	background: red !important;
+}
+.customDate__1.datePicker__selectedDate {
+	background-color: black;
+}
+
+.customWrapper {
+	width: 350px;
+	display: flex;
+	padding: 25px;
+	flex-direction: column;
+	gap: 25px;
+	background: chartreuse;
+	border-radius: 16px;
+}
+.customMonthViewDay {
+	width: 36px;
+	height: 45px;
+	gap: 25px;
+}
+
+.customMonthBody {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 14px;
+	background: chartreuse;
+}
+.customWeekDays {
+	padding: 0;
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+}
+.customWeekDay {
+	padding-left: 10px;
+	padding-right: 10px;
+	border: 1px solid;
+	list-style: none;
+}

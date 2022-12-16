@@ -1,6 +1,6 @@
 import { DAYS_IDX_LIST } from "../index";
 
-export type CalendarViews = "month" | "week" | "year" | "decade";
+export type CalendarViews = "month" | "year" | "decade";
 type DatePickerMode = "single" | "partial" | "interval" | "week";
 
 export type DatePickerInterval = { start: Date | null; end: Date | null };
@@ -52,6 +52,7 @@ export type MinDate = { date: Date; options?: MinDateOptions };
 export type DatePickerControlsProps = {
 	changeCalendarView: () => void;
 	toPrevUnitNavAction: () => void;
+	headerText: string;
 	toNextUnitNavAction: () => void;
 };
 export interface DatePickerProps {

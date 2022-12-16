@@ -1,10 +1,9 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { DatePicker } from "../DatePicker";
 import { useState } from "react";
-import { add, DatePickerChangeHandler } from "../core";
+import { add, DatePickerChangeHandler, getMonday, getOrdinalNumberOfWeek, getSunday } from "../core";
 import { PreparedDatePicker } from "./PreparedDatePicker";
 
-// More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
 	title: "DatePicker/mode",
 	component: DatePicker,
@@ -119,6 +118,54 @@ const PartialTemplate: ComponentStory<typeof DatePicker> = () => {
 		</section>
 	);
 };
+
+const WeekTemplate: ComponentStory<typeof DatePicker> = () => {
+	// its not required to pass monday and sunday to default state. Its just example for visualization.
+	const firstDate = getMonday(new Date());
+	const lastDate = getSunday(new Date());
+	const [pickedDates, setPickedDates] = useState<Array<Date>>([firstDate, lastDate]);
+	const weekNumber = getOrdinalNumberOfWeek(pickedDates[0]);
+	const change: DatePickerChangeHandler = (args) => {
+		console.info(args);
+		if (Array.isArray(args.value)) {
+			setPickedDates(args.value);
+		}
+	};
+
+	return (
+		<section className={"page"}>
+			<p>
+				If you want set default week value, you should pass array with date of start week or two dates (start
+				& end).
+			</p>
+			<div style={{ display: "flex", gap: "25px", alignItems: "center" }}>
+				<PreparedDatePicker
+					view={"month"}
+					date={pickedDates[0]}
+					onDateClick={change}
+					locale={"en"}
+					mode={"week"}
+				/>
+				<div
+					style={{
+						display: "flex",
+						flexDirection: "column",
+						flexWrap: "wrap",
+						gap: "5px",
+						alignItems: "center",
+					}}
+				>
+					<span>ordinal number of week is: {weekNumber}</span>
+					<div style={{ display: "flex", gap: 25 }}>
+						<span>Week start: {pickedDates[0].toLocaleDateString()}</span>
+						<span>Week end: {pickedDates[1].toLocaleDateString()}</span>
+					</div>
+				</div>
+			</div>
+		</section>
+	);
+};
+export const Week = WeekTemplate.bind({});
 export const Partial = PartialTemplate.bind({});
 export const Single = SingleTemplate.bind({});
 export const Interval = IntervalTemplate.bind({});

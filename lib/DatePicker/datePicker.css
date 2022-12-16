@@ -61,6 +61,7 @@
 }
 
 .datePicker-weekdays > .datePicker-weekdays__day {
+	text-align: center;
 	width: 32px;
 }
 
@@ -87,17 +88,18 @@
 }
 
 .datePicker__controller_type_next {
-	background-image: url("../static/defaultIcons/arrow.svg");
+	background-image: url("./static/defaultIcons/arrow.svg");
 }
 
 .datePicker__controller_type_prev {
 	backface-visibility: hidden;
-	background-image: url("../static/defaultIcons/arrow.svg");
+	background-image: url("./static/defaultIcons/arrow.svg");
 	rotate: 180deg;
 }
 
 .datePicker-header__toggler {
 	background: none;
+	padding: 0;
 	border: none;
 	cursor: pointer;
 }

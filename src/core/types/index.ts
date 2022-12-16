@@ -19,5 +19,5 @@ export type {
 	DatePickerYearViewClassNames,
 	CalendarViews,
 	MinDateOptions,
-	MinDate
-} from "./DatePicker.typedef"
+	MinDate,
+} from "./DatePicker.typedef";

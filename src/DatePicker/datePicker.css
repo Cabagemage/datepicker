@@ -61,6 +61,7 @@
 }
 
 .datePicker-weekdays > .datePicker-weekdays__day {
+	text-align: center;
 	width: 32px;
 }
 
@@ -99,6 +100,7 @@
 .datePicker-header__toggler {
 	background: none;
 	border: none;
+	padding: 0;
 	cursor: pointer;
 }
 
