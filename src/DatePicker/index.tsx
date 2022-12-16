@@ -21,7 +21,7 @@ import {
 	DECEMBER_ORDINAL_NUMBER,
 	ONE_DECADE,
 } from "../core";
-import { forwardRef, MouseEventHandler, useCallback, useEffect, useMemo, useState } from "react";
+import { forwardRef, useEffect, useMemo, useState } from "react";
 import { MonthView } from "./MonthView";
 import YearView from "./YearView";
 import DecadeView from "./DecadeView";
@@ -35,7 +35,7 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 			disabledDates,
 			onYearClick,
 			weekendDates,
-			onDateClick,
+			onDateChange,
 			customizedDates,
 			customizationClassNames,
 			selectedDates,
@@ -95,13 +95,15 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 			year: defaultDate.getFullYear(),
 			month: defaultDate.getMonth(),
 		});
-		const [currentMonthIdx, setCurrentMonthIdx] = useState(defaultDate.getMonth());
+
 		const [month, setMonth] = useState<Array<Date>>(INITIAL_MONTH_DATES);
+		const MIDDLE_DAY_OF_MONTH = 15;
+		const [currentMonthIdx, setCurrentMonthIdx] = useState(month[MIDDLE_DAY_OF_MONTH].getMonth());
 		const [currentDate, setCurrentDate] = useState(defaultDate);
 		const [updatedSelectedDates, setUpdatedSelectedDates] =
 			useState<Array<string | Date>>(defaultSelectedDates);
 		const decadeYears = getYears(subtract({ date: currentDate, type: "year", count: ONE_DECADE }), 11);
-
+		const [activeYear, setActiveYear] = useState<number>(defaultDate.getFullYear());
 		const [datesInterval, setDatesInterval] = useState<DatePickerInterval>(
 			selectedInterval ?? {
 				start: null,
@@ -112,6 +114,7 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 		const monthsOfYear = getMonthsOfYear(currentDate);
 
 		const clickYear = (date: Date) => {
+			setActiveYear(date.getFullYear());
 			const updatedDate = new Date(date.getFullYear(), currentDate.getMonth(), currentDate.getDate());
 			if (onYearClick !== undefined) {
 				onYearClick(updatedDate);
@@ -187,7 +190,7 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 					return { ...prev, start: date };
 				});
 				setUpdatedSelectedDates([date]);
-				onDateClick({ value: [date] });
+				onDateChange({ value: [date] });
 			}
 
 			if (datesInterval.start !== null && datesInterval.end === null) {
@@ -197,7 +200,11 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 
 				const start = new Date(datesInterval.start) < date ? datesInterval.start : date;
 				const end = new Date(date) > datesInterval.start ? date : datesInterval.start;
-				onDateClick({ value: [start, end] });
+				const formattedDates = getDatesInRange(start, end).map((item) => {
+					return formatDate(item);
+				});
+				setUpdatedSelectedDates(formattedDates);
+				onDateChange({ value: [start, end] });
 			}
 		};
 		const selectDayForWeek = (date: Date) => {
@@ -211,13 +218,13 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 				return formatDate(item);
 			});
 			setUpdatedSelectedDates(formattedDates);
-			onDateClick({
+			onDateChange({
 				value: [firstDate, lastDate],
 			});
 		};
 		const selectSingleDate = (date: Date, formattedDate: string) => {
 			setUpdatedSelectedDates([formattedDate]);
-			onDateClick({ value: date });
+			onDateChange({ value: date });
 		};
 		const mappedSelectedDatesToFormattedValue = updatedSelectedDates.map((item) => {
 			return formatDate(new Date(item));
@@ -229,7 +236,7 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 				});
 				setUpdatedSelectedDates(filteredDates);
 				if (selectedDates !== undefined) {
-					onDateClick({
+					onDateChange({
 						value: selectedDates.filter((item) => {
 							return item.toDateString() !== date.toDateString();
 						}),
@@ -244,7 +251,7 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 			const mappedSelectedDatesToRawDates = updatedSelectedDates.map((item) => {
 				return new Date(item);
 			});
-			onDateClick({ value: [...mappedSelectedDatesToRawDates, new Date(date)] });
+			onDateChange({ value: [...mappedSelectedDatesToRawDates, new Date(date)] });
 		};
 
 		const selectDay = (date: Date) => {
@@ -262,26 +269,6 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 				selectDayForWeek(date);
 			}
 		};
-
-		const hoverEvent: MouseEventHandler<HTMLButtonElement> = useCallback(
-			(e) => {
-				if (datesInterval.start !== null && datesInterval.end !== null) {
-					return;
-				}
-				const lastTriggeredDate = new Date(e.currentTarget.value);
-				if (mode === "interval" && datesInterval.start !== null) {
-					const start =
-						new Date(datesInterval.start) < lastTriggeredDate ? datesInterval.start : lastTriggeredDate;
-					const end =
-						new Date(lastTriggeredDate) > datesInterval.start ? lastTriggeredDate : datesInterval.start;
-					const formattedDates = getDatesInRange(start, end).map((item) => {
-						return formatDate(item);
-					});
-					setUpdatedSelectedDates(formattedDates);
-				}
-			},
-			[updatedSelectedDates]
-		);
 
 		const clickMonth = (date: Date) => {
 			if (onMonthClick) {
@@ -358,7 +345,6 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 						customMonthClassNames: customizationClassNames?.month,
 						selectedDates: updatedSelectedDates,
 						onSelectDay: selectDay,
-						onHoverDay: hoverEvent,
 					})}
 				{view === "month" && customMonthViewRenderProp === undefined && (
 					<MonthView
@@ -373,13 +359,12 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 						customMonthClassNames={customizationClassNames?.month}
 						selectedDates={updatedSelectedDates}
 						onSelectDay={selectDay}
-						onHoverDay={hoverEvent}
 					/>
 				)}
 				{customYearViewRenderProp !== undefined &&
 					customYearViewRenderProp({
 						months: monthsOfYear,
-						selectedDates: updatedSelectedDates,
+						currentMonthIdx: currentMonthIdx,
 						minDate: minDate,
 						onMonthClick: clickMonth,
 						defaultLocale: defaultLocale,
@@ -387,7 +372,7 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 				{view === "year" && customYearViewRenderProp === undefined && (
 					<YearView
 						months={monthsOfYear}
-						selectedDates={updatedSelectedDates}
+						currentMonthIdx={currentMonthIdx}
 						customYearClassNames={customizationClassNames?.year}
 						minDate={minDate}
 						customMonthCellRenderProp={customMonthCellRenderProp}
@@ -396,9 +381,15 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 					/>
 				)}
 				{customDecadeViewRenderProp !== undefined &&
-					customDecadeViewRenderProp({ minDate: minDate, onYearClick: clickYear, years: decadeYears })}
+					customDecadeViewRenderProp({
+						minDate: minDate,
+						onYearClick: clickYear,
+						years: decadeYears,
+						activeYear: activeYear,
+					})}
 				{view === "decade" && customDecadeViewRenderProp === undefined && (
 					<DecadeView
+						activeYear={activeYear}
 						minDate={minDate}
 						onYearClick={clickYear}
 						years={decadeYears}

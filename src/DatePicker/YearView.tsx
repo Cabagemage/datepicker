@@ -1,4 +1,4 @@
-import { formatDate, getFormattedMonthToLocale, isFirstDateEarlierThanSecondOne, subtract } from "../core";
+import { getFormattedMonthToLocale, isFirstDateEarlierThanSecondOne, subtract } from "../core";
 import classNames from "classnames";
 import { YearViewProps } from "../core/types/DatePicker.typedef";
 
@@ -7,7 +7,7 @@ const YearView = ({
 	onMonthClick,
 	defaultLocale,
 	minDate,
-	selectedDates,
+	currentMonthIdx,
 	customYearClassNames,
 	customMonthCellRenderProp,
 }: YearViewProps) => {
@@ -20,6 +20,9 @@ const YearView = ({
 	const yearViewMonthCellDisabledClassName = customYearClassNames?.yearViewCellDisabled
 		? customYearClassNames.yearViewCellDisabled
 		: "datePicker-body__day_disabled";
+	const yearViewMonthSelectedClassName = customYearClassNames?.yearViewMonthCellSelected
+		? customYearClassNames.yearViewMonthCellSelected
+		: "datePicker-body__month_selected";
 	return (
 		<div className={yearViewBodyClassName}>
 			{months.map((item) => {
@@ -32,10 +35,10 @@ const YearView = ({
 					: subtract({ date: new Date(minDate?.date ?? new Date()), type: "month", count: 1 });
 				const isDisabled =
 					minDate !== undefined ? isFirstDateEarlierThanSecondOne(item, disabledMonth) : false;
-				const isSelected = selectedDates.includes(formatDate(item));
+				const isSelected = currentMonthIdx === item.getMonth();
 
 				if (customMonthCellRenderProp !== undefined) {
-					customMonthCellRenderProp({ date: item });
+					customMonthCellRenderProp({ date: item, onDateClick: onMonthClick });
 				}
 
 				return (
@@ -46,7 +49,7 @@ const YearView = ({
 						type="button"
 						disabled={isDisabled}
 						className={classNames(yearViewMonthCellClassName, {
-							selected: isSelected && !isDisabled,
+							[yearViewMonthSelectedClassName]: isSelected && !isDisabled,
 							[yearViewMonthCellDisabledClassName]: isDisabled,
 						})}
 						key={item.toString()}

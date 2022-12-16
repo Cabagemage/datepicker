@@ -46,7 +46,7 @@ const CustomizedDatesTemplate: ComponentStory<typeof DatePicker> = () => {
 			<div style={{ display: "flex", gap: "25px", alignItems: "center" }}>
 				<PreparedDatePicker
 					date={date}
-					onDateClick={change}
+					onDateChange={change}
 					customizedDates={customizedDatesForFirstWeek}
 					locale={"en"}
 					mode={"single"}
@@ -71,7 +71,7 @@ const CustomHeaderTemplate: ComponentStory<typeof DatePicker> = () => {
 			<div style={{ display: "flex", gap: "25px", alignItems: "center" }}>
 				<PreparedDatePicker
 					date={date}
-					onDateClick={change}
+					onDateChange={change}
 					customHeaderRenderProp={({
 						toNextUnitNavAction,
 						toPrevUnitNavAction,
@@ -121,7 +121,7 @@ const CustomCalendarClassNamesTemplate: ComponentStory<typeof DatePicker> = () =
 				<PreparedDatePicker
 					customizationClassNames={customClassNames}
 					date={date}
-					onDateClick={change}
+					onDateChange={change}
 					locale={"en"}
 					mode={"single"}
 					view={"month"}
@@ -149,14 +149,7 @@ const OtherLanguageTemplate: ComponentStory<typeof DatePicker> = () => {
 
 	return (
 		<section>
-			<div style={{ display: "flex", gap: "25px", alignItems: "center" }}>
-				<PreparedDatePicker
-					date={date}
-					onDateClick={change}
-					locale={currentLanguage}
-					mode={"single"}
-					view={"month"}
-				/>
+			<div style={{ display: "flex", flexDirection: "column", gap: "25px", alignItems: "start" }}>
 				<div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
 					<label>language select</label>
 					<select
@@ -177,6 +170,13 @@ const OtherLanguageTemplate: ComponentStory<typeof DatePicker> = () => {
 					<label>selected date</label>
 					<input readOnly value={date.toLocaleDateString(currentLanguage)} />
 				</div>
+				<PreparedDatePicker
+					date={date}
+					onDateChange={change}
+					locale={currentLanguage}
+					mode={"single"}
+					view={"month"}
+				/>
 			</div>
 		</section>
 	);

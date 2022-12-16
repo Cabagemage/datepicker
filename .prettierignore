@@ -4,3 +4,4 @@ package-lock.json
 .next
 README.md
 generated
+storybook-static

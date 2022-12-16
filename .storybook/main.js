@@ -1,3 +1,5 @@
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
+
 module.exports = {
 	stories: ["../src/**/*.stories.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
 	addons: ["@storybook/addon-links", "@storybook/addon-essentials", "@storybook/addon-interactions"],
@@ -5,5 +7,9 @@ module.exports = {
 	core: {
 		builder: "@storybook/builder-webpack5",
 	},
+	plugins: [new NodePolyfillPlugin()],
 	typescript: { reactDocgen: false },
+	features: {
+		previewMdx2: true,
+	},
 };

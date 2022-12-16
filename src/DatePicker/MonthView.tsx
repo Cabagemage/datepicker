@@ -26,7 +26,6 @@ export const MonthView = ({
 	selectedDates,
 	onSelectDay,
 	customizedDates,
-	onHoverDay,
 	customMonthClassNames,
 	minDate,
 	disabledDates,
@@ -76,6 +75,7 @@ export const MonthView = ({
 	const monthViewDateIsNotRelatedToMonthClassName = customMonthClassNames?.monthViewDateIsNotRelatedToMonth
 		? customMonthClassNames.monthViewDateIsNotRelatedToMonth
 		: "datePicker__inactive-text";
+
 	return (
 		<div className={monthViewMonthBodyClassName}>
 			<ul className={monthViewWeekDaysClassName}>
@@ -111,7 +111,7 @@ export const MonthView = ({
 				const customizedDateClassName = customizedDate !== undefined ? customizedDate.className : "";
 
 				if (customDayCellRenderProp !== undefined) {
-					customDayCellRenderProp({ date: item });
+					customDayCellRenderProp({ date: item, onDateClick: onSelectDay });
 				}
 
 				return (
@@ -122,9 +122,6 @@ export const MonthView = ({
 						}}
 						title={customizedDate !== undefined ? customizedDate.textOnHover : ""}
 						value={item.toString()}
-						onMouseEnter={(e) => {
-							return onHoverDay(e);
-						}}
 						className={classNames(
 							[monthDayCellClassName],
 							customizedDateClassName,

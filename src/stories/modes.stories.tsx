@@ -23,7 +23,7 @@ const IntervalTemplate: ComponentStory<typeof DatePicker> = () => {
 			<div style={{ display: "flex", gap: "25px", alignItems: "center" }}>
 				<PreparedDatePicker
 					date={date[0]}
-					onDateClick={change}
+					onDateChange={change}
 					locale={"en"}
 					mode={"interval"}
 					view={"month"}
@@ -41,7 +41,7 @@ const IntervalTemplate: ComponentStory<typeof DatePicker> = () => {
 				<h1>Interval with interval option start passed</h1>
 				<PreparedDatePicker
 					selectedInterval={{ start: new Date(), end: null }}
-					onDateClick={change}
+					onDateChange={change}
 					locale={"en"}
 					mode={"interval"}
 					view={"month"}
@@ -54,7 +54,7 @@ const IntervalTemplate: ComponentStory<typeof DatePicker> = () => {
 						start: date[0],
 						end: add({ date: date[0], count: 5, type: "day" }),
 					}}
-					onDateClick={change}
+					onDateChange={change}
 					locale={"en"}
 					mode={"interval"}
 					view={"month"}
@@ -75,7 +75,7 @@ const SingleTemplate: ComponentStory<typeof DatePicker> = () => {
 	return (
 		<section>
 			<div style={{ display: "flex", gap: "25px", alignItems: "center" }}>
-				<PreparedDatePicker date={date} onDateClick={change} locale={"en"} mode={"single"} view={"month"} />
+				<PreparedDatePicker date={date} onDateChange={change} locale={"en"} mode={"single"} view={"month"} />
 				<input readOnly value={date.toLocaleDateString()} style={{ height: 50 }} />
 			</div>
 		</section>
@@ -97,7 +97,7 @@ const PartialTemplate: ComponentStory<typeof DatePicker> = () => {
 				<PreparedDatePicker
 					view={"month"}
 					selectedDates={pickedDates}
-					onDateClick={change}
+					onDateChange={change}
 					locale={"en"}
 					mode={"partial"}
 				/>
@@ -142,7 +142,7 @@ const WeekTemplate: ComponentStory<typeof DatePicker> = () => {
 				<PreparedDatePicker
 					view={"month"}
 					date={pickedDates[0]}
-					onDateClick={change}
+					onDateChange={change}
 					locale={"en"}
 					mode={"week"}
 				/>
