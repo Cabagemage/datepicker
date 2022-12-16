@@ -55,7 +55,6 @@ const IntervalTemplate: ComponentStory<typeof DatePicker> = () => {
 						start: date[0],
 						end: add({ date: date[0], count: 5, type: "day" }),
 					}}
-					selectedDates={date}
 					onDateClick={change}
 					locale={"en"}
 					mode={"interval"}
@@ -113,10 +112,9 @@ const PartialTemplate: ComponentStory<typeof DatePicker> = () => {
 					}}
 				>
 					{pickedDates.map((item) => {
-						return <span>{item.toLocaleDateString()}</span>;
+						return <span key={item.toDateString()}>{item.toLocaleDateString()}</span>;
 					})}
 				</div>
-				<div style={{ display: "flex", gap: "25px", alignItems: "center" }}></div>
 			</div>
 		</section>
 	);

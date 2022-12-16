@@ -74,9 +74,10 @@ Attention. Its beta version of date picker, possible it'll be changed later
 | customizationClassNames | ```Partial<DatePickerClassNames>``` | Object of objects with classNames for all parts of datePicker. You can pass classNames to custom parts only you need. | ```{{common: {header: "customHeaderClassName"}}}```
 | changeCalendarView | ```() => void``` | This argument is required if you want to change view. DatePicker doesnt know about triggers that should change his view. | -
 | customizedDates | ```Array<CustomizedDate>``` | Custom date can have another className, be disabled or not. Possible logic of custom dates will be refactored later. Watch examples to get additional info. | -
-| selectedDates | ```Array<Date>``` |  Important: you should use this prop with partial/interval mode to save state. | -
-| defaultSelectedInterval | ```{start: Date or null, end: Date or null}``` | same that defaultSelectedDates. It can'be helpful if you want to make start date selected by default | -
+| selectedDates | ```Array<Date>``` |  Important: you should use this prop with partial mode to save changes in your state. | -
+| selectedInterval | ```{start: Date or null, end: Date or null}``` | same that selectedDates. It can'be helpful if you want to make start date selected by default | -
 | onMonthClick | ```(date: Date) => void``` | event will fire when user click on month cell. | -
 | onYearClick | ```(date: Date) => void``` | event will fire when user click on year cell. | -
 | mode | ``` "single" or "partial" or "interval" or "week" ``` | strategy for dates selection. Watch examples to see usage | -
 | view | ```"month" or "week" or "year" or "decade"``` | - | -
+| ref | ```React ref for DIV element``` | it can be helpful for hooks like useOnOutsideClick to close datePicker | -

@@ -26,7 +26,7 @@ import { MonthView } from "./MonthView";
 import YearView from "./YearView";
 import DecadeView from "./DecadeView";
 
-export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
+export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 	(
 		{
 			locale,
