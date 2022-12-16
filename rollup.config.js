@@ -3,7 +3,7 @@ import commonjs from "@rollup/plugin-commonjs";
 import typescript from "@rollup/plugin-typescript";
 import postcss from "rollup-plugin-postcss";
 import dts from "rollup-plugin-dts";
-
+import { babel } from "@rollup/plugin-babel";
 import { terser } from "@wwa/rollup-plugin-terser";
 import analyze from "rollup-plugin-analyzer";
 import cleanup from "rollup-plugin-cleanup";
@@ -29,6 +29,10 @@ export default [
 		external: ["react", "react-dom", "classnames"],
 		plugins: [
 			resolve(),
+			babel({
+				exclude: "node_modules/**",
+				presets: ["@babel/preset-react"],
+			}),
 			analyze({ onAnalysis, skipFormatted: true }),
 			commonjs({ transformMixedEsModules: true }),
 			typescript({ tsconfig: "./tsconfig.json" }),

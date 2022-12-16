@@ -1,4 +1,4 @@
-import { Meta } from "@storybook/addon-docs";
+import {Meta} from "@storybook/addon-docs";
 import Code from "./assets/code-brackets.svg";
 import Colors from "./assets/colors.svg";
 import Comments from "./assets/comments.svg";
@@ -7,6 +7,7 @@ import Flow from "./assets/flow.svg";
 import Plugin from "./assets/plugin.svg";
 import Repo from "./assets/repo.svg";
 import StackAlt from "./assets/stackalt.svg";
+import "./storybook.css"
 
 <Meta title="DatePicker/documentation" />
 
@@ -38,23 +39,12 @@ Simple and magnificent Date Picker dedicated to Joka and his son Boka - authors 
 	<li>Different modes: partial, single, interval, week</li>
 	<li>Flexible configuration</li>
 	<li>Much more amazing and real cool things</li>
-	<li>
-		<a
-			href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl"
-			target="_blank"
-		>
-			Multi-languages support
-		</a>
-		, just pass locale string
-	</li>
+	<li>Multi-languages support, just pass locale string</li>
 </ul>
 
 <div className="subheading">Requirements</div>
-
-- <a href="https://www.npmjs.com/package/classnames" target="_blank">
-  	classNames
-  </a>
-- React >= 17.0.0
+- classNames
+- React >= 18.0.0
 
 <div className="subheading">Road map</div>
 
@@ -75,27 +65,166 @@ Simple and magnificent Date Picker dedicated to Joka and his son Boka - authors 
 
 Attention. Its beta version of date picker, possible it'll be changed later
 
-| Property                   |        required         |                            Type                            |                                                                                                                                      Additional information |                                            Example |
-| :------------------------- | :---------------------: | :--------------------------------------------------------: | ----------------------------------------------------------------------------------------------------------------------------------------------------------: | -------------------------------------------------: |
-| locale                     | false (en-US by default |                  ` Intl.LocalesArgument`                   |                        <a href="https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry" target="_blank">supported languages</a> |                                   ru-RU, en-US, en |
-| date                       |          false          |                           `Date`                           |                                                                                    Its helpful only for single mode. You can pass date to track its changes |                                      `new Date()`; |
-| minDate                    |          false          | `{date: Date, options?: {isPassedDateIncluded?: boolean}}` |                                                                                                    flag need to decide disable until or include passed date |                                                  - |
-| disabledDates              |          false          |                       `Array<Date>`                        |                                                                                                                               dates that should be disabled |                                                  - |
-| weekendDates               |          false          |                     `[0,1,2,3,4,5,6]`                      |                                                                                                      pass array with days of week to disable it as weekend. | `[6,0]` all saturdays and sundays will be disabled |
-| customizationClassNames    |          false          |              `Partial<DatePickerClassNames>`               |                                    Object of objects with classNames for all parts of datePicker. You can pass classNames to customize parts only you need. |    `{{common: {header: "customHeaderClassName"}}}` |
-| changeCalendarView         |          true           |                        `() => void`                        |                                    This argument is required if you want to change view. DatePicker doesnt know about triggers that should change his view. |                                                  - |
-| customizedDates            |          false          |                  `Array<CustomizedDate>`                   | Custom date can have another className, be disabled or not. Possible logic of custom dates will be refactored later. Watch examples to get additional info. |                                                  - |
-| selectedDates              |          false          |                       `Array<Date>`                        |                                                                        Important: you should use this prop with partial mode to save changes in your state. |                                                  - |
-| selectedInterval           |          false          |         `{start: Date or null, end: Date or null}`         |                                                               same that selectedDates. It can'be helpful if you want to make start date selected by default |                                                  - |
-| onMonthClick               |          false          |                   `(date: Date) => void`                   |                                                                                                              event will fire when user click on month cell. |                                                  - |
-| onYearClick                |          false          |                   `(date: Date) => void`                   |                                                                                                               event will fire when user click on year cell. |                                                  - |
-| mode                       |          true           |      `"single" or "partial" or "interval" or "week"`       |                                                                                                   strategy for dates selection. Watch examples to see usage |                                                  - |
-| view                       |          true           |              `"month" or "year" or "decade"`               |                                                                                                                                                           - |                                                  - |
-| ref                        |          false          |            `React ref(HTMLDIVElement or null)`             |                                                                                      it can be helpful for hooks like useOnOutsideClick to close datePicker |                                                  - |
-| customHeaderRenderProp     |          false          |     `(props: DatePickerControlsProps) => JSX.Element `     |                                    <a href="https://reactjs.org/docs/render-props.html" target="_blank">pattern implementation for header customization</a> |                                                  - |
-| customMonthViewRenderProp  |          false          |          `(props: MonthViewProps) => JSX.Element`          |                                <a href="https://reactjs.org/docs/render-props.html" target="_blank">pattern implementation for month view customization</a> |
-| customYearViewRenderProp   |          false          |          `(props: YearViewProps) => JSX.Element`           |                                 <a href="https://reactjs.org/docs/render-props.html" target="_blank">pattern implementation for year view customization</a> |
-| customDecadeViewRenderProp |          false          |         `(props: DecadeViewProps) => JSX.Element`          |                               <a href="https://reactjs.org/docs/render-props.html" target="_blank">pattern implementation for decade view customization</a> |
-| customYearCellRenderProp   |          false          |       `(props: BaseCellRenderProps) => JSX.Element`        |                                 <a href="https://reactjs.org/docs/render-props.html" target="_blank">pattern implementation for year cell customization</a> |
-| customMonthCellRenderProp  |          false          |       `(props: BaseCellRenderProps) => JSX.Element`        |                                <a href="https://reactjs.org/docs/render-props.html" target="_blank">pattern implementation for month cell customization</a> |
-| customDayCellRenderProp    |          false          |       `(props: BaseCellRenderProps) => JSX.Element`        |                                  <a href="https://reactjs.org/docs/render-props.html" target="_blank">pattern implementation for day cell customization</a> |
+<table>
+    <tr>
+        <td>Property</td>
+        <td>required</td>
+        <td>Type</td>
+        <td>Additional information</td>
+        <td>Example</td>
+    </tr>
+    <tr>
+        <td>locale</td>
+        <td>false (en-US by default</td>
+        <td>` Intl.LocalesArgument`</td>
+        <td></td>
+        <td>ru-RU, en-US, en</td>
+    </tr>
+    <tr>
+        <td>date</td>
+        <td>false</td>
+        <td>`Date`</td>
+        <td>Its helpful only for single mode. You can pass date to track its changes</td>
+        <td>`new Date()`;</td>
+    </tr>
+    <tr>
+        <td>minDate</td>
+        <td>false</td>
+        <td>`{date: Date, options?: {isPassedDateIncluded?: boolean}}`</td>
+        <td>flag need to decide disable until or include passed date</td>
+        <td>-</td>
+    </tr>
+    <tr>
+        <td>disabledDates</td>
+        <td>false</td>
+        <td>`Array&lt;Date=>;`</td>
+        <td>dates that should be disabled</td>
+        <td>-</td>
+    </tr>
+    <tr>
+        <td>weekendDates</td>
+        <td>false</td>
+        <td>`[0,1,2,3,4,5,6]`</td>
+        <td>pass array with days of week to disable it as weekend.</td>
+        <td>`[6,0]` all saturdays and sundays will be disabled</td>
+    </tr>
+    <tr>
+        <td>customizationClassNames</td>
+        <td>false</td>
+        <td>`Partial DatePickerClassNames;`</td>
+        <td>Object of objects with classNames for all parts of datePicker. You can pass classNames to customize parts only you need.</td>
+        <td>`{{common: {header: "customHeaderClassName"}}}`</td>
+    </tr>
+    <tr>
+        <td>changeCalendarView</td>
+        <td>true</td>
+        <td>`() => void`</td>
+        <td>This argument is required if you want to change view. DatePicker doesnt know about triggers that should change his view.</td>
+        <td>-</td>
+    </tr>
+    <tr>
+        <td>customizedDates</td>
+        <td>false</td>
+        <td>`Array CustomizedDate`</td>
+        <td>Custom date can have another className, be disabled or not. Possible logic of custom dates will be refactored later. Watch examples to get additional info.</td>
+        <td>-</td>
+    </tr>
+    <tr>
+        <td>selectedDates</td>
+        <td>false</td>
+        <td>`Array Date;`</td>
+        <td>Important: you should use this prop with partial mode to save changes in your state.</td>
+        <td>-</td>
+    </tr>
+    <tr>
+        <td>selectedInterval</td>
+        <td>false</td>
+        <td>`{start: Date or null, end: Date or null}`</td>
+        <td>same that selectedDates. It can'be helpful if you want to make start date selected by default</td>
+        <td>-</td>
+    </tr>
+    <tr>
+        <td>onMonthClick</td>
+        <td>false</td>
+        <td>`(date: Date) =>; void`</td>
+        <td>event will fire when user click on month cell.</td>
+        <td>-</td>
+    </tr>
+    <tr>
+        <td>onYearClick</td>
+        <td>false</td>
+        <td>`(date: Date) => void`</td>
+        <td>event will fire when user click on year cell.</td>
+        <td>-</td>
+    </tr>
+    <tr>
+        <td>mode</td>
+        <td>true</td>
+        <td>`"single" or "partial" or "interval" or "week"`</td>
+        <td>strategy for dates selection. Watch examples to see usage</td>
+        <td>-</td>
+    </tr>
+    <tr>
+        <td>view</td>
+        <td>true</td>
+        <td>`"month" or "year" or "decade"`</td>
+        <td>-</td>
+        <td>-</td>
+    </tr>
+    <tr>
+        <td>ref</td>
+        <td>false</td>
+        <td>`React ref(HTMLDIVElement or null)`</td>
+        <td>it can be helpful for hooks like useOnOutsideClick to close datePicker</td>
+        <td>-</td>
+    </tr>
+    <tr>
+        <td>customHeaderRenderProp</td>
+        <td>false</td>
+        <td>`(props: DatePickerControlsProps) =>; JSX.Element `</td>
+        <td>pattern implementation for header customization</td>
+        <td>-</td>
+    </tr>
+    <tr>
+        <td>customMonthViewRenderProp</td>
+        <td>false</td>
+        <td>`(props: MonthViewProps) =>; JSX.Element`</td>
+        <td>render prop pattern implementation</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>customYearViewRenderProp</td>
+        <td>false</td>
+        <td>`(props: YearViewProps) =>; JSX.Element`</td>
+        <td>render prop pattern implementation</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>customDecadeViewRenderProp</td>
+        <td>false</td>
+        <td>`(props: DecadeViewProps) =>; JSX.Element`</td>
+        <td>render prop pattern implementation</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>customYearCellRenderProp</td>
+        <td>false</td>
+        <td>`(props: BaseCellRenderProps) =>; JSX.Element`</td>
+        <td>render prop pattern implementation</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>customMonthCellRenderProp</td>
+        <td>false</td>
+        <td>`(props: BaseCellRenderProps) =>; JSX.Element`</td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>customDayCellRenderProp</td>
+        <td>false</td>
+        <td>`(props: BaseCellRenderProps) =>; JSX.Element`</td>
+        <td></td>
+        <td></td>
+    </tr>
+</table>

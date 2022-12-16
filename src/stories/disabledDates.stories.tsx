@@ -22,7 +22,7 @@ const CalendarWithWeekendDaysTemplate: ComponentStory<typeof DatePicker> = () =>
 			<div style={{ display: "flex", gap: "25px", alignItems: "center" }}>
 				<PreparedDatePicker
 					date={date}
-					onDateClick={change}
+					onDateChange={change}
 					weekendDates={[0, 6]}
 					locale={"en"}
 					mode={"single"}
@@ -51,7 +51,7 @@ const CalendarWithCustomDisabledDatesTemplate: ComponentStory<typeof DatePicker>
 			<div style={{ display: "flex", gap: "25px", alignItems: "center" }}>
 				<PreparedDatePicker
 					date={date}
-					onDateClick={change}
+					onDateChange={change}
 					disabledDates={customizedDatesForFirstWeek}
 					locale={"en"}
 					mode={"single"}
@@ -77,14 +77,14 @@ const CalendarWithMinDatePassedTemplate: ComponentStory<typeof DatePicker> = () 
 			<div style={{ display: "flex", gap: "25px", alignItems: "center" }}>
 				<PreparedDatePicker
 					date={minDate}
-					onDateClick={change}
+					onDateChange={change}
 					locale={"en"}
 					mode={"single"}
 					view={"month"}
 				/>
 				<PreparedDatePicker
 					minDate={{ date: minDate, options: { isPassedDateIncluded: shouldMinDateBeDisabled } }}
-					onDateClick={change}
+					onDateChange={change}
 					locale={"en"}
 					mode={"single"}
 					view={"month"}

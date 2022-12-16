@@ -132,3 +132,15 @@
 	color: #000000;
 	opacity: 0.2;
 }
+
+.datePicker-body__month_selected{
+	background-color: #1890ff;
+	border-radius: 16px;
+	color: white;
+}
+
+.datePicker-body__year_selected{
+	background-color: #1890ff;
+	border-radius: 16px;
+	color: white;
+}

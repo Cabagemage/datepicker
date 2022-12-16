@@ -52,7 +52,7 @@ const CalendarWithViewSelection: ComponentStory<typeof DatePicker> = () => {
 					date={date}
 					onYearClick={onYearClick}
 					changeCalendarView={console.info}
-					onDateClick={console.info}
+					onDateChange={console.info}
 					customHeaderRenderProp={() => {
 						return (
 							<div>
