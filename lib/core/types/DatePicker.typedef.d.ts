@@ -57,7 +57,7 @@ export declare type DatePickerControlsProps = {
 };
 export interface DatePickerProps {
     locale?: Intl.LocalesArgument;
-    date: Date;
+    date?: Date;
     minDate?: MinDate;
     disabledDates?: Array<Date>;
     customHeaderRenderProp?: (props: DatePickerControlsProps) => JSX.Element;
@@ -65,8 +65,8 @@ export interface DatePickerProps {
     customizationClassNames?: Partial<DatePickerClassNames>;
     changeCalendarView: () => void;
     customizedDates?: Array<CustomizedDate>;
-    defaultSelectedDates?: Array<Date>;
-    defaultSelectedInterval?: DatePickerInterval;
+    selectedDates?: Array<Date>;
+    selectedInterval?: DatePickerInterval;
     onMonthClick?: (value: Date) => void;
     onYearClick?: (value: Date) => void;
     onDateClick: DatePickerChangeHandler;

@@ -66,7 +66,7 @@ Attention. Its beta version of date picker, possible it'll be changed later
 | Property | Type | Additional information | Example
 | :--- | :----: | ----: | ----: |
 | locale    |  ``` Intl.LocalesArgument```    |  <a href="https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry" target="_blank">supported languages</a> | ru-RU, en-US, en
-| date      |   ```Date```           | - | ```new Date()```;
+| date      |   ```Date```           | Its helpful only for single mode. You can pass date to track its changes | ```new Date()```;
 | minDate   | ```{date: Date, options?: {isPassedDateIncluded?: boolean}}``` | flag need to decide disable until or include passed date | -
 | disabledDates | ```Array<Date>``` | dates that should be disabled | -
 | customHeaderRenderProp | ```(props: DatePickerControlsProps) => JSX.Element ``` | <a href="https://reactjs.org/docs/render-props.html" target="_blank">pattern implementation for header customization</a> | -
@@ -74,7 +74,7 @@ Attention. Its beta version of date picker, possible it'll be changed later
 | customizationClassNames | ```Partial<DatePickerClassNames>``` | Object of objects with classNames for all parts of datePicker. You can pass classNames to custom parts only you need. | ```{{common: {header: "customHeaderClassName"}}}```
 | changeCalendarView | ```() => void``` | This argument is required if you want to change view. DatePicker doesnt know about triggers that should change his view. | -
 | customizedDates | ```Array<CustomizedDate>``` | Custom date can have another className, be disabled or not. Possible logic of custom dates will be refactored later. Watch examples to get additional info. | -
-| defaultSelectedDates | ```Array<Date>``` | array of default dates. It can be helpful when you need to make dates checked on date picker open. | -
+| selectedDates | ```Array<Date>``` |  Important: you should use this prop with partial/interval mode to save state. | -
 | defaultSelectedInterval | ```{start: Date or null, end: Date or null}``` | same that defaultSelectedDates. It can'be helpful if you want to make start date selected by default | -
 | onMonthClick | ```(date: Date) => void``` | event will fire when user click on month cell. | -
 | onYearClick | ```(date: Date) => void``` | event will fire when user click on year cell. | -
