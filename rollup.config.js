@@ -11,6 +11,7 @@ const packageJson = require("./package.json");
 
 const limitBytes = 1e6;
 const onAnalysis = ({ bundleSize }) => {
+	console.info(bundleSize);
 	if (bundleSize < limitBytes) return;
 	console.log(`Bundle size exceeds ${limitBytes} bytes: ${bundleSize} bytes`);
 	return process.exit(1);
