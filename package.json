@@ -1,5 +1,5 @@
 {
-	"name": "datepicker",
+	"name": "loyalreactdatepicker",
 	"license": "MIT",
 	"author": "Andrey Zaitsev",
 	"homepage": "http://cabagemage.github.io/loyal-react-datePicker",
@@ -21,7 +21,8 @@
 		"storybook": "start-storybook -p 6006",
 		"build-storybook": "build-storybook",
 		"predeploy": "npm run build-storybook",
-		"deploy-storybook": "gh-pages -d storybook-static"
+		"deploy-storybook": "gh-pages -d storybook-static",
+		"npmDeploy": "np"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.20.5",
