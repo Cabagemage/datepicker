@@ -101,11 +101,15 @@ const CustomCalendarClassNamesTemplate: ComponentStory<typeof DatePicker> = () =
 		month: {
 			monthViewDay: "customMonthViewDay",
 			monthViewMonthBody: "customMonthBody",
-			monthViewDisabledDate: "",
 			monthViewWeekDays: "customWeekDays",
 			monthViewWeekDaysListItem: "customWeekDay",
 		},
-		common: { wrapper: "customWrapper" },
+		year: { yearViewMonthCell: "customViewMonthCell", yearViewBody: "yearViewBody" },
+		decade: {
+			decadeViewYearCell: "decadeViewYearCell",
+			body: "decadeBody",
+		},
+		common: { wrapper: "customWrapper", arrowLeft: "arrLeft", arrowRight: "arrRight" },
 	};
 
 	return (
@@ -118,9 +122,9 @@ const CustomCalendarClassNamesTemplate: ComponentStory<typeof DatePicker> = () =
 					onDateChange={change}
 					locale={"en"}
 					mode={"single"}
+					footerElement={<p>selectedDate is {date.toDateString()}</p>}
 					view={"month"}
 				/>
-				<input readOnly value={date.toLocaleDateString()} style={{ height: 50 }} />
 			</div>
 		</section>
 	);

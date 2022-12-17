@@ -51,6 +51,8 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 			customYearViewRenderProp,
 			customYearCellRenderProp,
 			customDayCellRenderProp,
+			footerElement,
+			isVisible = true,
 		},
 		ref
 	) => {
@@ -307,9 +309,15 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 		const datePickerArrowLeftCn = customizationClassNames?.common?.arrowLeft
 			? customizationClassNames.common.arrowLeft
 			: "datePicker__controller datePicker__controller_type_prev";
-		const datePickerArrowNextCn = customizationClassNames?.common?.arrowLeft
-			? customizationClassNames.common.arrowLeft
+		const datePickerArrowNextCn = customizationClassNames?.common?.arrowRight
+			? customizationClassNames.common.arrowRight
 			: "datePicker__controller datePicker__controller_type_next";
+		const datePickerHeaderControlsCn = customizationClassNames?.common?.headerControls
+			? customizationClassNames?.common.headerControls
+			: "datePicker__controls";
+		const datePickerHeadertextCn = customizationClassNames?.common?.headerText
+			? customizationClassNames?.common.headerText
+			: "datepicker-header__time";
 
 		useEffect(() => {
 			const month = getMonthCalendarViewDates({
@@ -319,85 +327,95 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 			setMonth(month);
 		}, [currentMonthIdx, currentDate]);
 
-		return (
-			<div className={datePickerWrapperCn} ref={ref}>
-				{customHeaderRenderProp !== undefined ? (
-					customHeaderRenderProp({ changeCalendarView, toNextUnitNavAction, toPrevUnitNavAction, headerText })
-				) : (
-					<div className={datePickerHeaderCn}>
-						<button className={"datePicker-header__toggler"} onClick={changeCalendarView} type="button">
-							<time className={"datepicker-header__time"}>{headerText}</time>
-						</button>
-						<div className={"datePicker__controls"}>
-							<button className={datePickerArrowLeftCn} type="button" onClick={toPrevUnitNavAction} />
-							<button className={datePickerArrowNextCn} type="button" onClick={toNextUnitNavAction} />
+		if (isVisible) {
+			return (
+				<div className={datePickerWrapperCn} ref={ref}>
+					{customHeaderRenderProp !== undefined ? (
+						customHeaderRenderProp({
+							changeCalendarView,
+							toNextUnitNavAction,
+							toPrevUnitNavAction,
+							headerText,
+						})
+					) : (
+						<div className={datePickerHeaderCn}>
+							<button className={"datePicker-header__toggler"} onClick={changeCalendarView} type="button">
+								<time className={datePickerHeadertextCn}>{headerText}</time>
+							</button>
+							<div className={datePickerHeaderControlsCn}>
+								<button className={datePickerArrowLeftCn} type="button" onClick={toPrevUnitNavAction} />
+								<button className={datePickerArrowNextCn} type="button" onClick={toNextUnitNavAction} />
+							</div>
 						</div>
-					</div>
-				)}
-				{customMonthViewRenderProp !== undefined &&
-					customMonthViewRenderProp({
-						locale: defaultLocale,
-						month: month,
-						customizedDates: customizedDates,
-						currentMonth: currentMonthIdx,
-						disabledDates: disabledDates,
-						minDate: minDate,
-						customMonthClassNames: customizationClassNames?.month,
-						selectedDates: updatedSelectedDates,
-						onSelectDay: selectDay,
-					})}
-				{view === "month" && customMonthViewRenderProp === undefined && (
-					<MonthView
-						locale={defaultLocale}
-						month={month}
-						customDayCellRenderProp={customDayCellRenderProp}
-						customizedDates={customizedDates}
-						currentMonth={currentMonthIdx}
-						disabledDates={disabledDates}
-						weekendDates={weekendDates}
-						minDate={minDate}
-						customMonthClassNames={customizationClassNames?.month}
-						selectedDates={updatedSelectedDates}
-						onSelectDay={selectDay}
-					/>
-				)}
-				{customYearViewRenderProp !== undefined &&
-					customYearViewRenderProp({
-						months: monthsOfYear,
-						currentMonthIdx: currentMonthIdx,
-						minDate: minDate,
-						onMonthClick: clickMonth,
-						defaultLocale: defaultLocale,
-					})}
-				{view === "year" && customYearViewRenderProp === undefined && (
-					<YearView
-						months={monthsOfYear}
-						currentMonthIdx={currentMonthIdx}
-						customYearClassNames={customizationClassNames?.year}
-						minDate={minDate}
-						customMonthCellRenderProp={customMonthCellRenderProp}
-						onMonthClick={clickMonth}
-						defaultLocale={defaultLocale}
-					/>
-				)}
-				{customDecadeViewRenderProp !== undefined &&
-					customDecadeViewRenderProp({
-						minDate: minDate,
-						onYearClick: clickYear,
-						years: decadeYears,
-						activeYear: activeYear,
-					})}
-				{view === "decade" && customDecadeViewRenderProp === undefined && (
-					<DecadeView
-						activeYear={activeYear}
-						minDate={minDate}
-						onYearClick={clickYear}
-						years={decadeYears}
-						customYearCellRenderProp={customYearCellRenderProp}
-						customDecadeClassNames={customizationClassNames?.decade}
-					/>
-				)}
-			</div>
-		);
+					)}
+					{customMonthViewRenderProp !== undefined &&
+						customMonthViewRenderProp({
+							locale: defaultLocale,
+							month: month,
+							customizedDates: customizedDates,
+							currentMonth: currentMonthIdx,
+							disabledDates: disabledDates,
+							minDate: minDate,
+							customMonthClassNames: customizationClassNames?.month,
+							selectedDates: updatedSelectedDates,
+							onSelectDay: selectDay,
+						})}
+					{view === "month" && customMonthViewRenderProp === undefined && (
+						<MonthView
+							locale={defaultLocale}
+							month={month}
+							customDayCellRenderProp={customDayCellRenderProp}
+							customizedDates={customizedDates}
+							currentMonth={currentMonthIdx}
+							disabledDates={disabledDates}
+							weekendDates={weekendDates}
+							minDate={minDate}
+							customMonthClassNames={customizationClassNames?.month}
+							selectedDates={updatedSelectedDates}
+							onSelectDay={selectDay}
+						/>
+					)}
+					{customYearViewRenderProp !== undefined &&
+						customYearViewRenderProp({
+							months: monthsOfYear,
+							currentMonthIdx: currentMonthIdx,
+							minDate: minDate,
+							onMonthClick: clickMonth,
+							defaultLocale: defaultLocale,
+						})}
+					{view === "year" && customYearViewRenderProp === undefined && (
+						<YearView
+							months={monthsOfYear}
+							currentMonthIdx={currentMonthIdx}
+							customYearClassNames={customizationClassNames?.year}
+							minDate={minDate}
+							customMonthCellRenderProp={customMonthCellRenderProp}
+							onMonthClick={clickMonth}
+							defaultLocale={defaultLocale}
+						/>
+					)}
+					{customDecadeViewRenderProp !== undefined &&
+						customDecadeViewRenderProp({
+							minDate: minDate,
+							onYearClick: clickYear,
+							years: decadeYears,
+							activeYear: activeYear,
+						})}
+					{view === "decade" && customDecadeViewRenderProp === undefined && (
+						<DecadeView
+							activeYear={activeYear}
+							minDate={minDate}
+							onYearClick={clickYear}
+							years={decadeYears}
+							customYearCellRenderProp={customYearCellRenderProp}
+							customDecadeClassNames={customizationClassNames?.decade}
+						/>
+					)}
+					{footerElement && footerElement}
+				</div>
+			);
+		} else {
+			return null;
+		}
 	}
 );

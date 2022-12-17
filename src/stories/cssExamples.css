@@ -1,3 +1,8 @@
+@import url("fonts/fonts.css");
+
+* {
+	font-family: Inter, "Arial", "SansSerif", serif;
+}
 .customDate__1 {
 	user-select: none;
 	border-radius: 16px;
@@ -20,25 +25,36 @@
 }
 
 .customWrapper {
-	width: 350px;
+	width: 330px;
+	color: #fff;
 	display: flex;
 	padding: 25px;
 	flex-direction: column;
 	gap: 25px;
-	background: chartreuse;
+	background: black;
 	border-radius: 16px;
+}
+.customWrapper time {
+	color: #fff;
 }
 .customMonthViewDay {
 	width: 36px;
-	height: 45px;
+	border-radius: 8px;
+	height: 25px;
+	color: #fff;
+	border: 1px solid #fff;
+	font-size: 18px;
 	gap: 25px;
 }
 
 .customMonthBody {
 	display: flex;
+	width: 100%;
 	flex-wrap: wrap;
-	gap: 14px;
-	background: chartreuse;
+	justify-content: space-between;
+	gap: 10px;
+	background: black;
+	color: #fff;
 }
 .customWeekDays {
 	padding: 0;
@@ -47,8 +63,56 @@
 	justify-content: space-between;
 }
 .customWeekDay {
-	padding-left: 10px;
-	padding-right: 10px;
+	width: 36px;
+	flex-shrink: 0;
+	text-align: center;
+	box-sizing: border-box;
 	border: 1px solid;
 	list-style: none;
+}
+.customViewMonthCell {
+	all: unset;
+	border: 1px solid;
+	text-align: center;
+	width: 80px;
+	height: 50px;
+	box-sizing: border-box;
+}
+
+.yearViewBody {
+	display: flex;
+	flex-wrap: wrap;
+	width: 100%;
+	justify-content: space-between;
+	gap: 25px;
+}
+.decadeBody {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 25px;
+	justify-content: space-between;
+}
+.decadeViewYearCell {
+	all: unset;
+	border: 1px solid;
+	text-align: center;
+	width: 80px;
+	height: 50px;
+	box-sizing: border-box;
+}
+
+.arrLeft {
+	all: unset;
+	width: 50px;
+	cursor: pointer;
+}
+.arrRight {
+	all: unset;
+	cursor: pointer;
+}
+.arrLeft:before {
+	content: "<";
+}
+.arrRight:before {
+	content: ">";
 }

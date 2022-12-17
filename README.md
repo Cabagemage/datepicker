@@ -1,8 +1,8 @@
-# loyal-react-datePicker
+# loyal-react-datePicker (0.6.0)
 
 Status: This package in beta at this moment. Feel free to create issues for any bugs or offers to improve this library. 
 
-Recommended width is 390px. If it will be smaller, possibly you need to fix it up by custom classes. 
+Recommended width of wrapper is 390px. If it will be smaller, possibly you need to fix it up by custom classes. 
 Or you can directly change exists date picker classnames, but you need to use !important directive. 
 
 

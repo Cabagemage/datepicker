@@ -28,7 +28,7 @@ import "./storybook.css";
   `}
 </style>
 
-# loyal-react-datePicker 0.5.0
+# loyal-react-datePicker 0.6.0
 
 Simple and magnificent Date Picker dedicated to Joka and his son Boka - authors of cryptography algorithm
 
@@ -42,7 +42,10 @@ Simple and magnificent Date Picker dedicated to Joka and his son Boka - authors 
 	<li>Multi-languages support, just pass locale string</li>
 </ul>
 
-<div className="subheading">Requirements</div>- classNames - React >= 18.0.0
+<div className="subheading">Requirements</div>
+
+- classnames >= 2.3.1
+- React >= 18.0.0
 
 <div className="subheading">Road map</div>
 
@@ -57,9 +60,9 @@ Simple and magnificent Date Picker dedicated to Joka and his son Boka - authors 
 
 <div className="subheading">Installation</div>
 
-`npm install loyal-react-datePicker`
-
 ```
+npm i loyalreactdatepicker
+
 import { DatePicker } from "loyalreactdatepicker";
 
 // if you need default CSS, you need to import it.
@@ -79,156 +82,170 @@ Attention. Its beta version of date picker, possible it'll be changed later
         <td>Example</td>
     </tr>
     <tr>
-        <td>locale</td>
+        <td><p>locale</p></td>
         <td>false (en-US by default</td>
         <td>` Intl.LocalesArgument`</td>
         <td></td>
         <td>ru-RU, en-US, en</td>
     </tr>
     <tr>
-        <td>date</td>
+        <td> <p>date</p> </td>
         <td>false</td>
         <td>`Date`</td>
         <td>Its helpful only for single mode. You can pass date to track its changes</td>
         <td>`new Date()`;</td>
     </tr>
     <tr>
-        <td>minDate</td>
+        <td><p>minDate</p></td>
         <td>false</td>
         <td>`{date: Date, options?: {isPassedDateIncluded?: boolean}}`</td>
         <td>flag need to decide disable until or include passed date</td>
         <td>-</td>
     </tr>
     <tr>
-        <td>disabledDates</td>
+        <td><p>disabledDates</p></td>
         <td>false</td>
         <td>`Array&lt;Date=>;`</td>
         <td>dates that should be disabled</td>
         <td>-</td>
     </tr>
     <tr>
-        <td>weekendDates</td>
+        <td><p>weekendDates</p></td>
         <td>false</td>
         <td>`[0,1,2,3,4,5,6]`</td>
         <td>pass array with days of week to disable it as weekend.</td>
         <td>`[6,0]` all saturdays and sundays will be disabled</td>
     </tr>
     <tr>
-        <td>customizationClassNames</td>
+        <td> <p>customizationClassNames</p> </td>
         <td>false</td>
         <td>`Partial DatePickerClassNames;`</td>
         <td>Object of objects with classNames for all parts of datePicker. You can pass classNames to customize parts only you need.</td>
         <td>`{{common: {header: "customHeaderClassName"}}}`</td>
     </tr>
     <tr>
-        <td>changeCalendarView</td>
+        <td><p>changeCalendarView</p></td>
         <td>true</td>
         <td>`() => void`</td>
         <td>This argument is required if you want to change view. DatePicker doesnt know about triggers that should change his view.</td>
         <td>-</td>
     </tr>
     <tr>
-        <td>customizedDates</td>
+        <td><p>customizedDates</p> </td>
         <td>false</td>
         <td>`Array CustomizedDate`</td>
         <td>Custom date can have another className, be disabled or not. Possible logic of custom dates will be refactored later. Watch examples to get additional info.</td>
         <td>-</td>
     </tr>
     <tr>
-        <td>selectedDates</td>
+        <td><p>selectedDates</p></td>
         <td>false</td>
         <td>`Array Date;`</td>
         <td>Important: you should use this prop with partial mode to save changes in your state.</td>
         <td>-</td>
     </tr>
+        <tr>
+            <td><p>footerElement</p></td>
+            <td>false</td>
+            <td>JSX.Element</td>
+            <td>You can pass anything to footer (return to current date, information about selected dates and etc)</td>
+            <td>-</td>
+        </tr>
+               <tr>
+                    <td><p>isVisible</p></td>
+                    <td>false</td>
+                    <td>boolean</td>
+                    <td>boolean indicates status of datepicker (its open or not)</td>
+                    <td>its true by default</td>
+                </tr>
     <tr>
-        <td>selectedInterval</td>
+        <td><p>selectedInterval</p></td>
         <td>false</td>
         <td>`{start: Date or null, end: Date or null}`</td>
-        <td>same that selectedDates. It can'be helpful if you want to make start date selected by default</td>
+        <td>same that selectedDates. It can be helpful if you want to make start date selected by default</td>
         <td>-</td>
     </tr>
     <tr>
-        <td>onMonthClick</td>
+        <td><p>onMonthClick</p></td>
         <td>false</td>
-        <td>`(date: Date) =>; void`</td>
+        <td>`(date: Date) => void`</td>
         <td>event will fire when user click on month cell.</td>
         <td>-</td>
     </tr>
     <tr>
-        <td>onYearClick</td>
+        <td><p>onYearClick</p></td>
         <td>false</td>
         <td>`(date: Date) => void`</td>
         <td>event will fire when user click on year cell.</td>
         <td>-</td>
     </tr>
     <tr>
-        <td>mode</td>
+        <td><p>mode</p></td>
         <td>true</td>
         <td>`"single" or "partial" or "interval" or "week"`</td>
         <td>strategy for dates selection. Watch examples to see usage</td>
         <td>-</td>
     </tr>
     <tr>
-        <td>view</td>
+        <td><p>view</p> </td>
         <td>true</td>
         <td>`"month" or "year" or "decade"`</td>
         <td>-</td>
         <td>-</td>
     </tr>
     <tr>
-        <td>ref</td>
+        <td><p>ref</p></td>
         <td>false</td>
         <td>`React ref(HTMLDIVElement or null)`</td>
         <td>it can be helpful for hooks like useOnOutsideClick to close datePicker</td>
         <td>-</td>
     </tr>
     <tr>
-        <td>customHeaderRenderProp</td>
+        <td><p>customHeaderRenderProp</p> </td>
         <td>false</td>
-        <td>`(props: DatePickerControlsProps) =>; JSX.Element `</td>
+        <td>`(props: DatePickerControlsProps) => JSX.Element `</td>
         <td>pattern implementation for header customization</td>
         <td>-</td>
     </tr>
     <tr>
-        <td>customMonthViewRenderProp</td>
+        <td><p>customMonthViewRenderProp</p></td>
         <td>false</td>
-        <td>`(props: MonthViewProps) =>; JSX.Element`</td>
+        <td>`(props: MonthViewProps) => JSX.Element`</td>
         <td>render prop pattern implementation</td>
         <td></td>
     </tr>
     <tr>
-        <td>customYearViewRenderProp</td>
+        <td><p>customYearViewRenderProp</p></td>
         <td>false</td>
-        <td>`(props: YearViewProps) =>; JSX.Element`</td>
+        <td>`(props: YearViewProps) => JSX.Element`</td>
         <td>render prop pattern implementation</td>
         <td></td>
     </tr>
     <tr>
-        <td>customDecadeViewRenderProp</td>
+        <td><p>customDecadeViewRenderProp</p></td>
         <td>false</td>
-        <td>`(props: DecadeViewProps) =>; JSX.Element`</td>
+        <td>`(props: DecadeViewProps) => JSX.Element`</td>
         <td>render prop pattern implementation</td>
         <td></td>
     </tr>
     <tr>
-        <td>customYearCellRenderProp</td>
+        <td><p>customYearCellRenderProp</p></td>
         <td>false</td>
-        <td>`(props: BaseCellRenderProps) =>; JSX.Element`</td>
+        <td>`(props: BaseCellRenderProps) => JSX.Element`</td>
         <td>render prop pattern implementation</td>
         <td></td>
     </tr>
     <tr>
-        <td>customMonthCellRenderProp</td>
+        <td><p>customMonthCellRenderProp</p></td>
         <td>false</td>
-        <td>`(props: BaseCellRenderProps) =>; JSX.Element`</td>
+        <td>`(props: BaseCellRenderProps) => JSX.Element`</td>
         <td></td>
         <td></td>
     </tr>
     <tr>
-        <td>customDayCellRenderProp</td>
+        <td><p>customDayCellRenderProp</p></td>
         <td>false</td>
-        <td>`(props: BaseCellRenderProps) =>; JSX.Element`</td>
+        <td>`(props: BaseCellRenderProps) => JSX.Element`</td>
         <td></td>
         <td></td>
     </tr>

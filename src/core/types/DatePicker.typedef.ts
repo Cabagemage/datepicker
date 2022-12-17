@@ -22,6 +22,7 @@ export type DatePickerMonthViewClassNames = {
 	monthViewDisabledDate: HTMLButtonElement["className"];
 	monthViewWeekDaysListItem: HTMLLIElement["className"];
 	monthViewDateIsNotRelatedToMonth: HTMLButtonElement["className"];
+	monthViewToday: HTMLButtonElement["className"];
 };
 
 export type DatePickerYearViewClassNames = {
@@ -39,6 +40,8 @@ export type DatePickerDecadeViewClassNames = {
 export type DatePickerCommonClassNames = {
 	wrapper: HTMLDivElement["className"];
 	header: HTMLDivElement["className"];
+	headerControls: HTMLDivElement["className"];
+	headerText: HTMLTimeElement["className"];
 	arrowLeft: HTMLButtonElement["className"];
 	arrowRight: HTMLButtonElement["className"];
 };
@@ -88,6 +91,9 @@ export interface DatePickerProps {
 	onDateChange: DatePickerChangeHandler;
 	mode?: DatePickerMode;
 	view: CalendarViews;
+
+	footerElement?: JSX.Element;
+	isVisible?: boolean;
 }
 
 export type YearViewProps = {

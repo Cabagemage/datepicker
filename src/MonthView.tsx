@@ -76,6 +76,9 @@ export const MonthView = ({
 		? customMonthClassNames.monthViewDateIsNotRelatedToMonth
 		: "datePicker__inactive-text";
 
+	const monthViewIsToday = customMonthClassNames?.monthViewToday
+		? customMonthClassNames.monthViewToday
+		: "datePicker__month-today";
 	return (
 		<div className={monthViewMonthBodyClassName}>
 			<ul className={monthViewWeekDaysClassName}>
@@ -103,6 +106,8 @@ export const MonthView = ({
 
 				const isDisabled = minDate !== undefined ? isFirstDateEarlierThanSecondOne(item, endDate) : false;
 				const isSelected = formattedSelectedDates.includes(formatDate(item));
+				const isToday = new Date().toDateString() === item.toDateString();
+				console.info(isToday);
 				const isCustomizedDateIsDisabled = customizedDate !== undefined ? customizedDate.isDisabled : false;
 				const isDateDisabled =
 					(mappedBannedDates !== undefined && mappedBannedDates.includes(formatDate(item))) ||
@@ -127,6 +132,9 @@ export const MonthView = ({
 							customizedDateClassName,
 							{
 								[defaultMonthDayCellBackgroundClassName]: customizedDate === undefined,
+							},
+							{
+								[monthViewIsToday]: isToday,
 							},
 							{
 								[monthViewDateIsNotRelatedToMonthClassName]: isDateNotRelatedToCurrentMonth,
