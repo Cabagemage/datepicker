@@ -1336,7 +1336,7 @@ var f,
 													o.jsx(
 														"button",
 														n(
-															{ className: "datePicker-header__toggler", onClick: V },
+															{ className: "datePicker-header__toggler", onClick: V, type: "button" },
 															{
 																children: o.jsx(
 																	"time",

@@ -1,6 +1,21 @@
 # loyal-react-datePicker
 
-Status: This package in beta at this moment. Feel free to create issues for any bugs or offers to improve this library
+Status: This package in beta at this moment. Feel free to create issues for any bugs or offers to improve this library. 
+
+Recommended width is 390px. If it will be smaller, possibly you need to fix it up by custom classes. 
+Or you can directly change exists date picker classnames, but you need to use !important directive. 
+
+
+## installation and usage 
+
+`npm install loyal-react-datePicker`
+
+```
+import { DatePicker } from "loyalreactdatepicker";
+
+// if you need default CSS, you need to import it.
+import "loyalreactdatepicker/dist/datePicker.css";
+```
 
 ## React component to handle dates
 
