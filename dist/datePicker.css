@@ -2,7 +2,6 @@
 	display: flex;
 	flex-wrap: wrap;
 	flex-direction: column;
-	max-width: 338px;
 	padding: 24px;
 	background-color: #fff;
 	border: 2px solid #1890ff;
@@ -21,8 +20,8 @@
 	flex-wrap: wrap;
 	box-sizing: border-box;
 	row-gap: 8px;
-	column-gap: 16px;
-	justify-content: flex-start;
+	column-gap: 14px;
+	justify-content: space-between;
 	width: 100%;
 }
 
@@ -58,7 +57,7 @@
 	list-style: none;
 	user-select: none;
 	justify-content: space-between;
-	padding: 0 16px 0 0;
+	padding: 0;
 }
 
 .datePicker-weekdays > .datePicker-weekdays__day {

@@ -27,12 +27,14 @@ export const PreparedDatePicker = (props: Omit<DatePickerProps, "changeCalendarV
 	};
 
 	return (
-		<DatePicker
-			{...props}
-			onYearClick={onYearClick}
-			changeCalendarView={changeCurrentCalendarView}
-			onMonthClick={monthClickHandler}
-			view={view}
-		/>
+		<div style={{ width: 360 }}>
+			<DatePicker
+				{...props}
+				onYearClick={onYearClick}
+				changeCalendarView={changeCurrentCalendarView}
+				onMonthClick={monthClickHandler}
+				view={view}
+			/>
+		</div>
 	);
 };
