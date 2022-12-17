@@ -13,7 +13,7 @@ const YearView = ({
 }: YearViewProps) => {
 	const yearViewBodyClassName = customYearClassNames?.yearViewBody
 		? customYearClassNames.yearViewBody
-		: "datePicker-body";
+		: "datePicker-body__year";
 	const yearViewMonthCellClassName = customYearClassNames?.yearViewMonthCell
 		? customYearClassNames.yearViewMonthCell
 		: "datePicker-body__month-cell";

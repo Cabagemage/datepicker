@@ -14,7 +14,7 @@ const DecadeView = ({
 }: DecadeViewProps) => {
 	const decadeViewBodyClassName = customDecadeClassNames?.body
 		? customDecadeClassNames.body
-		: "datePicker-body";
+		: "datePicker-body__decade";
 	const decadeViewCellClassName = customDecadeClassNames?.decadeViewYearCell
 		? customDecadeClassNames.decadeViewYearCell
 		: "datePicker-body__month-cell";
