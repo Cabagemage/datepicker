@@ -8,7 +8,7 @@ Or you can directly change exists date picker classnames, but you need to use !i
 
 ## installation and usage 
 
-`npm install loyal-react-datePicker`
+`npm i loyalreactdatepicker`
 
 ```
 import { DatePicker } from "loyalreactdatepicker";
