@@ -1,4 +1,4 @@
-# loyal-react-datePicker (0.6.0)
+# loyal-react-datePicker (0.6.1)
 
 Status: This package in beta at this moment. Feel free to create issues for any bugs or offers to improve this library. 
 
@@ -18,6 +18,8 @@ import "loyalreactdatepicker/dist/datePicker.css";
 ```
 
 ## React component to handle dates
+
+[Github](https://github.com/Cabagemage/loyal-react-datePicker);
 
 [Documentation and Examples](https://cabagemage.github.io/loyal-react-datePicker/) 
 
