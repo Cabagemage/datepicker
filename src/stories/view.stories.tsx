@@ -1,7 +1,7 @@
-import { DatePicker } from "../DatePicker";
+import { DatePicker } from "../index";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { useState } from "react";
-import { CalendarViews } from "../core";
+import type { CalendarViews } from "../core/types";
 
 export default {
 	title: "DatePicker/View",

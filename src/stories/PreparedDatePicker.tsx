@@ -1,6 +1,6 @@
-import type { DatePickerProps, CalendarViews } from "../core";
+import type { DatePickerProps, CalendarViews } from "../core/types";
 import { useState } from "react";
-import { DatePicker } from "../DatePicker";
+import { DatePicker } from "../index";
 
 export const PreparedDatePicker = (props: Omit<DatePickerProps, "changeCalendarView">) => {
 	const [view, setView] = useState<CalendarViews>(props.view);

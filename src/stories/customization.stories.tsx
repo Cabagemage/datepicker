@@ -1,14 +1,8 @@
-import { DatePicker } from "../DatePicker";
+import { DatePicker } from "../index";
+import type { DatePickerChangeHandler, DatePickerClassNames, CustomizedDate } from "../index";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { useState } from "react";
-import {
-	CustomizedDate,
-	DatePickerChangeHandler,
-	DatePickerClassNames,
-	getDatesInRange,
-	getMonday,
-	getSunday,
-} from "../core";
+import { getDatesInRange, getMonday, getSunday } from "../core/handlers";
 import { PreparedDatePicker } from "./PreparedDatePicker";
 import "./cssExamples.css";
 

@@ -1,4 +1,3 @@
-export { DatePicker } from "./DatePicker";
 export type {
 	DateType,
 	MinDateOptions,
@@ -19,3 +18,5 @@ export type {
 	GetFormattedMonthToLocale,
 	GetFormattedShortDay,
 } from "./core/types";
+
+export { DatePicker } from "./DatePicker";

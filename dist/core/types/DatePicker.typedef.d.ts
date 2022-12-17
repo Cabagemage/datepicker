@@ -1,18 +1,19 @@
+/// <reference types="react" />
 import { DAYS_IDX_LIST } from "../constants";
-
-export type CalendarViews = "month" | "year" | "decade";
-type DatePickerMode = "single" | "partial" | "interval" | "week";
-export type DatePickerInterval = { start: Date | null; end: Date | null };
-export type DatePickerChangeHandler = ({ value }: { value: Array<Date> | Date }) => void;
-
-export type CustomizedDate = {
+export declare type CalendarViews = "month" | "year" | "decade";
+declare type DatePickerMode = "single" | "partial" | "interval" | "week";
+export declare type DatePickerInterval = {
+	start: Date | null;
+	end: Date | null;
+};
+export declare type DatePickerChangeHandler = ({ value }: { value: Array<Date> | Date }) => void;
+export declare type CustomizedDate = {
 	className: HTMLButtonElement["className"];
 	date: Date;
 	isDisabled?: boolean;
 	textOnHover?: string;
 };
-
-export type DatePickerMonthViewClassNames = {
+export declare type DatePickerMonthViewClassNames = {
 	monthViewMonthBody: HTMLDivElement["className"];
 	monthViewWeekDays: HTMLUListElement["className"];
 	monthViewDay: HTMLButtonElement["className"];
@@ -23,52 +24,52 @@ export type DatePickerMonthViewClassNames = {
 	monthViewWeekDaysListItem: HTMLLIElement["className"];
 	monthViewDateIsNotRelatedToMonth: HTMLButtonElement["className"];
 };
-
-export type DatePickerYearViewClassNames = {
+export declare type DatePickerYearViewClassNames = {
 	yearViewBody: HTMLDivElement["className"];
 	yearViewMonthCell: HTMLButtonElement["className"];
 	yearViewMonthCellSelected: HTMLButtonElement["className"];
 	yearViewCellDisabled: HTMLButtonElement["className"];
 };
-export type DatePickerDecadeViewClassNames = {
+export declare type DatePickerDecadeViewClassNames = {
 	body: HTMLDivElement["className"];
 	decadeViewYearCell: HTMLButtonElement["className"];
 	decadeViewCellDisabled: HTMLButtonElement["className"];
 	decadeViewCellSelected: HTMLButtonElement["className"];
 };
-export type DatePickerCommonClassNames = {
+export declare type DatePickerCommonClassNames = {
 	wrapper: HTMLDivElement["className"];
 	header: HTMLDivElement["className"];
 	arrowLeft: HTMLButtonElement["className"];
 	arrowRight: HTMLButtonElement["className"];
 };
-
-export type DatePickerClassNames = Partial<{
+export declare type DatePickerClassNames = Partial<{
 	month: Partial<DatePickerMonthViewClassNames>;
 	common: Partial<DatePickerCommonClassNames>;
 	year: Partial<DatePickerYearViewClassNames>;
 	decade: Partial<DatePickerDecadeViewClassNames>;
 }>;
-
-export type MinDateOptions = {
+export declare type MinDateOptions = {
 	isPassedDateIncluded?: boolean;
 };
-export type MinDate = { date: Date; options?: MinDateOptions };
-
-export type DatePickerControlsProps = {
+export declare type MinDate = {
+	date: Date;
+	options?: MinDateOptions;
+};
+export declare type DatePickerControlsProps = {
 	changeCalendarView: () => void;
 	toPrevUnitNavAction: () => void;
 	headerText: string;
 	toNextUnitNavAction: () => void;
 };
-type BaseCellRenderProps = { date: Date; onDateClick: (date: Date) => void };
-
+declare type BaseCellRenderProps = {
+	date: Date;
+	onDateClick: (date: Date) => void;
+};
 export interface DatePickerProps {
 	locale?: Intl.LocalesArgument;
 	date?: Date;
 	minDate?: MinDate;
 	disabledDates?: Array<Date>;
-
 	customHeaderRenderProp?: (props: DatePickerControlsProps) => JSX.Element;
 	customMonthViewRenderProp?: (props: MonthViewProps) => JSX.Element;
 	customYearViewRenderProp?: (props: YearViewProps) => JSX.Element;
@@ -76,7 +77,6 @@ export interface DatePickerProps {
 	customYearCellRenderProp?: (props: BaseCellRenderProps) => JSX.Element;
 	customMonthCellRenderProp?: (props: BaseCellRenderProps) => JSX.Element;
 	customDayCellRenderProp?: (props: BaseCellRenderProps) => JSX.Element;
-
 	weekendDates?: typeof DAYS_IDX_LIST;
 	customizationClassNames?: Partial<DatePickerClassNames>;
 	changeCalendarView: () => void;
@@ -89,8 +89,7 @@ export interface DatePickerProps {
 	mode?: DatePickerMode;
 	view: CalendarViews;
 }
-
-export type YearViewProps = {
+export declare type YearViewProps = {
 	months: Array<Date>;
 	onMonthClick: (date: Date) => void;
 	defaultLocale: Intl.LocalesArgument;
@@ -99,7 +98,7 @@ export type YearViewProps = {
 	minDate?: MinDate;
 	customYearClassNames?: Partial<DatePickerYearViewClassNames>;
 };
-export type DecadeViewProps = {
+export declare type DecadeViewProps = {
 	years: Array<Date>;
 	onYearClick: (date: Date) => void;
 	customYearCellRenderProp?: (props: BaseCellRenderProps) => JSX.Element;
@@ -107,8 +106,7 @@ export type DecadeViewProps = {
 	activeYear?: number;
 	customDecadeClassNames?: Partial<DatePickerDecadeViewClassNames>;
 };
-
-export type MonthViewProps = {
+export declare type MonthViewProps = {
 	locale: Intl.LocalesArgument;
 	month: Array<Date>;
 	customMonthClassNames?: Partial<DatePickerMonthViewClassNames>;
@@ -121,3 +119,4 @@ export type MonthViewProps = {
 	disabledDates?: Array<Date | string>;
 	weekendDates?: typeof DAYS_IDX_LIST;
 };
+export {};

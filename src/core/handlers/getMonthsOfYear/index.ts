@@ -1,4 +1,4 @@
-import { GetMonthsOfYear } from "../../types";
+import type { GetMonthsOfYear } from "../../types";
 import { add } from "../add";
 
 export const getMonthsOfYear: GetMonthsOfYear = (date) => {

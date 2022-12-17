@@ -1,7 +1,13 @@
 export type {
+	GetCurrentMonth,
 	DateType,
-	MinDateOptions,
-	MinDate,
+	GetFormattedMonthToLocale,
+	GetFormattedShortDay,
+	GetMonthsOfYear,
+	GetDatesInRange,
+} from "./commonTypes";
+export type {
+	DatePickerChangeHandler,
 	CustomizedDate,
 	DatePickerClassNames,
 	DatePickerCommonClassNames,
@@ -11,11 +17,6 @@ export type {
 	DatePickerControlsProps,
 	DatePickerYearViewClassNames,
 	CalendarViews,
-	DatePickerChangeHandler,
-	GetCurrentMonth,
-	GetMonthsOfYear,
-	GetDatesInRange,
-	GetFormattedMonthToLocale,
-	GetFormattedShortDay,
-} from "./core/types";
-export { DatePicker } from "./DatePicker";
+	MinDateOptions,
+	MinDate,
+} from "./DatePicker.typedef";

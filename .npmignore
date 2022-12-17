@@ -10,3 +10,7 @@ babel.config.js
 jest.config.js
 public
 rollup.config.js
+.idea
+/node_modules
+/.pnp
+.pnp.js

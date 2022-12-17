@@ -1,7 +1,8 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react";
-import { DatePicker } from "../DatePicker";
+import { DatePicker } from "../index";
+import type { DatePickerChangeHandler } from "../index";
 import { useState } from "react";
-import { add, DatePickerChangeHandler, getMonday, getOrdinalNumberOfWeek, getSunday } from "../core";
+import { add, getMonday, getOrdinalNumberOfWeek, getSunday } from "../core/handlers";
 import { PreparedDatePicker } from "./PreparedDatePicker";
 
 export default {

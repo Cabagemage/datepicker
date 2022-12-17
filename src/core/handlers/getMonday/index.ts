@@ -2,7 +2,7 @@
 export const getMonday = (date: Date) => {
 	const sunday = date.getDay() === 0;
 
-	// we can't subtract 0 to get current sunday, thats why we'll pass date - 6 days in this block of code
+	// we can't subtract 0 to get current sunday, that's why we'll pass date - 6 days in this block of code
 	if (sunday) {
 		return new Date(date.getFullYear(), date.getMonth(), date.getDate() - 6);
 	}

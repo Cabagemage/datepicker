@@ -2,7 +2,7 @@ import { getLastDateOfMonth } from "../getLastDateOfMonth";
 import { getMonday } from "../getMonday";
 import { add } from "../add";
 import { getDatesInRange } from "../getDatesInRange";
-import { GetDatesOptions } from "../../types/commonTypes";
+import type { GetDatesOptions } from "../../types/commonTypes";
 
 export const getLastWeekOfMonth = ({
 	initialDate = new Date(),
