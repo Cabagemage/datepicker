@@ -106,12 +106,12 @@
 }
 
 .datePicker__controller_type_next {
-	background-image: url("static/defaultIcons/arrow.svg");
+	background-image: url("./static/defaultIcons/arrow.svg");
 }
 
 .datePicker__controller_type_prev {
 	backface-visibility: hidden;
-	background-image: url("static/defaultIcons/arrow.svg");
+	background-image: url("./static/defaultIcons/arrow.svg");
 	rotate: 180deg;
 }
 
