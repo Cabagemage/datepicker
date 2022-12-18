@@ -2,7 +2,10 @@ import type { DatePickerProps, CalendarViews } from "../core/types";
 import { useState } from "react";
 import { DatePicker } from "../index";
 
-export const PreparedDatePicker = (props: Omit<DatePickerProps, "changeCalendarView">) => {
+type PreparedDatePickerProps = {
+	width?: number;
+} & Omit<DatePickerProps, "changeCalendarView">;
+export const PreparedDatePicker = ({ width = 360, ...props }: PreparedDatePickerProps) => {
 	const [view, setView] = useState<CalendarViews>(props.view);
 
 	const changeCurrentCalendarView = () => {
@@ -27,7 +30,7 @@ export const PreparedDatePicker = (props: Omit<DatePickerProps, "changeCalendarV
 	};
 
 	return (
-		<div style={{ width: 360 }}>
+		<div style={{ width: width }}>
 			<DatePicker
 				{...props}
 				onYearClick={onYearClick}

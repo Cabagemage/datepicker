@@ -1,11 +1,11 @@
 import { DatePicker } from "../index";
 import type { DatePickerChangeHandler, DatePickerClassNames, CustomizedDate } from "../index";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getDatesInRange, getMonday, getSunday } from "../core/handlers";
 import { PreparedDatePicker } from "./PreparedDatePicker";
 import "./cssExamples.css";
-
+import "./animeCalendar.css";
 export default {
 	title: "DatePicker/customization",
 	component: DatePicker,
@@ -179,6 +179,134 @@ const OtherLanguageTemplate: ComponentStory<typeof DatePicker> = () => {
 		</section>
 	);
 };
+
+const AnimeDatePickerTemplate: ComponentStory<typeof DatePicker> = () => {
+	const [date, setDate] = useState(new Date());
+	const [animeDates, setAnimeDates] = useState<Array<string>>([]);
+	const change: DatePickerChangeHandler = (args) => {
+		if (!Array.isArray(args.value)) {
+			setDate(args.value);
+		}
+	};
+	const getAnimeGirls = async () => {
+		const animeFirstPart = await fetch("https://api.waifu.pics/many/sfw/waifu", {
+			method: "POST",
+			mode: "cors",
+			cache: "default",
+			headers: {
+				"Content-Type": "application/json",
+				// 'Content-Type': 'application/x-www-form-urlencoded',
+			},
+			body: JSON.stringify({}),
+		});
+		const animeSecondPart = await fetch("https://api.waifu.pics/many/sfw/waifu", {
+			method: "POST",
+			mode: "cors",
+			cache: "default",
+			headers: {
+				"Content-Type": "application/json",
+				// 'Content-Type': 'application/x-www-form-urlencoded',
+			},
+			body: JSON.stringify({}),
+		});
+		const animeFirstPartJson = (await animeFirstPart.json()) as { files: Array<string> };
+		const animeSecondPartJSON = (await animeSecondPart.json()) as { files: Array<string> };
+		setAnimeDates(animeFirstPartJson.files.concat(animeSecondPartJSON.files.slice(0, 8)));
+	};
+
+	useEffect(() => {
+		getAnimeGirls();
+	}, []);
+
+	const customClassNames: DatePickerClassNames = {
+		month: {
+			monthViewDay: "customMonthViewDay",
+			monthViewMonthBody: "customMonthBody",
+			monthViewWeekDays: "customWeekDays",
+			monthViewWeekDaysListItem: "customWeekDay",
+		},
+		year: { yearViewMonthCell: "customViewMonthCell", yearViewBody: "yearViewBody" },
+		decade: {
+			decadeViewYearCell: "decadeViewYearCell",
+			body: "decadeBody",
+		},
+		common: { wrapper: "body", arrowLeft: "arrLeft", arrowRight: "arrRight" },
+	};
+
+	const changeMonth = async (cb: () => void) => {
+		await getAnimeGirls();
+		cb();
+	};
+
+	const week = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+	return (
+		<section style={{ width: "100%", height: "100vh" }}>
+			<h2>
+				This is brightful example how deep you can customize anything here. No matter what you want to make
+				and why.
+			</h2>
+			<PreparedDatePicker
+				customizationClassNames={customClassNames}
+				date={date}
+				customHeaderRenderProp={({ toNextUnitNavAction, toPrevUnitNavAction, headerText }) => {
+					return (
+						<div style={{ width: "100%", display: "flex", justifyContent: "space-evenly" }}>
+							<button
+								onClick={() => {
+									changeMonth(toPrevUnitNavAction);
+								}}
+							>
+								Prev
+							</button>
+							<span style={{ fontSize: 36 }}>{headerText}</span>
+							<button
+								onClick={() => {
+									changeMonth(toNextUnitNavAction);
+								}}
+							>
+								Next
+							</button>
+						</div>
+					);
+				}}
+				customMonthViewRenderProp={({ month }) => {
+					const animeListWithDates = animeDates.map((item, i) => {
+						return {
+							image: item,
+							date: month[i],
+						};
+					});
+					return (
+						<>
+							<div className={"animeWeedDays"}>
+								{week.map((item) => {
+									return <div className={"animeWeekDay"}>{item}</div>;
+								})}
+							</div>
+							<div className={"monthWrapper"}>
+								{animeListWithDates.map((date) => {
+									return (
+										<div className={"anime"} key={date.date.toDateString()}>
+											<span className={"anime__text"}>{date.date.toLocaleDateString()}</span>
+											<div className={"anime__description"}></div>
+											<img className={"animeImg"} src={date.image} loading={"lazy"} />
+										</div>
+									);
+								})}
+							</div>
+						</>
+					);
+				}}
+				onDateChange={change}
+				locale={"en"}
+				mode={"single"}
+				view={"month"}
+			/>
+		</section>
+	);
+};
+
+export const AnimeCalendar = AnimeDatePickerTemplate.bind({});
 export const OtherLanguage = OtherLanguageTemplate.bind({});
 export const CustomCalendarClassNames = CustomCalendarClassNamesTemplate.bind({});
 export const CustomHeader = CustomHeaderTemplate.bind({});
