@@ -20,6 +20,7 @@ import {
 	START_OF_NEW_MONTH_IDX,
 	DECEMBER_ORDINAL_NUMBER,
 	ONE_DECADE,
+	MIDDLE_DAY_OF_MONTH,
 } from "./core/constants";
 import { forwardRef, useEffect, useMemo, useState } from "react";
 import { MonthView } from "./MonthView";
@@ -29,12 +30,12 @@ import DecadeView from "./DecadeView";
 export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 	(
 		{
-			locale,
+			locale = "en",
 			mode = "single",
 			minDate,
 			disabledDates,
 			onYearClick,
-			weekendDates,
+			weekendDays,
 			onDateChange,
 			customizedDates,
 			customizationClassNames,
@@ -56,7 +57,6 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 		},
 		ref
 	) => {
-		const defaultLocale = locale === undefined ? "en" : locale;
 		const defineDefaultSelectedDates = () => {
 			if (mode === "week" && date !== undefined) {
 				const monday = getMonday(date);
@@ -99,7 +99,6 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 		});
 
 		const [month, setMonth] = useState<Array<Date>>(INITIAL_MONTH_DATES);
-		const MIDDLE_DAY_OF_MONTH = 15;
 		const [currentMonthIdx, setCurrentMonthIdx] = useState(month[MIDDLE_DAY_OF_MONTH].getMonth());
 		const [currentDate, setCurrentDate] = useState(defaultDate);
 		const [updatedSelectedDates, setUpdatedSelectedDates] =
@@ -122,6 +121,7 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 				onYearClick(updatedDate);
 			}
 		};
+
 		const changeYear = (action: "add" | "subtract", count: number) => {
 			if (action === "add") {
 				setCurrentDate((prev) => {
@@ -134,6 +134,7 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 				});
 			}
 		};
+
 		const toNextUnitNavAction = () => {
 			if (view === "month") {
 				const nextMonth = currentMonthIdx + ONE_MONTH;
@@ -288,7 +289,7 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 				case "month":
 					return `${getFormattedMonthToLocale({
 						month: month[START_OF_NEW_MONTH_IDX],
-						locale: defaultLocale,
+						locale: locale,
 					})} ${currentDate.getFullYear()}`;
 				case "year":
 					return `${currentDate.getFullYear()}`;
@@ -298,7 +299,7 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 				default:
 					return "test";
 			}
-		}, [currentDate, view, month, defaultLocale]);
+		}, [currentDate, view, month, locale]);
 
 		const datePickerWrapperCn = customizationClassNames?.common?.wrapper
 			? customizationClassNames.common.wrapper
@@ -350,7 +351,7 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 					)}
 					{customMonthViewRenderProp !== undefined &&
 						customMonthViewRenderProp({
-							locale: defaultLocale,
+							locale: locale,
 							month: month,
 							customizedDates: customizedDates,
 							currentMonth: currentMonthIdx,
@@ -362,13 +363,13 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 						})}
 					{view === "month" && customMonthViewRenderProp === undefined && (
 						<MonthView
-							locale={defaultLocale}
+							locale={locale}
 							month={month}
 							customDayCellRenderProp={customDayCellRenderProp}
 							customizedDates={customizedDates}
 							currentMonth={currentMonthIdx}
 							disabledDates={disabledDates}
-							weekendDates={weekendDates}
+							weekendDays={weekendDays}
 							minDate={minDate}
 							customMonthClassNames={customizationClassNames?.month}
 							selectedDates={updatedSelectedDates}
@@ -381,7 +382,7 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 							currentMonthIdx: currentMonthIdx,
 							minDate: minDate,
 							onMonthClick: clickMonth,
-							defaultLocale: defaultLocale,
+							defaultLocale: locale,
 						})}
 					{view === "year" && customYearViewRenderProp === undefined && (
 						<YearView
@@ -391,7 +392,7 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 							minDate={minDate}
 							customMonthCellRenderProp={customMonthCellRenderProp}
 							onMonthClick={clickMonth}
-							defaultLocale={defaultLocale}
+							defaultLocale={locale}
 						/>
 					)}
 					{customDecadeViewRenderProp !== undefined &&

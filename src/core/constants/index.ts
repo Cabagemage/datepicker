@@ -9,5 +9,6 @@ export {
 	MONDAY_ORDINAL_NUMBER,
 	DAYS_IDX_LIST,
 	MAX_DATES_LENGTH,
+	MIDDLE_DAY_OF_MONTH,
 	ONE_DECADE,
 } from "./constants";

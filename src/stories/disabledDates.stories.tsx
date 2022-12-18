@@ -1,6 +1,6 @@
 import { DatePicker } from "../index";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
-import { useState } from "react";
+import { ChangeEventHandler, useState } from "react";
 import { DatePickerChangeHandler } from "../index";
 import { getDatesInRange, getMonday, getSunday } from "../core/handlers";
 import { PreparedDatePicker } from "./PreparedDatePicker";
@@ -12,24 +12,33 @@ export default {
 
 const CalendarWithWeekendDaysTemplate: ComponentStory<typeof DatePicker> = () => {
 	const [date, setDate] = useState(new Date());
+	const [isWeekendDaysDisabled, setIsWeekendDaysDisabled] = useState(false);
 	const change: DatePickerChangeHandler = (args) => {
 		if (!Array.isArray(args.value)) {
 			setDate(args.value);
 		}
 	};
 
+	const changeCheckboxValue: ChangeEventHandler<HTMLInputElement> = (e) => {
+		setIsWeekendDaysDisabled(e.target.checked);
+	};
 	return (
 		<section>
 			<div style={{ display: "flex", gap: "25px", alignItems: "center" }}>
 				<PreparedDatePicker
 					date={date}
 					onDateChange={change}
-					weekendDates={[0, 6]}
+					customizationClassNames={{ month: { monthWeekendDay: "customWeekendDay" } }}
+					weekendDays={{ weekendDays: [0, 6], shouldBeDisabled: isWeekendDaysDisabled }}
 					locale={"en"}
 					mode={"single"}
 					view={"month"}
 				/>
 				<input readOnly value={date.toLocaleDateString()} style={{ height: 50 }} />
+				<div>
+					<label htmlFor={"disableWeekend"}>Disable weekend days</label>
+					<input type={"checkbox"} id={"disableWeekend"} onChange={changeCheckboxValue} />
+				</div>
 			</div>
 		</section>
 	);

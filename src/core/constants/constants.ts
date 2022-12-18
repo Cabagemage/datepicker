@@ -9,3 +9,4 @@ export const MONTHS_IDX_LIST = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 export const DAYS_IDX_LIST = [0, 1, 2, 3, 4, 5, 6];
 export const MAX_DATES_LENGTH = 42;
 export const ONE_DECADE = 10;
+export const MIDDLE_DAY_OF_MONTH = 15;

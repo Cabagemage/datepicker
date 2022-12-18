@@ -28,7 +28,7 @@ import "./storybook.css";
   `}
 </style>
 
-# loyal-react-datePicker 0.6.1
+# loyalreactdatePicker 0.6.2
 
 Simple and magnificent Date Picker dedicated to Joka and his son Boka - authors of cryptography algorithm
 
@@ -110,9 +110,9 @@ Attention. Its beta version of date picker, possible it'll be changed later
         <td>-</td>
     </tr>
     <tr>
-        <td><p>weekendDates</p></td>
+        <td><p>weekendDays</p></td>
         <td>false</td>
-        <td>`[0,1,2,3,4,5,6]`</td>
+        <td>`{weekendDays: [0,1,2,3,4,5,6], shouldBeDisabled: boolean}`</td>
         <td>pass array with days of week to disable it as weekend.</td>
         <td>`[6,0]` all saturdays and sundays will be disabled</td>
     </tr>
@@ -239,14 +239,52 @@ Attention. Its beta version of date picker, possible it'll be changed later
         <td><p>customMonthCellRenderProp</p></td>
         <td>false</td>
         <td>`(props: BaseCellRenderProps) => JSX.Element`</td>
-        <td></td>
+        <td>render prop pattern implementation</td>
         <td></td>
     </tr>
     <tr>
         <td><p>customDayCellRenderProp</p></td>
         <td>false</td>
         <td>`(props: BaseCellRenderProps) => JSX.Element`</td>
-        <td></td>
+        <td>render prop pattern implementation</td>
         <td></td>
     </tr>
 </table>
+
+# ChangeLog
+
+<div className="subheading">0.6.2</div>
+
+WeekendDates renamed to WeekendDays
+
+Also was changed a type of it.
+before: Array day numbers. Now: object: `{weekendDays: Array<daynumbers>, shouldBeDisabled: boolean}`
+
+Add className to customize weekendDays
+
+<div className="subheading">0.6.1</div>
+
+Remove max-width for month body
+
+<div className="subheading">0.6.0</div>
+
+- documentation fixes;
+- add today className for month view
+- add footer element customization
+- add isVisible boolean to hide/show calendar when you want
+
+<div className="subheading">0.5.0</div>
+
+stable pre-release version (change rollup config & resolve some critical bugs)
+
+<div className="subheading">0.3.0</div>
+
+add type "button" for period toggle button (month/year/decade label). It is important for datepicker in forms usage.
+
+<div className="subheading">0.2.0</div>
+
+Decrease bundle size from 160kb to 140kb
+
+<div className="subheading">0.1.0</div>
+
+pre-release

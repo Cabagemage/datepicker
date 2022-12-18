@@ -29,7 +29,7 @@ export const MonthView = ({
 	customMonthClassNames,
 	minDate,
 	disabledDates,
-	weekendDates,
+	weekendDays,
 	customDayCellRenderProp,
 }: MonthViewProps) => {
 	const mappedBannedDates = disabledDates?.map((item) => {
@@ -79,6 +79,12 @@ export const MonthView = ({
 	const monthViewIsToday = customMonthClassNames?.monthViewToday
 		? customMonthClassNames.monthViewToday
 		: "datePicker__month-today";
+
+	// in default theme, weekend Day has no styling
+	const monthWeekendDayCn = customMonthClassNames?.monthWeekendDay
+		? customMonthClassNames.monthWeekendDay
+		: "";
+
 	return (
 		<div className={monthViewMonthBodyClassName}>
 			<ul className={monthViewWeekDaysClassName}>
@@ -107,12 +113,13 @@ export const MonthView = ({
 				const isDisabled = minDate !== undefined ? isFirstDateEarlierThanSecondOne(item, endDate) : false;
 				const isSelected = formattedSelectedDates.includes(formatDate(item));
 				const isToday = new Date().toDateString() === item.toDateString();
-				console.info(isToday);
 				const isCustomizedDateIsDisabled = customizedDate !== undefined ? customizedDate.isDisabled : false;
 				const isDateDisabled =
 					(mappedBannedDates !== undefined && mappedBannedDates.includes(formatDate(item))) ||
 					isCustomizedDateIsDisabled;
-				const isWeekendDay = weekendDates !== undefined && weekendDates.includes(item.getDay());
+				const isWeekendDay = weekendDays !== undefined && weekendDays.weekendDays.includes(item.getDay());
+				const isWeekendDaysShouldBeDisabled =
+					weekendDays !== undefined ? weekendDays.shouldBeDisabled : false;
 				const customizedDateClassName = customizedDate !== undefined ? customizedDate.className : "";
 
 				if (customDayCellRenderProp !== undefined) {
@@ -133,6 +140,7 @@ export const MonthView = ({
 							{
 								[defaultMonthDayCellBackgroundClassName]: customizedDate === undefined,
 							},
+							{ [monthWeekendDayCn]: isWeekendDay },
 							{
 								[monthViewIsToday]: isToday,
 							},
@@ -140,12 +148,13 @@ export const MonthView = ({
 								[monthViewDateIsNotRelatedToMonthClassName]: isDateNotRelatedToCurrentMonth,
 							},
 							{
-								[monthDayCellActiveClassName]: isSelected && !isDateDisabled && !isWeekendDay,
-								[monthDayCellDisabledClassName]: isDisabled || isDateDisabled || isWeekendDay,
+								[monthDayCellActiveClassName]: isSelected && !isDateDisabled,
+								[monthDayCellDisabledClassName]:
+									isDisabled || isDateDisabled || (isWeekendDaysShouldBeDisabled && isWeekendDay),
 							}
 						)}
 						key={item.toString()}
-						disabled={isDisabled || isDateDisabled || isWeekendDay}
+						disabled={isDisabled || isDateDisabled || (isWeekendDaysShouldBeDisabled && isWeekendDay)}
 					>
 						<span className={monthDayCellTextClassName}>{getFormattedShortDayForMonthView(item)}</span>
 					</button>

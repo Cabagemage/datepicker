@@ -48,23 +48,25 @@ const CalendarWithViewSelection: ComponentStory<typeof DatePicker> = () => {
 				</select>
 			</div>
 			<div style={{ display: "flex", gap: "25px", alignItems: "center" }}>
-				<DatePicker
-					date={date}
-					onYearClick={onYearClick}
-					changeCalendarView={console.info}
-					onDateChange={console.info}
-					customHeaderRenderProp={() => {
-						return (
-							<div>
-								{currentViewMode === "year"
-									? "current month is " + selectedMonth.toLocaleDateString("en-US", { month: "long" })
-									: "current year is " + selectedYear.getFullYear()}
-							</div>
-						);
-					}}
-					onMonthClick={monthClickHandler}
-					view={currentViewMode}
-				/>
+				<div style={{ width: 500 }}>
+					<DatePicker
+						date={date}
+						onYearClick={onYearClick}
+						changeCalendarView={console.info}
+						onDateChange={console.info}
+						customHeaderRenderProp={() => {
+							return (
+								<div>
+									{currentViewMode === "year"
+										? "current month is " + selectedMonth.toLocaleDateString("en-US", { month: "long" })
+										: "current year is " + selectedYear.getFullYear()}
+								</div>
+							);
+						}}
+						onMonthClick={monthClickHandler}
+						view={currentViewMode}
+					/>
+				</div>
 			</div>
 		</section>
 	);

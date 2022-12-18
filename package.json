@@ -3,7 +3,12 @@
 	"license": "MIT",
 	"author": "Andrey Zaitsev",
 	"homepage": "http://cabagemage.github.io/loyal-react-datePicker",
-	"version": "0.6.1",
+	"version": "0.6.2",
+	"keywords": [
+		"react",
+		"datepicker",
+		"customization"
+	],
 	"description": "react date picker with full customization through different ways",
 	"private": false,
 	"main": "dist/index.js",

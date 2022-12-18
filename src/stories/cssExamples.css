@@ -3,6 +3,7 @@
 * {
 	font-family: Inter, "Arial", "SansSerif", serif;
 }
+
 .customDate__1 {
 	user-select: none;
 	border-radius: 16px;
@@ -20,6 +21,7 @@
 .customDate__1:hover {
 	background: red !important;
 }
+
 .customDate__1.datePicker__selectedDate {
 	background-color: black;
 }
@@ -34,9 +36,11 @@
 	background: black;
 	border-radius: 16px;
 }
+
 .customWrapper time {
 	color: #fff;
 }
+
 .customMonthViewDay {
 	width: 36px;
 	border-radius: 8px;
@@ -56,12 +60,14 @@
 	background: black;
 	color: #fff;
 }
+
 .customWeekDays {
 	padding: 0;
 	width: 100%;
 	display: flex;
 	justify-content: space-between;
 }
+
 .customWeekDay {
 	width: 36px;
 	flex-shrink: 0;
@@ -70,6 +76,7 @@
 	border: 1px solid;
 	list-style: none;
 }
+
 .customViewMonthCell {
 	all: unset;
 	border: 1px solid;
@@ -86,12 +93,14 @@
 	justify-content: space-between;
 	gap: 25px;
 }
+
 .decadeBody {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 25px;
 	justify-content: space-between;
 }
+
 .decadeViewYearCell {
 	all: unset;
 	border: 1px solid;
@@ -106,13 +115,20 @@
 	width: 50px;
 	cursor: pointer;
 }
+
 .arrRight {
 	all: unset;
 	cursor: pointer;
 }
+
 .arrLeft:before {
 	content: "<";
 }
+
 .arrRight:before {
 	content: ">";
+}
+
+.customWeekendDay {
+	color: red;
 }

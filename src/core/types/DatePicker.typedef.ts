@@ -12,11 +12,14 @@ export type CustomizedDate = {
 	textOnHover?: string;
 };
 
+export type WeekendDays = { weekendDays: typeof DAYS_IDX_LIST; shouldBeDisabled?: boolean };
+
 export type DatePickerMonthViewClassNames = {
 	monthViewMonthBody: HTMLDivElement["className"];
 	monthViewWeekDays: HTMLUListElement["className"];
 	monthViewDay: HTMLButtonElement["className"];
 	monthViewDayActive: HTMLButtonElement["className"];
+	monthWeekendDay: HTMLButtonElement["className"];
 	monthViewDayDefaultBackgroundClassName: HTMLButtonElement["className"];
 	monthViewDayDayText: HTMLSpanElement["className"];
 	monthViewDisabledDate: HTMLButtonElement["className"];
@@ -31,12 +34,14 @@ export type DatePickerYearViewClassNames = {
 	yearViewMonthCellSelected: HTMLButtonElement["className"];
 	yearViewCellDisabled: HTMLButtonElement["className"];
 };
+
 export type DatePickerDecadeViewClassNames = {
 	body: HTMLDivElement["className"];
 	decadeViewYearCell: HTMLButtonElement["className"];
 	decadeViewCellDisabled: HTMLButtonElement["className"];
 	decadeViewCellSelected: HTMLButtonElement["className"];
 };
+
 export type DatePickerCommonClassNames = {
 	wrapper: HTMLDivElement["className"];
 	header: HTMLDivElement["className"];
@@ -56,6 +61,7 @@ export type DatePickerClassNames = Partial<{
 export type MinDateOptions = {
 	isPassedDateIncluded?: boolean;
 };
+
 export type MinDate = { date: Date; options?: MinDateOptions };
 
 export type DatePickerControlsProps = {
@@ -64,6 +70,7 @@ export type DatePickerControlsProps = {
 	headerText: string;
 	toNextUnitNavAction: () => void;
 };
+
 type BaseCellRenderProps = { date: Date; onDateClick: (date: Date) => void };
 
 export interface DatePickerProps {
@@ -71,7 +78,6 @@ export interface DatePickerProps {
 	date?: Date;
 	minDate?: MinDate;
 	disabledDates?: Array<Date>;
-
 	customHeaderRenderProp?: (props: DatePickerControlsProps) => JSX.Element;
 	customMonthViewRenderProp?: (props: MonthViewProps) => JSX.Element;
 	customYearViewRenderProp?: (props: YearViewProps) => JSX.Element;
@@ -79,8 +85,7 @@ export interface DatePickerProps {
 	customYearCellRenderProp?: (props: BaseCellRenderProps) => JSX.Element;
 	customMonthCellRenderProp?: (props: BaseCellRenderProps) => JSX.Element;
 	customDayCellRenderProp?: (props: BaseCellRenderProps) => JSX.Element;
-
-	weekendDates?: typeof DAYS_IDX_LIST;
+	weekendDays?: WeekendDays;
 	customizationClassNames?: Partial<DatePickerClassNames>;
 	changeCalendarView: () => void;
 	customizedDates?: Array<CustomizedDate>;
@@ -91,7 +96,6 @@ export interface DatePickerProps {
 	onDateChange: DatePickerChangeHandler;
 	mode?: DatePickerMode;
 	view: CalendarViews;
-
 	footerElement?: JSX.Element;
 	isVisible?: boolean;
 }
@@ -105,6 +109,7 @@ export type YearViewProps = {
 	minDate?: MinDate;
 	customYearClassNames?: Partial<DatePickerYearViewClassNames>;
 };
+
 export type DecadeViewProps = {
 	years: Array<Date>;
 	onYearClick: (date: Date) => void;
@@ -125,5 +130,5 @@ export type MonthViewProps = {
 	selectedDates: Array<string | Date>;
 	minDate?: MinDate;
 	disabledDates?: Array<Date | string>;
-	weekendDates?: typeof DAYS_IDX_LIST;
+	weekendDays?: WeekendDays;
 };
