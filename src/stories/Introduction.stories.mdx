@@ -28,7 +28,7 @@ import "./storybook.css";
   `}
 </style>
 
-# loyalreactdatePicker 0.6.2
+# loyalreactdatePicker 0.7.0
 
 Simple and magnificent Date Picker dedicated to Joka and his son Boka - authors of cryptography algorithm
 
@@ -89,13 +89,6 @@ Attention. Its beta version of date picker, possible it'll be changed later
         <td>ru-RU, en-US, en</td>
     </tr>
     <tr>
-        <td> <p>date</p> </td>
-        <td>false</td>
-        <td>`Date`</td>
-        <td>Its helpful only for single mode. You can pass date to track its changes</td>
-        <td>`new Date()`;</td>
-    </tr>
-    <tr>
         <td><p>minDate</p></td>
         <td>false</td>
         <td>`{date: Date, options?: {isPassedDateIncluded?: boolean}}`</td>
@@ -138,10 +131,10 @@ Attention. Its beta version of date picker, possible it'll be changed later
         <td>-</td>
     </tr>
     <tr>
-        <td><p>selectedDates</p></td>
+        <td><p>value</p></td>
         <td>false</td>
-        <td>`Array Date;`</td>
-        <td>Important: you should use this prop with partial mode to save changes in your state.</td>
+        <td>``` Date | Array<Date> | DatePickerInterval```</td>
+        <td>Date should be used for single mode, ```Array<Date>``` for partial and last one for interval</td>
         <td>-</td>
     </tr>
         <tr>
@@ -159,31 +152,24 @@ Attention. Its beta version of date picker, possible it'll be changed later
                     <td>its true by default</td>
                 </tr>
     <tr>
-        <td><p>selectedInterval</p></td>
-        <td>false</td>
-        <td>`{start: Date or null, end: Date or null}`</td>
-        <td>same that selectedDates. It can be helpful if you want to make start date selected by default</td>
-        <td>-</td>
-    </tr>
-    <tr>
         <td><p>onMonthClick</p></td>
         <td>false</td>
         <td>`(date: Date) => void`</td>
-        <td>event will fire when user click on month cell.</td>
+        <td>event will fire when user click on month cell. Return date with updated  month</td>
         <td>-</td>
     </tr>
     <tr>
         <td><p>onYearClick</p></td>
         <td>false</td>
         <td>`(date: Date) => void`</td>
-        <td>event will fire when user click on year cell.</td>
+        <td>event will fire when user click on year cell.  Return date with updated  year</td>
         <td>-</td>
     </tr>
     <tr>
         <td><p>mode</p></td>
         <td>true</td>
         <td>`"single" or "partial" or "interval" or "week"`</td>
-        <td>strategy for dates selection. Watch examples to see usage</td>
+        <td>strategy for dates selection. Watch examples to see usage. Use single date selection for week, Array for partial, and ```{start: Date | null, end: Date | null} for interval```</td>
         <td>-</td>
     </tr>
     <tr>
@@ -251,20 +237,23 @@ Attention. Its beta version of date picker, possible it'll be changed later
     </tr>
 </table>
 
-# ChangeLog
+<a href="#changelog"><h2 id="changelog">ChangeLog</h2></a>
+
+<div className="subheading">0.7.0</div>
+
+- fix year toggle;
+- Remove selectedDates, selectedInterval and date prop. they were replaced to value prop. It can be Array of Dates or Date or `{start: Date | null, end: Date | null}`
+- Move month date handlers to MonthViewComponent
+- Change storybook examples realization.
 
 <div className="subheading">0.6.2</div>
 
-WeekendDates renamed to WeekendDays
-
-Also was changed a type of it.
-before: Array day numbers. Now: object: `{weekendDays: Array<daynumbers>, shouldBeDisabled: boolean}`
-
-Add className to customize weekendDays
+- WeekendDates renamed to WeekendDays. Also was changed a type of it. before: Array day numbers. Now: object: `{weekendDays: Array<daynumbers>, shouldBeDisabled: boolean}`
+- Add className to customize weekendDays
 
 <div className="subheading">0.6.1</div>
 
-Remove max-width for month body
+- Remove max-width for month body
 
 <div className="subheading">0.6.0</div>
 
@@ -275,16 +264,16 @@ Remove max-width for month body
 
 <div className="subheading">0.5.0</div>
 
-stable pre-release version (change rollup config & resolve some critical bugs)
+- stable pre-release version (change rollup config & resolve some critical bugs)
 
 <div className="subheading">0.3.0</div>
 
-add type "button" for period toggle button (month/year/decade label). It is important for datepicker in forms usage.
+- add type "button" for period toggle button (month/year/decade label). It is important for datepicker in forms usage.
 
 <div className="subheading">0.2.0</div>
 
-Decrease bundle size from 160kb to 140kb
+- Decrease bundle size from 160kb to 140kb
 
 <div className="subheading">0.1.0</div>
 
-pre-release
+- pre-release

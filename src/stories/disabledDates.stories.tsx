@@ -1,7 +1,6 @@
 import { DatePicker } from "../index";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { ChangeEventHandler, useState } from "react";
-import { DatePickerChangeHandler } from "../index";
 import { getDatesInRange, getMonday, getSunday } from "../core/handlers";
 import { PreparedDatePicker } from "./PreparedDatePicker";
 
@@ -13,10 +12,8 @@ export default {
 const CalendarWithWeekendDaysTemplate: ComponentStory<typeof DatePicker> = () => {
 	const [date, setDate] = useState(new Date());
 	const [isWeekendDaysDisabled, setIsWeekendDaysDisabled] = useState(false);
-	const change: DatePickerChangeHandler = (args) => {
-		if (!Array.isArray(args.value)) {
-			setDate(args.value);
-		}
+	const changeDate = (date: Date) => {
+		setDate(date);
 	};
 
 	const changeCheckboxValue: ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -26,8 +23,8 @@ const CalendarWithWeekendDaysTemplate: ComponentStory<typeof DatePicker> = () =>
 		<section>
 			<div style={{ display: "flex", gap: "25px", alignItems: "center" }}>
 				<PreparedDatePicker
-					date={date}
-					onDateChange={change}
+					value={date}
+					onSingleDateChange={changeDate}
 					customizationClassNames={{ month: { monthWeekendDay: "customWeekendDay" } }}
 					weekendDays={{ weekendDays: [0, 6], shouldBeDisabled: isWeekendDaysDisabled }}
 					locale={"en"}
@@ -46,10 +43,8 @@ const CalendarWithWeekendDaysTemplate: ComponentStory<typeof DatePicker> = () =>
 
 const CalendarWithCustomDisabledDatesTemplate: ComponentStory<typeof DatePicker> = () => {
 	const [date, setDate] = useState(new Date());
-	const change: DatePickerChangeHandler = (args) => {
-		if (!Array.isArray(args.value)) {
-			setDate(args.value);
-		}
+	const changeDate = (date: Date) => {
+		setDate(date);
 	};
 
 	const monday = getMonday(new Date());
@@ -60,8 +55,8 @@ const CalendarWithCustomDisabledDatesTemplate: ComponentStory<typeof DatePicker>
 		<section>
 			<div style={{ display: "flex", gap: "25px", alignItems: "center" }}>
 				<PreparedDatePicker
-					date={date}
-					onDateChange={change}
+					value={date}
+					onSingleDateChange={changeDate}
 					disabledDates={customizedDatesForFirstWeek}
 					locale={"en"}
 					mode={"single"}
@@ -76,25 +71,24 @@ const CalendarWithCustomDisabledDatesTemplate: ComponentStory<typeof DatePicker>
 const CalendarWithMinDatePassedTemplate: ComponentStory<typeof DatePicker> = () => {
 	const [minDate, setMinDate] = useState(new Date());
 	const [shouldMinDateBeDisabled, setShouldMinDateBeDisabled] = useState(true);
-	const change: DatePickerChangeHandler = (args) => {
-		if (!Array.isArray(args.value)) {
-			setMinDate(args.value);
-		}
+	const changeDate = (date: Date) => {
+		setMinDate(date);
 	};
 	return (
 		<section>
 			<h2>All dates until/include selected date will be disabled.</h2>
 			<div style={{ display: "flex", gap: "25px", alignItems: "center" }}>
 				<PreparedDatePicker
-					date={minDate}
-					onDateChange={change}
+					value={minDate}
+					onSingleDateChange={changeDate}
 					locale={"en"}
 					mode={"single"}
 					view={"month"}
 				/>
 				<PreparedDatePicker
+					value={new Date()}
 					minDate={{ date: minDate, options: { isPassedDateIncluded: shouldMinDateBeDisabled } }}
-					onDateChange={change}
+					onSingleDateChange={changeDate}
 					locale={"en"}
 					mode={"single"}
 					view={"month"}

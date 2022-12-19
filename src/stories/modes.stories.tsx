@@ -1,8 +1,7 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react";
-import { DatePicker } from "../index";
-import type { DatePickerChangeHandler } from "../index";
+import { DatePicker, DatePickerInterval } from "../index";
 import { useState } from "react";
-import { add, getMonday, getOrdinalNumberOfWeek, getSunday } from "../core/handlers";
+import { getMonday, getOrdinalNumberOfWeek, getSunday } from "../core/handlers";
 import { PreparedDatePicker } from "./PreparedDatePicker";
 
 export default {
@@ -11,55 +10,38 @@ export default {
 } as ComponentMeta<typeof DatePicker>;
 
 const IntervalTemplate: ComponentStory<typeof DatePicker> = () => {
-	const [date, setDate] = useState<Array<Date>>([new Date()]);
-	const change: DatePickerChangeHandler = (args) => {
-		if (Array.isArray(args.value)) {
-			setDate(args.value);
-		}
+	const [interval, setInterval] = useState<DatePickerInterval>({ start: null, end: null });
+	const changeInterval = (datesInterval: DatePickerInterval) => {
+		console.info(datesInterval);
+		setInterval(datesInterval);
 	};
 
 	return (
 		<section style={{ display: "flex", flexDirection: "column", gap: 25 }}>
-			<h1>Interval has no interval option passed</h1>
 			<div style={{ display: "flex", gap: "25px", alignItems: "center" }}>
 				<PreparedDatePicker
-					date={date[0]}
-					onDateChange={change}
+					value={interval}
+					onIntervalDatesChange={changeInterval}
 					locale={"en"}
 					mode={"interval"}
 					view={"month"}
 				/>
 				<div style={{ display: "flex", gap: "25px", alignItems: "center" }}>
 					<label>Start</label>
-					<input readOnly value={date[0].toLocaleDateString()} style={{ height: 50 }} />
+					<input
+						readOnly
+						value={interval.start?.toLocaleDateString() ?? "Select date"}
+						style={{ height: 50 }}
+					/>
 				</div>
 				<div style={{ display: "flex", gap: "25px", alignItems: "center" }}>
 					<label>End</label>
-					<input readOnly value={date[date.length - 1].toLocaleDateString()} style={{ height: 50 }} />
+					<input
+						readOnly
+						value={interval.end?.toLocaleDateString() ?? "Select date"}
+						style={{ height: 50 }}
+					/>
 				</div>
-			</div>
-			<div style={{ display: "flex", flexDirection: "column", gap: "25px", alignItems: "start" }}>
-				<h1>Interval with interval option start passed</h1>
-				<PreparedDatePicker
-					selectedInterval={{ start: new Date(), end: null }}
-					onDateChange={change}
-					locale={"en"}
-					mode={"interval"}
-					view={"month"}
-				/>
-			</div>
-			<div style={{ display: "flex", flexDirection: "column", gap: "25px", alignItems: "start" }}>
-				<h1>Interval with interval option start & end passed</h1>
-				<PreparedDatePicker
-					selectedInterval={{
-						start: date[0],
-						end: add({ date: date[0], count: 5, type: "day" }),
-					}}
-					onDateChange={change}
-					locale={"en"}
-					mode={"interval"}
-					view={"month"}
-				/>
 			</div>
 		</section>
 	);
@@ -67,16 +49,20 @@ const IntervalTemplate: ComponentStory<typeof DatePicker> = () => {
 
 const SingleTemplate: ComponentStory<typeof DatePicker> = () => {
 	const [date, setDate] = useState(new Date());
-	const change: DatePickerChangeHandler = (args) => {
-		if (!Array.isArray(args.value)) {
-			setDate(args.value);
-		}
+	const changeDate = (date: Date) => {
+		setDate(date);
 	};
 
 	return (
 		<section>
 			<div style={{ display: "flex", gap: "25px", alignItems: "center" }}>
-				<PreparedDatePicker date={date} onDateChange={change} locale={"en"} mode={"single"} view={"month"} />
+				<PreparedDatePicker
+					value={date}
+					onSingleDateChange={changeDate}
+					locale={"en"}
+					mode={"single"}
+					view={"month"}
+				/>
 				<input readOnly value={date.toLocaleDateString()} style={{ height: 50 }} />
 			</div>
 		</section>
@@ -86,19 +72,17 @@ const SingleTemplate: ComponentStory<typeof DatePicker> = () => {
 const PartialTemplate: ComponentStory<typeof DatePicker> = () => {
 	const [pickedDates, setPickedDates] = useState<Array<Date>>([new Date()]);
 
-	const change: DatePickerChangeHandler = (args) => {
-		if (Array.isArray(args.value)) {
-			setPickedDates(args.value);
-		}
+	const changePartialDates = (dates: Array<Date>) => {
+		setPickedDates(dates);
 	};
 
 	return (
 		<section className={"page"}>
 			<div style={{ display: "flex", gap: "25px", alignItems: "center" }}>
 				<PreparedDatePicker
+					value={pickedDates}
 					view={"month"}
-					selectedDates={pickedDates}
-					onDateChange={change}
+					onPartialChange={changePartialDates}
 					locale={"en"}
 					mode={"partial"}
 				/>
@@ -123,14 +107,11 @@ const PartialTemplate: ComponentStory<typeof DatePicker> = () => {
 const WeekTemplate: ComponentStory<typeof DatePicker> = () => {
 	// its not required to pass monday and sunday to default state. Its just example for visualization.
 	const firstDate = getMonday(new Date());
-	const lastDate = getSunday(new Date());
-	const [pickedDates, setPickedDates] = useState<Array<Date>>([firstDate, lastDate]);
-	const weekNumber = getOrdinalNumberOfWeek(pickedDates[0]);
-	const change: DatePickerChangeHandler = (args) => {
-		console.info(args);
-		if (Array.isArray(args.value)) {
-			setPickedDates(args.value);
-		}
+	const [date, setDate] = useState<Date>(firstDate);
+	const lastDate = getSunday(date);
+	const weekNumber = getOrdinalNumberOfWeek(date);
+	const change = (date: Date) => {
+		setDate(date);
 	};
 
 	return (
@@ -142,8 +123,8 @@ const WeekTemplate: ComponentStory<typeof DatePicker> = () => {
 			<div style={{ display: "flex", gap: "25px", alignItems: "center" }}>
 				<PreparedDatePicker
 					view={"month"}
-					date={pickedDates[0]}
-					onDateChange={change}
+					value={date}
+					onSingleDateChange={change}
 					locale={"en"}
 					mode={"week"}
 				/>
@@ -158,8 +139,8 @@ const WeekTemplate: ComponentStory<typeof DatePicker> = () => {
 				>
 					<span>ordinal number of week is: {weekNumber}</span>
 					<div style={{ display: "flex", gap: 25 }}>
-						<span>Week start: {pickedDates[0].toLocaleDateString()}</span>
-						<span>Week end: {pickedDates[1].toLocaleDateString()}</span>
+						<span>Week start: {date.toLocaleDateString()}</span>
+						<span>Week end: {lastDate.toLocaleDateString()}</span>
 					</div>
 				</div>
 			</div>

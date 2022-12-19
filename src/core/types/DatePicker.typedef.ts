@@ -3,7 +3,7 @@ import { DAYS_IDX_LIST } from "../constants";
 export type CalendarViews = "month" | "year" | "decade";
 type DatePickerMode = "single" | "partial" | "interval" | "week";
 export type DatePickerInterval = { start: Date | null; end: Date | null };
-export type DatePickerChangeHandler = ({ value }: { value: Array<Date> | Date }) => void;
+export type DatePickerChangeHandler = ({ value }: { value: Array<Date> | Date | DatePickerInterval }) => void;
 
 export type CustomizedDate = {
 	className: HTMLButtonElement["className"];
@@ -75,7 +75,7 @@ type BaseCellRenderProps = { date: Date; onDateClick: (date: Date) => void };
 
 export interface DatePickerProps {
 	locale?: Intl.LocalesArgument;
-	date?: Date;
+	value: Date | Array<Date> | DatePickerInterval;
 	minDate?: MinDate;
 	disabledDates?: Array<Date>;
 	customHeaderRenderProp?: (props: DatePickerControlsProps) => JSX.Element;
@@ -89,7 +89,6 @@ export interface DatePickerProps {
 	customizationClassNames?: Partial<DatePickerClassNames>;
 	changeCalendarView: () => void;
 	customizedDates?: Array<CustomizedDate>;
-	selectedDates?: Array<Date>;
 	selectedInterval?: DatePickerInterval;
 	onMonthClick?: (value: Date) => void;
 	onYearClick?: (value: Date) => void;
@@ -122,12 +121,13 @@ export type DecadeViewProps = {
 export type MonthViewProps = {
 	locale: Intl.LocalesArgument;
 	month: Array<Date>;
+	value: Date | Array<Date> | DatePickerInterval;
 	customMonthClassNames?: Partial<DatePickerMonthViewClassNames>;
 	customizedDates?: Array<CustomizedDate>;
 	customDayCellRenderProp?: (props: BaseCellRenderProps) => JSX.Element;
 	currentMonth: number;
-	onSelectDay: (date: Date) => void;
-	selectedDates: Array<string | Date>;
+	mode?: DatePickerMode;
+	onDateChange: DatePickerChangeHandler;
 	minDate?: MinDate;
 	disabledDates?: Array<Date | string>;
 	weekendDays?: WeekendDays;

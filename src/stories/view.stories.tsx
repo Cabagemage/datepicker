@@ -50,7 +50,7 @@ const CalendarWithViewSelection: ComponentStory<typeof DatePicker> = () => {
 			<div style={{ display: "flex", gap: "25px", alignItems: "center" }}>
 				<div style={{ width: 500 }}>
 					<DatePicker
-						date={date}
+						value={date}
 						onYearClick={onYearClick}
 						changeCalendarView={console.info}
 						onDateChange={console.info}

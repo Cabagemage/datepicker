@@ -1,4 +1,4 @@
-import type { DatePickerInterval, DatePickerProps } from "./core/types";
+import type { DatePickerProps } from "./core/types";
 import "./datePicker.css";
 import {
 	getMonthCalendarViewDates,
@@ -6,10 +6,6 @@ import {
 	add,
 	getMonthsOfYear,
 	subtract,
-	getDatesInRange,
-	formatDate,
-	getMonday,
-	getSunday,
 	getYears,
 } from "./core/handlers";
 import {
@@ -39,10 +35,8 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 			onDateChange,
 			customizedDates,
 			customizationClassNames,
-			selectedDates,
-			date,
-			selectedInterval,
 			onMonthClick,
+			value,
 			view,
 			changeCalendarView,
 			customHeaderRenderProp,
@@ -57,41 +51,23 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 		},
 		ref
 	) => {
-		const defineDefaultSelectedDates = () => {
-			if (mode === "week" && date !== undefined) {
-				const monday = getMonday(date);
-				const sunday = getSunday(date);
-				const formattedDates = getDatesInRange(monday, sunday).map((item) => {
-					return formatDate(item);
-				});
-				return formattedDates;
-			}
-			if (selectedDates !== undefined) {
-				return selectedDates;
-			}
-			if (date !== undefined) {
-				return [date];
-			}
-			if (selectedInterval?.start && selectedInterval?.end) {
-				return getDatesInRange(selectedInterval.start, selectedInterval.end);
-			}
-			if (selectedInterval?.start && selectedInterval?.end === null) {
-				return [selectedInterval?.start];
-			} else {
-				return [];
-			}
-		};
 		const defineDefaultDate = () => {
-			if (date !== undefined) {
-				return date;
+			if (value instanceof Date) {
+				return value;
 			}
-			if (selectedDates !== undefined && selectedDates[0] !== undefined) {
-				return selectedDates[0];
+			if (Array.isArray(value)) {
+				if (value[0] !== undefined) {
+					return value[0];
+				}
+				return new Date();
+			} else {
+				if (value.start !== null) {
+					return value.start;
+				}
 			}
 			return new Date();
 		};
 		const defaultDate = defineDefaultDate();
-		const defaultSelectedDates = defineDefaultSelectedDates();
 		const INITIAL_MONTH_DATES = getMonthCalendarViewDates({
 			initialDate: defaultDate,
 			year: defaultDate.getFullYear(),
@@ -101,17 +77,8 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 		const [month, setMonth] = useState<Array<Date>>(INITIAL_MONTH_DATES);
 		const [currentMonthIdx, setCurrentMonthIdx] = useState(month[MIDDLE_DAY_OF_MONTH].getMonth());
 		const [currentDate, setCurrentDate] = useState(defaultDate);
-		const [updatedSelectedDates, setUpdatedSelectedDates] =
-			useState<Array<string | Date>>(defaultSelectedDates);
 		const decadeYears = getYears(subtract({ date: currentDate, type: "year", count: ONE_DECADE }), 11);
-		const [activeYear, setActiveYear] = useState<number>(defaultDate.getFullYear());
-		const [datesInterval, setDatesInterval] = useState<DatePickerInterval>(
-			selectedInterval ?? {
-				start: null,
-				end: null,
-			}
-		);
-
+		const [activeYear, setActiveYear] = useState<number>(currentDate.getFullYear());
 		const monthsOfYear = getMonthsOfYear(currentDate);
 
 		const clickYear = (date: Date) => {
@@ -178,101 +145,6 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 			}
 		};
 
-		const selectDayForInterval = (date: Date) => {
-			const isDateIncluded = updatedSelectedDates.includes(date);
-			if (datesInterval.start && datesInterval.end && isDateIncluded) {
-				setDatesInterval({ start: null, end: null });
-				setUpdatedSelectedDates([]);
-			}
-			if (datesInterval.start && datesInterval.end && !isDateIncluded) {
-				setDatesInterval({ start: date, end: null });
-				setUpdatedSelectedDates([date]);
-			}
-			if (datesInterval.start === null) {
-				setDatesInterval((prev) => {
-					return { ...prev, start: date };
-				});
-				setUpdatedSelectedDates([date]);
-				onDateChange({ value: [date] });
-			}
-
-			if (datesInterval.start !== null && datesInterval.end === null) {
-				setDatesInterval((prev) => {
-					return { ...prev, end: date };
-				});
-
-				const start = new Date(datesInterval.start) < date ? datesInterval.start : date;
-				const end = new Date(date) > datesInterval.start ? date : datesInterval.start;
-				const formattedDates = getDatesInRange(start, end).map((item) => {
-					return formatDate(item);
-				});
-				setUpdatedSelectedDates(formattedDates);
-				onDateChange({ value: [start, end] });
-			}
-		};
-		const selectDayForWeek = (date: Date) => {
-			const firstDate = getMonday(date);
-			const lastDate = getSunday(date);
-			setDatesInterval({
-				start: firstDate,
-				end: lastDate,
-			});
-			const formattedDates = getDatesInRange(firstDate, lastDate).map((item) => {
-				return formatDate(item);
-			});
-			setUpdatedSelectedDates(formattedDates);
-			onDateChange({
-				value: [firstDate, lastDate],
-			});
-		};
-		const selectSingleDate = (date: Date, formattedDate: string) => {
-			setUpdatedSelectedDates([formattedDate]);
-			onDateChange({ value: date });
-		};
-		const mappedSelectedDatesToFormattedValue = updatedSelectedDates.map((item) => {
-			return formatDate(new Date(item));
-		});
-		const selectDayForPartial = (date: Date) => {
-			if (mappedSelectedDatesToFormattedValue.includes(formatDate(date))) {
-				const filteredDates = updatedSelectedDates.filter((item) => {
-					return formatDate(new Date(date)) !== formatDate(new Date(item));
-				});
-				setUpdatedSelectedDates(filteredDates);
-				if (selectedDates !== undefined) {
-					onDateChange({
-						value: selectedDates.filter((item) => {
-							return item.toDateString() !== date.toDateString();
-						}),
-					});
-				}
-
-				return;
-			}
-			setUpdatedSelectedDates((prev) => {
-				return [...prev, date];
-			});
-			const mappedSelectedDatesToRawDates = updatedSelectedDates.map((item) => {
-				return new Date(item);
-			});
-			onDateChange({ value: [...mappedSelectedDatesToRawDates, new Date(date)] });
-		};
-
-		const selectDay = (date: Date) => {
-			const formattedDate = formatDate(date);
-			if (mode === "single") {
-				selectSingleDate(date, formattedDate);
-			}
-			if (mode === "partial") {
-				selectDayForPartial(date);
-			}
-			if (mode === "interval") {
-				selectDayForInterval(date);
-			}
-			if (mode === "week") {
-				selectDayForWeek(date);
-			}
-		};
-
 		const clickMonth = (date: Date) => {
 			if (onMonthClick) {
 				onMonthClick(date);
@@ -283,6 +155,7 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 			setMonth(daysOfMonth);
 			setCurrentMonthIdx(newMonthIdx);
 		};
+
 		const headerText = useMemo(() => {
 			const previousDecadeStart = subtract({ date: currentDate, count: ONE_DECADE, type: "year" });
 			switch (view) {
@@ -290,11 +163,11 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 					return `${getFormattedMonthToLocale({
 						month: month[START_OF_NEW_MONTH_IDX],
 						locale: locale,
-					})} ${currentDate.getFullYear()}`;
+					})} ${activeYear}`;
 				case "year":
-					return `${currentDate.getFullYear()}`;
+					return `${activeYear}`;
 				case "decade": {
-					return `${previousDecadeStart.getFullYear()} — ${currentDate.getFullYear()}`;
+					return `${previousDecadeStart.getFullYear()} — ${activeYear}`;
 				}
 				default:
 					return "test";
@@ -356,24 +229,25 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 							customizedDates: customizedDates,
 							currentMonth: currentMonthIdx,
 							disabledDates: disabledDates,
+							value: value,
+							onDateChange: onDateChange,
 							minDate: minDate,
 							customMonthClassNames: customizationClassNames?.month,
-							selectedDates: updatedSelectedDates,
-							onSelectDay: selectDay,
 						})}
 					{view === "month" && customMonthViewRenderProp === undefined && (
 						<MonthView
 							locale={locale}
+							mode={mode}
 							month={month}
+							value={value}
 							customDayCellRenderProp={customDayCellRenderProp}
 							customizedDates={customizedDates}
 							currentMonth={currentMonthIdx}
 							disabledDates={disabledDates}
 							weekendDays={weekendDays}
+							onDateChange={onDateChange}
 							minDate={minDate}
 							customMonthClassNames={customizationClassNames?.month}
-							selectedDates={updatedSelectedDates}
-							onSelectDay={selectDay}
 						/>
 					)}
 					{customYearViewRenderProp !== undefined &&

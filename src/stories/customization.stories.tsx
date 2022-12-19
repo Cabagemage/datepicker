@@ -1,5 +1,5 @@
 import { DatePicker } from "../index";
-import type { DatePickerChangeHandler, DatePickerClassNames, CustomizedDate } from "../index";
+import type { DatePickerClassNames, CustomizedDate } from "../index";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { useEffect, useState } from "react";
 import { getDatesInRange, getMonday, getSunday } from "../core/handlers";
@@ -13,10 +13,8 @@ export default {
 
 const CustomizedDatesTemplate: ComponentStory<typeof DatePicker> = () => {
 	const [date, setDate] = useState(new Date());
-	const change: DatePickerChangeHandler = (args) => {
-		if (!Array.isArray(args.value)) {
-			setDate(args.value);
-		}
+	const change = (date: Date) => {
+		setDate(date);
 	};
 	const monday = getMonday(new Date());
 	const sunday = getSunday(new Date());
@@ -39,8 +37,8 @@ const CustomizedDatesTemplate: ComponentStory<typeof DatePicker> = () => {
 
 			<div style={{ display: "flex", gap: "25px", alignItems: "center" }}>
 				<PreparedDatePicker
-					date={date}
-					onDateChange={change}
+					value={date}
+					onSingleDateChange={change}
 					customizedDates={customizedDatesForFirstWeek}
 					locale={"en"}
 					mode={"single"}
@@ -54,18 +52,16 @@ const CustomizedDatesTemplate: ComponentStory<typeof DatePicker> = () => {
 
 const CustomHeaderTemplate: ComponentStory<typeof DatePicker> = () => {
 	const [date, setDate] = useState(new Date());
-	const change: DatePickerChangeHandler = (args) => {
-		if (!Array.isArray(args.value)) {
-			setDate(args.value);
-		}
+	const change = (date: Date) => {
+		setDate(date);
 	};
 
 	return (
 		<section>
 			<div style={{ display: "flex", gap: "25px", alignItems: "center" }}>
 				<PreparedDatePicker
-					date={date}
-					onDateChange={change}
+					value={date}
+					onSingleDateChange={change}
 					customHeaderRenderProp={({
 						toNextUnitNavAction,
 						toPrevUnitNavAction,
@@ -92,10 +88,8 @@ const CustomHeaderTemplate: ComponentStory<typeof DatePicker> = () => {
 
 const CustomCalendarClassNamesTemplate: ComponentStory<typeof DatePicker> = () => {
 	const [date, setDate] = useState(new Date());
-	const change: DatePickerChangeHandler = (args) => {
-		if (!Array.isArray(args.value)) {
-			setDate(args.value);
-		}
+	const change = (date: Date) => {
+		setDate(date);
 	};
 	const customClassNames: DatePickerClassNames = {
 		month: {
@@ -118,8 +112,8 @@ const CustomCalendarClassNamesTemplate: ComponentStory<typeof DatePicker> = () =
 			<div style={{ display: "flex", gap: "25px", alignItems: "center" }}>
 				<PreparedDatePicker
 					customizationClassNames={customClassNames}
-					date={date}
-					onDateChange={change}
+					value={date}
+					onSingleDateChange={change}
 					locale={"en"}
 					mode={"single"}
 					footerElement={<p>selectedDate is {date.toDateString()}</p>}
@@ -132,10 +126,8 @@ const CustomCalendarClassNamesTemplate: ComponentStory<typeof DatePicker> = () =
 const OtherLanguageTemplate: ComponentStory<typeof DatePicker> = () => {
 	const [date, setDate] = useState(new Date());
 	const [currentLanguage, setCurrentLanguage] = useState<string>("ru");
-	const change: DatePickerChangeHandler = (args) => {
-		if (!Array.isArray(args.value)) {
-			setDate(args.value);
-		}
+	const change = (date: Date) => {
+		setDate(date);
 	};
 
 	const options = [
@@ -169,8 +161,8 @@ const OtherLanguageTemplate: ComponentStory<typeof DatePicker> = () => {
 					<input readOnly value={date.toLocaleDateString(currentLanguage)} />
 				</div>
 				<PreparedDatePicker
-					date={date}
-					onDateChange={change}
+					value={date}
+					onSingleDateChange={change}
 					locale={currentLanguage}
 					mode={"single"}
 					view={"month"}
@@ -183,10 +175,8 @@ const OtherLanguageTemplate: ComponentStory<typeof DatePicker> = () => {
 const AnimeDatePickerTemplate: ComponentStory<typeof DatePicker> = () => {
 	const [date, setDate] = useState(new Date());
 	const [animeDates, setAnimeDates] = useState<Array<string>>([]);
-	const change: DatePickerChangeHandler = (args) => {
-		if (!Array.isArray(args.value)) {
-			setDate(args.value);
-		}
+	const change = (date: Date) => {
+		setDate(date);
 	};
 	const getAnimeGirls = async () => {
 		const animeFirstPart = await fetch("https://api.waifu.pics/many/sfw/waifu", {
@@ -247,21 +237,21 @@ const AnimeDatePickerTemplate: ComponentStory<typeof DatePicker> = () => {
 			</h2>
 			<PreparedDatePicker
 				customizationClassNames={customClassNames}
-				date={date}
+				value={date}
 				customHeaderRenderProp={({ toNextUnitNavAction, toPrevUnitNavAction, headerText }) => {
 					return (
 						<div style={{ width: "100%", display: "flex", justifyContent: "space-evenly" }}>
 							<button
-								onClick={() => {
-									changeMonth(toPrevUnitNavAction);
+								onClick={async () => {
+									await changeMonth(toPrevUnitNavAction);
 								}}
 							>
 								Prev
 							</button>
 							<span style={{ fontSize: 36 }}>{headerText}</span>
 							<button
-								onClick={() => {
-									changeMonth(toNextUnitNavAction);
+								onClick={async () => {
+									await changeMonth(toNextUnitNavAction);
 								}}
 							>
 								Next
@@ -297,7 +287,7 @@ const AnimeDatePickerTemplate: ComponentStory<typeof DatePicker> = () => {
 						</>
 					);
 				}}
-				onDateChange={change}
+				onSingleDateChange={change}
 				locale={"en"}
 				mode={"single"}
 				view={"month"}
