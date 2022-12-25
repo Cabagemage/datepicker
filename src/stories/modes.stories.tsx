@@ -1,7 +1,7 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { DatePicker, DatePickerInterval } from "../index";
 import { useState } from "react";
-import { getMonday, getOrdinalNumberOfWeek, getSunday } from "../core/handlers";
+import { getOrdinalNumberOfWeek } from "../core/handlers";
 import { PreparedDatePicker } from "./PreparedDatePicker";
 
 export default {
@@ -105,13 +105,12 @@ const PartialTemplate: ComponentStory<typeof DatePicker> = () => {
 };
 
 const WeekTemplate: ComponentStory<typeof DatePicker> = () => {
-	// its not required to pass monday and sunday to default state. Its just example for visualization.
-	const firstDate = getMonday(new Date());
-	const [date, setDate] = useState<Date>(firstDate);
-	const lastDate = getSunday(date);
+	const [date, setDate] = useState<Date>(new Date());
+	const [inputText, setInputText] = useState("Select a date to get week start & end");
 	const weekNumber = getOrdinalNumberOfWeek(date);
-	const change = (date: Date) => {
-		setDate(date);
+	const change = ({ start, end }: { start: Date; end: Date }) => {
+		setDate(start);
+		setInputText(`week start: ${start.toLocaleDateString()}. week end: ${end.toLocaleDateString()}`);
 	};
 
 	return (
@@ -121,13 +120,7 @@ const WeekTemplate: ComponentStory<typeof DatePicker> = () => {
 				& end).
 			</p>
 			<div style={{ display: "flex", gap: "25px", alignItems: "center" }}>
-				<PreparedDatePicker
-					view={"month"}
-					value={date}
-					onSingleDateChange={change}
-					locale={"en"}
-					mode={"week"}
-				/>
+				<PreparedDatePicker view={"month"} value={date} onWeekChange={change} locale={"en"} mode={"week"} />
 				<div
 					style={{
 						display: "flex",
@@ -139,8 +132,7 @@ const WeekTemplate: ComponentStory<typeof DatePicker> = () => {
 				>
 					<span>ordinal number of week is: {weekNumber}</span>
 					<div style={{ display: "flex", gap: 25 }}>
-						<span>Week start: {date.toLocaleDateString()}</span>
-						<span>Week end: {lastDate.toLocaleDateString()}</span>
+						<span>{inputText}</span>
 					</div>
 				</div>
 			</div>

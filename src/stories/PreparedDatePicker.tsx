@@ -7,11 +7,13 @@ type PreparedDatePickerProps = {
 	width?: number;
 	onPartialChange?: (dates: Array<Date>) => void;
 	onSingleDateChange?: (date: Date) => void;
+	onWeekChange?: (value: { start: Date; end: Date }) => void;
 	onIntervalDatesChange?: (value: { start: Date | null; end: Date | null }) => void;
 } & Omit<DatePickerProps, "changeCalendarView" | "onDateChange">;
 export const PreparedDatePicker = ({
 	width = 360,
 	onPartialChange,
+	onWeekChange,
 	onIntervalDatesChange,
 	onSingleDateChange,
 	...props
@@ -56,10 +58,13 @@ export const PreparedDatePicker = ({
 				onPartialChange(value.value);
 			}
 			return;
-		} else {
-			if (onIntervalDatesChange !== undefined) {
-				onIntervalDatesChange(value.value);
-			}
+		}
+		if (onIntervalDatesChange !== undefined) {
+			onIntervalDatesChange(value.value);
+			return;
+		}
+		if (onWeekChange !== undefined) {
+			onWeekChange && onWeekChange(value.value);
 		}
 	};
 	return (

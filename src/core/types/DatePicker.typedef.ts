@@ -89,7 +89,7 @@ export interface DatePickerProps {
 	customizationClassNames?: Partial<DatePickerClassNames>;
 	changeCalendarView: () => void;
 	customizedDates?: Array<CustomizedDate>;
-	selectedInterval?: DatePickerInterval;
+	onChange?: (date: Date) => void;
 	onMonthClick?: (value: Date) => void;
 	onYearClick?: (value: Date) => void;
 	onDateChange: DatePickerChangeHandler;
@@ -121,13 +121,13 @@ export type DecadeViewProps = {
 export type MonthViewProps = {
 	locale: Intl.LocalesArgument;
 	month: Array<Date>;
-	value: Date | Array<Date> | DatePickerInterval;
+
 	customMonthClassNames?: Partial<DatePickerMonthViewClassNames>;
 	customizedDates?: Array<CustomizedDate>;
 	customDayCellRenderProp?: (props: BaseCellRenderProps) => JSX.Element;
 	currentMonth: number;
-	mode?: DatePickerMode;
-	onDateChange: DatePickerChangeHandler;
+	selectedDates: Array<Date | string>;
+	onDateChange: (date: Date) => void;
 	minDate?: MinDate;
 	disabledDates?: Array<Date | string>;
 	weekendDays?: WeekendDays;
