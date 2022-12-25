@@ -1,3 +1,7 @@
+@import "./core/styles/decade.css";
+@import "./core/styles/year.css";
+@import "./core/styles/month.css";
+
 .datePicker-wrapper {
 	display: flex;
 	flex-wrap: wrap;
@@ -13,74 +17,6 @@
 	display: flex;
 	justify-content: space-between;
 	margin-bottom: 15px;
-}
-
-.datePicker-body {
-	display: flex;
-	flex-wrap: wrap;
-	box-sizing: border-box;
-	row-gap: 8px;
-	column-gap: 14px;
-	justify-content: flex-start;
-	width: 100%;
-}
-
-.datePicker-body__year {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: space-between;
-	row-gap: 15px;
-	width: 100%;
-}
-.datePicker-body__hide-day {
-	display: none;
-}
-.datePicker-body__decade {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: space-between;
-	row-gap: 15px;
-	width: 100%;
-}
-
-.datePicker-body__day {
-	user-select: none;
-	border-radius: 16px;
-	position: relative;
-	width: 32px;
-	height: 32px;
-	padding: 0;
-	font-weight: 400;
-	font-size: 18px;
-	border: none;
-	cursor: pointer;
-}
-.datePicker-body__day:not(:disabled):hover {
-	background: #1890ff;
-	color: #fff;
-	transition: 200ms;
-}
-.datePicker-body__day_transparent {
-	background-color: transparent;
-}
-
-.datePicker__selectedDate {
-	color: #fff;
-	background-color: #1890ff;
-}
-
-.datePicker-weekdays {
-	width: 100%;
-	display: flex;
-	list-style: none;
-	user-select: none;
-	justify-content: space-between;
-	padding: 0;
-}
-
-.datePicker-weekdays > .datePicker-weekdays__day {
-	text-align: center;
-	width: 32px;
 }
 
 .datepicker-header__time {
@@ -120,49 +56,4 @@
 	border: none;
 	padding: 0;
 	cursor: pointer;
-}
-
-.datePicker__selectedDate > .datePicker-body__day-text {
-	color: #fff;
-}
-
-.datePicker__inactive-text {
-	color: #808080;
-}
-
-.datePicker-body__month-cell {
-	all: unset;
-	user-select: none;
-	width: 100px;
-	text-align: center;
-	cursor: pointer;
-	height: 55px;
-	border: none;
-}
-
-.datePicker-body__month-cell:not(:disabled):hover {
-	background: #1890ff;
-	border-radius: 16px;
-	color: #ffffff;
-}
-.datePicker-body__day_disabled {
-	cursor: not-allowed;
-	color: #000000;
-	opacity: 0.2;
-}
-
-.datePicker-body__month_selected {
-	background-color: #1890ff;
-	border-radius: 16px;
-	color: white;
-}
-
-.datePicker-body__year_selected {
-	background-color: #1890ff;
-	border-radius: 16px;
-	color: white;
-}
-
-.datePicker__month-today {
-	color: #1890ff;
 }

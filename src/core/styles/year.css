@@ -1,0 +1,34 @@
+.datePicker-body__year {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	row-gap: 15px;
+	width: 100%;
+}
+
+.datePicker-body__year-cell {
+	all: unset;
+	user-select: none;
+	width: 100px;
+	text-align: center;
+	cursor: pointer;
+	height: 55px;
+	border-radius: 16px;
+	border: none;
+}
+
+.datePicker-body__year-cell:not(:disabled):hover {
+	background: #1890ff;
+	border-radius: 16px;
+	color: #ffffff;
+}
+.datePicker-body__year_disabled {
+	cursor: not-allowed;
+	color: #000000;
+	opacity: 0.2;
+}
+
+.datePicker-body__year_selected {
+	color: #fff;
+	background-color: #1890ff;
+}
