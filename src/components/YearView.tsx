@@ -1,6 +1,7 @@
-import { getFormattedMonthToLocale, isFirstDateEarlierThanSecondOne, subtract } from "./core/handlers";
 import classNames from "classnames";
-import { YearViewProps } from "./core/types/DatePicker.typedef";
+import { initYearCalendarClassNames } from "../core/utils/initYearCalendarClassNames";
+import { YearViewProps } from "../core/types/DatePicker.typedef";
+import { getFormattedMonthToLocale, isFirstDateEarlierThanSecondOne, subtract } from "../core/handlers";
 
 const YearView = ({
 	months,
@@ -11,18 +12,12 @@ const YearView = ({
 	customYearClassNames,
 	customMonthCellRenderProp,
 }: YearViewProps) => {
-	const yearViewBodyClassName = customYearClassNames?.yearViewBody
-		? customYearClassNames.yearViewBody
-		: "datePicker-body__year";
-	const yearViewMonthCellClassName = customYearClassNames?.yearViewMonthCell
-		? customYearClassNames.yearViewMonthCell
-		: "datePicker-body__month-cell";
-	const yearViewMonthCellDisabledClassName = customYearClassNames?.yearViewCellDisabled
-		? customYearClassNames.yearViewCellDisabled
-		: "datePicker-body__day_disabled";
-	const yearViewMonthSelectedClassName = customYearClassNames?.yearViewMonthCellSelected
-		? customYearClassNames.yearViewMonthCellSelected
-		: "datePicker-body__month_selected";
+	const {
+		yearViewMonthSelectedClassName,
+		yearViewMonthCellDisabledClassName,
+		yearViewMonthCellClassName,
+		yearViewBodyClassName,
+	} = initYearCalendarClassNames(customYearClassNames);
 	return (
 		<div className={yearViewBodyClassName}>
 			{months.map((item) => {
