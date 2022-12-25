@@ -1,8 +1,8 @@
-import { isFirstDateEarlierThanSecondOne, subtract } from "./core/handlers";
-import { ONE_YEAR } from "./core/constants";
-
 import classNames from "classnames";
-import { DecadeViewProps } from "./core/types/DatePicker.typedef";
+import { initDecadeCalendarClassNames } from "../core/utils/initDecadeCalendarClassNames";
+import { DecadeViewProps } from "../core/types/DatePicker.typedef";
+import { isFirstDateEarlierThanSecondOne, subtract } from "../core/handlers";
+import { ONE_YEAR } from "../core/constants";
 
 const DecadeView = ({
 	years,
@@ -12,18 +12,13 @@ const DecadeView = ({
 	customDecadeClassNames,
 	customYearCellRenderProp,
 }: DecadeViewProps) => {
-	const decadeViewBodyClassName = customDecadeClassNames?.body
-		? customDecadeClassNames.body
-		: "datePicker-body__decade";
-	const decadeViewCellClassName = customDecadeClassNames?.decadeViewYearCell
-		? customDecadeClassNames.decadeViewYearCell
-		: "datePicker-body__month-cell";
-	const decadeCellDisabledClassName = customDecadeClassNames?.decadeViewCellDisabled
-		? customDecadeClassNames.decadeViewCellDisabled
-		: "datePicker-body__day_disabled";
-	const decadeCellSelected = customDecadeClassNames?.decadeViewCellSelected
-		? customDecadeClassNames.decadeViewCellSelected
-		: "datePicker-body__year_selected";
+	const {
+		decadeCellSelected,
+		decadeViewCellClassName,
+		decadeViewBodyClassName,
+		decadeCellDisabledClassName,
+	} = initDecadeCalendarClassNames(customDecadeClassNames);
+
 	return (
 		<div className={decadeViewBodyClassName}>
 			{years.map((item) => {

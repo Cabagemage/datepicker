@@ -1,0 +1,68 @@
+.datePicker-body {
+	display: flex;
+	flex-wrap: wrap;
+	box-sizing: border-box;
+	row-gap: 8px;
+	column-gap: 14px;
+	justify-content: flex-start;
+	width: 100%;
+}
+
+.datePicker-body__day {
+	user-select: none;
+	border-radius: 16px;
+	position: relative;
+	width: 32px;
+	height: 32px;
+	padding: 0;
+	font-weight: 400;
+	font-size: 18px;
+	border: none;
+	cursor: pointer;
+}
+
+.datePicker-body__day:not(:disabled):hover {
+	background: #1890ff;
+	color: #fff;
+	transition: 200ms;
+}
+.datePicker-body__day_transparent {
+	background-color: transparent;
+}
+
+.datePicker__selectedDate {
+	color: #fff;
+	background-color: #1890ff;
+}
+
+.datePicker-weekdays {
+	width: 100%;
+	display: flex;
+	list-style: none;
+	user-select: none;
+	justify-content: space-between;
+	padding: 0;
+}
+
+.datePicker-weekdays > .datePicker-weekdays__day {
+	text-align: center;
+	width: 32px;
+}
+
+.datePicker__selectedDate > .datePicker-body__day-text {
+	color: #fff;
+}
+
+.datePicker__inactive-text {
+	color: #808080;
+}
+
+.datePicker-body__day_disabled {
+	cursor: not-allowed;
+	color: #000000;
+	opacity: 0.2;
+}
+
+.datePicker__day-today {
+	color: #1890ff;
+}

@@ -237,7 +237,18 @@ Attention. Its beta version of date picker, possible it'll be changed later
     </tr>
 </table>
 
-<a href="#changelog"><h2 id="changelog">ChangeLog</h2></a>
+<a href="#changelog">
+	<h2 id="changelog">ChangeLog</h2>
+</a>
+
+<div className="subheading">0.7.1</div>
+
+- move css to modules.
+- move style initialization to modules from components.
+- fix bug with partial days select.
+- change default onChange for week mode select. Before it returned one date, now it returns object `{start: Date (monday), end: Date(sunday)}`;
+- move up state with selectedDates from MonthView to DatePicker root component.
+- fix some bugs with decade/year movement (year or decade didnt saved).
 
 <div className="subheading">0.7.0</div>
 

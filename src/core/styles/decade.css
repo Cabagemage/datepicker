@@ -1,0 +1,35 @@
+.datePicker-body__decade {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	gap: 10px;
+}
+
+.datePicker-body__decade-cell {
+	all: unset;
+	user-select: none;
+	text-align: center;
+	width: 90px;
+	cursor: pointer;
+	flex-shrink: 1;
+	height: 55px;
+	border: none;
+}
+
+.datePicker-body__decade-cell:not(:disabled):hover {
+	background: #1890ff;
+	border-radius: 16px;
+	color: #ffffff;
+}
+
+.datePicker-body__decade_disabled {
+	cursor: not-allowed;
+	color: #000000;
+	opacity: 0.2;
+}
+
+.datePicker-body__year_selected {
+	background-color: #1890ff;
+	border-radius: 16px;
+	color: white;
+}

@@ -6,7 +6,7 @@ import { babel } from "@rollup/plugin-babel";
 import { terser } from "@wwa/rollup-plugin-terser";
 import analyze from "rollup-plugin-analyzer";
 import cleanup from "rollup-plugin-cleanup";
-
+import postcssImport from "postcss-import";
 const limitBytes = 1e6;
 const onAnalysis = ({ bundleSize }) => {
 	console.info(bundleSize);
@@ -40,6 +40,7 @@ export default {
 		typescript({ tsconfig: "./tsconfig.json" }),
 		postcss({
 			extract: "datePicker.css",
+			plugins: [postcssImport()],
 		}),
 		terser(),
 		cleanup(),
