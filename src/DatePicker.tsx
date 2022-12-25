@@ -7,6 +7,10 @@ import {
 	getMonthsOfYear,
 	subtract,
 	getYears,
+	getMonday,
+	getSunday,
+	getDatesInRange,
+	formatDate,
 } from "./core/handlers";
 import {
 	JANUARY_ORDINAL_NUMBER,
@@ -19,9 +23,10 @@ import {
 	MIDDLE_DAY_OF_MONTH,
 } from "./core/constants";
 import { forwardRef, useEffect, useMemo, useState } from "react";
-import { MonthView } from "./MonthView";
-import YearView from "./YearView";
-import DecadeView from "./DecadeView";
+import { MonthView } from "./components/MonthView";
+import YearView from "./components/YearView";
+import DecadeView from "./components/DecadeView";
+import { initDatePickerBaseClassNames } from "./core/utils/initDatePickerBaseClassNames";
 
 export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 	(
@@ -30,17 +35,17 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 			mode = "single",
 			minDate,
 			disabledDates,
-			onYearClick,
 			weekendDays,
 			onDateChange,
 			customizedDates,
 			customizationClassNames,
-			onMonthClick,
 			value,
 			view,
 			changeCalendarView,
 			customHeaderRenderProp,
 			customDecadeViewRenderProp,
+			onYearClick,
+			onMonthClick,
 			customMonthCellRenderProp,
 			customMonthViewRenderProp,
 			customYearViewRenderProp,
@@ -68,37 +73,173 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 			return new Date();
 		};
 		const defaultDate = defineDefaultDate();
+
+		const defineDefaultSelectedDates = () => {
+			if (mode === "week" && value instanceof Date) {
+				const monday = getMonday(value);
+				const sunday = getSunday(value);
+				const formattedDates = getDatesInRange(monday, sunday).map((item) => {
+					return formatDate(item);
+				});
+				return formattedDates;
+			}
+
+			if (value instanceof Date) {
+				return [value];
+			}
+
+			if (Array.isArray(value)) {
+				const isFirstDateDefined = value[0] !== undefined ? value[0] : false;
+				const isSecondDateDefined = value[1] !== undefined ? value[1] : false;
+				if (isFirstDateDefined) {
+					return [value[0]];
+				}
+				if (isFirstDateDefined && isSecondDateDefined) {
+					const firstDate = value[0];
+					const secondDate = value[1];
+					const start = new Date(firstDate) < secondDate ? firstDate : secondDate;
+					const end = new Date(secondDate) > firstDate ? secondDate : firstDate;
+					return getDatesInRange(start, end);
+				}
+			} else {
+				if (value.start !== null && value.end !== null) {
+					return getDatesInRange(value.start, value.end);
+				}
+			}
+			return [];
+		};
+
+		const defaultSelectedDates = defineDefaultSelectedDates();
+		const [selectedDates, setSelectedDates] = useState<Array<string | Date>>(defaultSelectedDates);
 		const INITIAL_MONTH_DATES = getMonthCalendarViewDates({
 			initialDate: defaultDate,
 			year: defaultDate.getFullYear(),
 			month: defaultDate.getMonth(),
 		});
 
+		const selectDayForInterval = (date: Date) => {
+			if (value instanceof Date || Array.isArray(value)) {
+				return;
+			}
+			const isDateIncluded = selectedDates.includes(formatDate(date));
+			if (value.start && value.end && isDateIncluded) {
+				onDateChange({ value: { start: null, end: null } });
+				setSelectedDates([]);
+			}
+			if (value.start && value.end && !isDateIncluded) {
+				onDateChange({ value: { start: date, end: null } });
+				setSelectedDates([formatDate(date)]);
+			}
+			if (value.start === null) {
+				onDateChange({ value: { start: date, end: value.end } });
+				setSelectedDates([formatDate(date)]);
+			}
+
+			if (value.start !== null && value.end === null) {
+				const start = new Date(value.start) < date ? value.start : date;
+				const end = new Date(date) > value.start ? date : value.start;
+				const formattedDates = getDatesInRange(start, end).map((item) => {
+					return formatDate(item);
+				});
+				setSelectedDates(formattedDates);
+				onDateChange({ value: { start: start, end: end } });
+			}
+		};
+		const selectDayForWeek = (date: Date) => {
+			const selectedDate = new Date(activeYear, currentMonthIdx, date.getDate());
+			const firstDate = getMonday(selectedDate);
+			const lastDate = getSunday(selectedDate);
+			onDateChange({ value: { start: firstDate, end: lastDate } });
+			const formattedDates = getDatesInRange(firstDate, lastDate).map((item) => {
+				return formatDate(item);
+			});
+			setSelectedDates(formattedDates);
+		};
+		const selectSingleDate = (date: Date, formattedDate: string) => {
+			const selectedDate = new Date(activeYear, currentMonthIdx, date.getDate());
+			setSelectedDates([formattedDate]);
+			onDateChange({ value: selectedDate });
+		};
+		const mappedSelectedDatesToFormattedValue = selectedDates.map((item) => {
+			return formatDate(new Date(item));
+		});
+		const selectDayForPartial = (date: Date) => {
+			if (mappedSelectedDatesToFormattedValue.includes(formatDate(date))) {
+				const filteredDates = selectedDates.filter((item) => {
+					return formatDate(new Date(date)) !== formatDate(new Date(item));
+				});
+				setSelectedDates(filteredDates);
+				if (selectedDates.length > 0) {
+					onDateChange({
+						value: selectedDates
+							.filter((item) => {
+								return item !== formatDate(date);
+							})
+							.map((date) => {
+								return new Date(date);
+							}),
+					});
+				}
+
+				return;
+			}
+			setSelectedDates((prev) => {
+				return [...prev, formatDate(date)];
+			});
+			const mappedSelectedDatesToRawDates = selectedDates.map((item) => {
+				return new Date(item);
+			});
+			onDateChange({ value: [...mappedSelectedDatesToRawDates, new Date(date)] });
+		};
+
+		const selectDay = (date: Date) => {
+			const formattedDate = formatDate(date);
+			if (mode === "single") {
+				selectSingleDate(date, formattedDate);
+			}
+			if (mode === "partial") {
+				selectDayForPartial(date);
+			}
+			if (mode === "interval") {
+				selectDayForInterval(date);
+			}
+			if (mode === "week") {
+				selectDayForWeek(date);
+			}
+		};
+
 		const [month, setMonth] = useState<Array<Date>>(INITIAL_MONTH_DATES);
+
 		const [currentMonthIdx, setCurrentMonthIdx] = useState(month[MIDDLE_DAY_OF_MONTH].getMonth());
-		const [currentDate, setCurrentDate] = useState(defaultDate);
-		const decadeYears = getYears(subtract({ date: currentDate, type: "year", count: ONE_DECADE }), 11);
-		const [activeYear, setActiveYear] = useState<number>(currentDate.getFullYear());
-		const monthsOfYear = getMonthsOfYear(currentDate);
+
+		const [activeYear, setActiveYear] = useState<number>(defaultDate.getFullYear());
+
+		const decadeYears = getYears(
+			subtract({
+				date: new Date(activeYear, currentMonthIdx, new Date().getDate()),
+				type: "year",
+				count: ONE_DECADE,
+			}),
+			ONE_DECADE
+		);
+
+		const monthsOfYear = getMonthsOfYear(defaultDate);
 
 		const clickYear = (date: Date) => {
-			setActiveYear(date.getFullYear());
-			const updatedDate = new Date(date.getFullYear(), currentDate.getMonth(), currentDate.getDate());
 			if (onYearClick !== undefined) {
-				onYearClick(updatedDate);
+				onYearClick(date);
 			}
+			setActiveYear(date.getFullYear());
 		};
 
 		const changeYear = (action: "add" | "subtract", count: number) => {
 			if (action === "add") {
-				setCurrentDate((prev) => {
-					return add({ date: prev, type: "year", count: count });
-				});
+				const incrementedYear = add({ date: defaultDate, type: "year", count: count });
+				setActiveYear(incrementedYear.getFullYear());
 			}
 			if (action === "subtract") {
-				setCurrentDate((prev) => {
-					return subtract({ date: prev, type: "year", count: count });
-				});
+				const decrementedYear = subtract({ date: defaultDate, type: "year", count: count });
+				setActiveYear(decrementedYear.getFullYear());
 			}
 		};
 
@@ -110,7 +251,9 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 					setCurrentMonthIdx(nextMonth);
 				}
 				if (isCurrentMonthIsDecember) {
-					changeYear("add", ONE_YEAR);
+					setActiveYear((prev) => {
+						return prev + 1;
+					});
 					setCurrentMonthIdx(JANUARY_ORDINAL_NUMBER);
 				}
 			}
@@ -120,7 +263,9 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 			}
 
 			if (view === "decade") {
-				changeYear("add", ONE_DECADE);
+				setActiveYear((prev) => {
+					return prev + ONE_DECADE;
+				});
 			}
 		};
 
@@ -132,7 +277,9 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 				}
 				const isCurrentMonthIdxIsJanuary = currentMonthIdx === JANUARY_ORDINAL_NUMBER;
 				if (isCurrentMonthIdxIsJanuary) {
-					changeYear("subtract", ONE_YEAR);
+					setActiveYear((prev) => {
+						return prev - 1;
+					});
 					setCurrentMonthIdx(DECEMBER_ORDINAL_NUMBER);
 				}
 			}
@@ -141,23 +288,28 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 			}
 
 			if (view === "decade") {
-				changeYear("subtract", ONE_DECADE);
+				setActiveYear((prev) => {
+					return prev - ONE_DECADE;
+				});
 			}
 		};
 
 		const clickMonth = (date: Date) => {
-			if (onMonthClick) {
+			if (onMonthClick !== undefined) {
 				onMonthClick(date);
 			}
 			const daysOfMonth = getMonthCalendarViewDates({ initialDate: date });
 			const newMonthIdx = new Date(daysOfMonth[START_OF_NEW_MONTH_IDX]).getMonth();
-
 			setMonth(daysOfMonth);
 			setCurrentMonthIdx(newMonthIdx);
 		};
 
 		const headerText = useMemo(() => {
-			const previousDecadeStart = subtract({ date: currentDate, count: ONE_DECADE, type: "year" });
+			const previousDecadeStart = subtract({
+				date: new Date(activeYear, currentMonthIdx, defaultDate.getDate()),
+				count: ONE_DECADE,
+				type: "year",
+			});
 			switch (view) {
 				case "month":
 					return `${getFormattedMonthToLocale({
@@ -172,34 +324,25 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 				default:
 					return "test";
 			}
-		}, [currentDate, view, month, locale]);
+		}, [defaultDate, view, month, locale]);
 
-		const datePickerWrapperCn = customizationClassNames?.common?.wrapper
-			? customizationClassNames.common.wrapper
-			: "datePicker-wrapper";
-		const datePickerHeaderCn = customizationClassNames?.common?.header
-			? customizationClassNames.common.header
-			: "datePicker-header";
-		const datePickerArrowLeftCn = customizationClassNames?.common?.arrowLeft
-			? customizationClassNames.common.arrowLeft
-			: "datePicker__controller datePicker__controller_type_prev";
-		const datePickerArrowNextCn = customizationClassNames?.common?.arrowRight
-			? customizationClassNames.common.arrowRight
-			: "datePicker__controller datePicker__controller_type_next";
-		const datePickerHeaderControlsCn = customizationClassNames?.common?.headerControls
-			? customizationClassNames?.common.headerControls
-			: "datePicker__controls";
-		const datePickerHeadertextCn = customizationClassNames?.common?.headerText
-			? customizationClassNames?.common.headerText
-			: "datepicker-header__time";
+		const {
+			datePickerHeadertextCn,
+			datePickerWrapperCn,
+			datePickerHeaderCn,
+			datePickerHeaderControlsCn,
+			datePickerArrowNextCn,
+			datePickerArrowLeftCn,
+		} = initDatePickerBaseClassNames(customizationClassNames?.common);
 
 		useEffect(() => {
 			const month = getMonthCalendarViewDates({
-				initialDate: currentDate,
+				initialDate: defaultDate,
+				year: activeYear,
 				month: currentMonthIdx,
 			});
 			setMonth(month);
-		}, [currentMonthIdx, currentDate]);
+		}, [currentMonthIdx, activeYear]);
 
 		if (isVisible) {
 			return (
@@ -229,23 +372,22 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 							customizedDates: customizedDates,
 							currentMonth: currentMonthIdx,
 							disabledDates: disabledDates,
-							value: value,
-							onDateChange: onDateChange,
+							selectedDates: selectedDates,
+							onDateChange: selectDay,
 							minDate: minDate,
 							customMonthClassNames: customizationClassNames?.month,
 						})}
 					{view === "month" && customMonthViewRenderProp === undefined && (
 						<MonthView
 							locale={locale}
-							mode={mode}
+							selectedDates={selectedDates}
 							month={month}
-							value={value}
 							customDayCellRenderProp={customDayCellRenderProp}
 							customizedDates={customizedDates}
 							currentMonth={currentMonthIdx}
 							disabledDates={disabledDates}
 							weekendDays={weekendDays}
-							onDateChange={onDateChange}
+							onDateChange={selectDay}
 							minDate={minDate}
 							customMonthClassNames={customizationClassNames?.month}
 						/>
