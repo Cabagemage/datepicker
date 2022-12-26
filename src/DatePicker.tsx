@@ -22,7 +22,7 @@ import {
 	ONE_DECADE,
 	MIDDLE_DAY_OF_MONTH,
 } from "./core/constants";
-import { forwardRef, useEffect, useMemo, useState } from "react";
+import { forwardRef, useMemo, useState } from "react";
 import { MonthView } from "./components/MonthView";
 import YearView from "./components/YearView";
 import DecadeView from "./components/DecadeView";
@@ -127,9 +127,19 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 				onDateChange({ value: { start: null, end: null } });
 				setSelectedDates([]);
 			}
-			if (value.start && value.end && !isDateIncluded) {
-				onDateChange({ value: { start: date, end: null } });
-				setSelectedDates([formatDate(date)]);
+			if (value.start && value.end && date > value.end) {
+				onDateChange({ value: { start: value.start, end: date } });
+				const formattedDates = getDatesInRange(value.start, date).map((item) => {
+					return formatDate(item);
+				});
+				setSelectedDates(formattedDates);
+			}
+			if (value.start && value.end && date < value.start) {
+				onDateChange({ value: { start: date, end: value.end } });
+				const formattedDates = getDatesInRange(date, value.end).map((item) => {
+					return formatDate(item);
+				});
+				setSelectedDates(formattedDates);
 			}
 			if (value.start === null) {
 				onDateChange({ value: { start: date, end: value.end } });
@@ -235,12 +245,14 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 			if (view === "month") {
 				const nextMonth = currentMonthIdx + ONE_MONTH;
 				const isCurrentMonthIsDecember = currentMonthIdx === DECEMBER_ORDINAL_NUMBER;
+
 				if (MONTHS_IDX_LIST.includes(nextMonth)) {
 					setCurrentMonthIdx(nextMonth);
 				}
+
 				if (isCurrentMonthIsDecember) {
 					const updatedMonths = getMonthsOfYear(
-						new Date(activeYear + 1, JANUARY_ORDINAL_NUMBER, defaultDate.getDate())
+						new Date(activeYear, JANUARY_ORDINAL_NUMBER, defaultDate.getDate())
 					);
 					setActiveYear((prev) => {
 						return prev + 1;
@@ -248,6 +260,12 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 					setMonthsOfYear(updatedMonths);
 					setCurrentMonthIdx(JANUARY_ORDINAL_NUMBER);
 				}
+				const month = getMonthCalendarViewDates({
+					initialDate: defaultDate,
+					year: isCurrentMonthIsDecember ? activeYear + 1 : activeYear,
+					month: isCurrentMonthIsDecember ? JANUARY_ORDINAL_NUMBER : nextMonth,
+				});
+				setMonth(month);
 			}
 
 			if (view === "year") {
@@ -287,6 +305,12 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 					});
 					setCurrentMonthIdx(DECEMBER_ORDINAL_NUMBER);
 				}
+				const month = getMonthCalendarViewDates({
+					initialDate: defaultDate,
+					year: isCurrentMonthIdxIsJanuary ? activeYear - 1 : activeYear,
+					month: isCurrentMonthIdxIsJanuary ? DECEMBER_ORDINAL_NUMBER : prevMonth,
+				});
+				setMonth(month);
 			}
 			if (view === "year") {
 				changeYear("subtract", ONE_YEAR);
@@ -322,7 +346,7 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 			switch (view) {
 				case "month":
 					return `${getFormattedMonthToLocale({
-						month: month[START_OF_NEW_MONTH_IDX],
+						month: month[MIDDLE_DAY_OF_MONTH],
 						locale: locale,
 					})} ${activeYear}`;
 				case "year":
@@ -333,7 +357,7 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 				default:
 					return "not available";
 			}
-		}, [defaultDate, view, month, locale, decadeYears]);
+		}, [view, month, locale, decadeYears, activeYear]);
 
 		const {
 			datePickerHeadertextCn,
@@ -343,15 +367,6 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 			datePickerArrowNextCn,
 			datePickerArrowLeftCn,
 		} = initDatePickerBaseClassNames(customizationClassNames?.common);
-
-		useEffect(() => {
-			const month = getMonthCalendarViewDates({
-				initialDate: defaultDate,
-				year: activeYear,
-				month: currentMonthIdx,
-			});
-			setMonth(month);
-		}, [currentMonthIdx, activeYear, view]);
 
 		if (isVisible) {
 			return (
