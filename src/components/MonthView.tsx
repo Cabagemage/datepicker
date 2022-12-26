@@ -2,7 +2,7 @@ import { formatDate, getDatesInRange, getMonday, getSunday } from "../core/handl
 import { MonthViewProps } from "../core/types/DatePicker.typedef";
 import { initMonthCalendarClassNames } from "../core/utils/initMonthCalendarClassNames";
 import { formatDayOfWeek } from "../core/handlers/formatDayOfWeek";
-import DayMonthView from "./DayMonthView";
+import { DayMonthView } from "./DayMonthView";
 
 const daysOfWeek = () => {
 	const startDate = getMonday(new Date());
@@ -22,6 +22,7 @@ export const MonthView = ({
 	minDate,
 	disabledDates,
 	selectedDates,
+	maxDate,
 	weekendDays,
 	customDayCellRenderProp,
 }: MonthViewProps) => {
@@ -55,6 +56,7 @@ export const MonthView = ({
 						key={item.toString()}
 						date={item}
 						minDate={minDate}
+						maxDate={maxDate}
 						bannedDates={mappedBannedDates}
 						weekendDays={weekendDays}
 						customMonthClassNames={customMonthClassNames}

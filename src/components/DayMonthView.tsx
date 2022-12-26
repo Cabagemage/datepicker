@@ -5,7 +5,7 @@ import {
 	getFormattedShortDayForMonthView,
 	isFirstDateEarlierThanSecondOne,
 } from "../core/handlers";
-import { CustomizedDate, DatePickerMonthViewClassNames, MinDate } from "../core/types";
+import { CustomizedDate, DatePickerMonthViewClassNames, AvailableDate } from "../core/types";
 import { initMonthCalendarClassNames } from "../core/utils/initMonthCalendarClassNames";
 import { WeekendDays } from "../core/types/DatePicker.typedef";
 
@@ -13,7 +13,8 @@ type DayMonthViewProps = {
 	date: Date;
 	currentMonthIdx: number;
 	customizedDates?: Array<CustomizedDate>;
-	minDate?: MinDate;
+	minDate?: AvailableDate;
+	maxDate?: AvailableDate;
 	weekendDays?: WeekendDays;
 	bannedDates?: Array<string>;
 	customMonthClassNames?: Partial<DatePickerMonthViewClassNames>;
@@ -21,12 +22,13 @@ type DayMonthViewProps = {
 	onDayClick: (date: Date) => void;
 };
 
-const DayMonthView = ({
+export const DayMonthView = ({
 	currentMonthIdx,
 	weekendDays,
 	customizedDates,
 	date,
 	minDate,
+	maxDate,
 	selectedDates,
 	bannedDates,
 	customMonthClassNames,
@@ -36,7 +38,7 @@ const DayMonthView = ({
 	const customizedDate = customizedDates?.find((customizedDate) => {
 		return formatDate(date) === formatDate(customizedDate.date);
 	});
-	const endDate =
+	const minDateValue =
 		minDate?.options?.isPassedDateIncluded === true
 			? add({
 					date: minDate?.date ?? new Date(),
@@ -44,12 +46,22 @@ const DayMonthView = ({
 					count: 1,
 			  })
 			: minDate?.date ?? new Date();
-
-	const isDisabled = minDate !== undefined ? isFirstDateEarlierThanSecondOne(date, endDate) : false;
+	const maxDateValue =
+		maxDate?.options?.isPassedDateIncluded === true
+			? add({
+					date: maxDate?.date ?? new Date(),
+					type: "day",
+					count: 1,
+			  })
+			: maxDate?.date ?? new Date();
+	const isDisabledByMinDate =
+		minDate !== undefined ? isFirstDateEarlierThanSecondOne(date, minDateValue) : false;
+	const isDisabledByMaxDate =
+		maxDate !== undefined ? isFirstDateEarlierThanSecondOne(maxDateValue, date) : false;
 	const isSelected = selectedDates.includes(formatDate(date));
 	const isToday = new Date().toDateString() === date.toDateString();
 	const isCustomizedDateIsDisabled = customizedDate !== undefined ? customizedDate.isDisabled : false;
-	const isDateDisabled =
+	const isDateBanned =
 		(bannedDates !== undefined && bannedDates.includes(formatDate(date))) || isCustomizedDateIsDisabled;
 	const isWeekendDay = weekendDays !== undefined && weekendDays.weekendDays.includes(date.getDay());
 	const isWeekendDaysShouldBeDisabled = weekendDays !== undefined ? weekendDays.shouldBeDisabled : false;
@@ -87,17 +99,23 @@ const DayMonthView = ({
 					[monthViewDateIsNotRelatedToMonthClassName]: isDateNotRelatedToCurrentMonth,
 				},
 				{
-					[monthDayCellActiveClassName]: isSelected && !isDateDisabled,
+					[monthDayCellActiveClassName]: isSelected && !isDateBanned,
 					[monthDayCellDisabledClassName]:
-						isDisabled || isDateDisabled || (isWeekendDaysShouldBeDisabled && isWeekendDay),
+						isDisabledByMinDate ||
+						isDisabledByMaxDate ||
+						isDateBanned ||
+						(isWeekendDaysShouldBeDisabled && isWeekendDay),
 				}
 			)}
 			key={date.toString()}
-			disabled={isDisabled || isDateDisabled || (isWeekendDaysShouldBeDisabled && isWeekendDay)}
+			disabled={
+				isDisabledByMinDate ||
+				isDateBanned ||
+				isDisabledByMaxDate ||
+				(isWeekendDaysShouldBeDisabled && isWeekendDay)
+			}
 		>
 			<span className={monthDayCellTextClassName}>{getFormattedShortDayForMonthView(date)}</span>
 		</button>
 	);
 };
-
-export default DayMonthView;

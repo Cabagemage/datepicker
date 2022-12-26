@@ -18,6 +18,6 @@ export type {
 	DatePickerControlsProps,
 	DatePickerYearViewClassNames,
 	CalendarViews,
-	MinDateOptions,
-	MinDate,
+	AvailableDateOptions,
+	AvailableDate,
 } from "./DatePicker.typedef";
