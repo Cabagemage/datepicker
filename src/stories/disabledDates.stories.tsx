@@ -68,45 +68,81 @@ const CalendarWithCustomDisabledDatesTemplate: ComponentStory<typeof DatePicker>
 	);
 };
 
-const CalendarWithMinDatePassedTemplate: ComponentStory<typeof DatePicker> = () => {
+const CalendarWithMinMaxDatePassedTemplate: ComponentStory<typeof DatePicker> = () => {
 	const [minDate, setMinDate] = useState(new Date());
+	const [maxDate, setMaxDate] = useState(new Date());
 	const [shouldMinDateBeDisabled, setShouldMinDateBeDisabled] = useState(true);
-	const changeDate = (date: Date) => {
+	const changeMinDate = (date: Date) => {
 		setMinDate(date);
+	};
+	const changeMaxDate = (date: Date) => {
+		setMaxDate(date);
 	};
 	return (
 		<section>
-			<h2>All dates until/include selected date will be disabled.</h2>
-			<div style={{ display: "flex", gap: "25px", alignItems: "center" }}>
-				<PreparedDatePicker
-					value={minDate}
-					onSingleDateChange={changeDate}
-					locale={"en"}
-					mode={"single"}
-					view={"month"}
-				/>
-				<PreparedDatePicker
-					value={new Date()}
-					minDate={{ date: minDate, options: { isPassedDateIncluded: shouldMinDateBeDisabled } }}
-					onSingleDateChange={changeDate}
-					locale={"en"}
-					mode={"single"}
-					view={"month"}
-				/>
-				<div style={{ display: "flex", flexDirection: "column" }}>
-					<label>Should minDate be disabled?</label>
-					<button
-						onClick={() => {
-							setShouldMinDateBeDisabled(!shouldMinDateBeDisabled);
-						}}
-					>
-						{shouldMinDateBeDisabled ? "yes" : "no"}
-					</button>
+			<div>
+				<h2>All dates until/include selected date will be disabled.</h2>
+				<div style={{ display: "flex", gap: "25px", alignItems: "center" }}>
+					<PreparedDatePicker
+						value={minDate}
+						onSingleDateChange={changeMinDate}
+						locale={"en"}
+						mode={"single"}
+						view={"month"}
+					/>
+					<PreparedDatePicker
+						value={new Date()}
+						minDate={{ date: minDate, options: { isPassedDateIncluded: shouldMinDateBeDisabled } }}
+						onSingleDateChange={changeMinDate}
+						locale={"en"}
+						mode={"single"}
+						view={"month"}
+					/>
+					<div style={{ display: "flex", flexDirection: "column" }}>
+						<label>Should minDate be disabled?</label>
+						<button
+							onClick={() => {
+								setShouldMinDateBeDisabled(!shouldMinDateBeDisabled);
+							}}
+						>
+							{shouldMinDateBeDisabled ? "yes" : "no"}
+						</button>
+					</div>
+				</div>
+			</div>
+			<div>
+				<h2>Select maxDate. Also, min date that you chose on previous datePicker also shows here</h2>
+				<div style={{ display: "flex", gap: "25px", alignItems: "center" }}>
+					<PreparedDatePicker
+						value={maxDate}
+						onSingleDateChange={changeMaxDate}
+						locale={"en"}
+						mode={"single"}
+						view={"month"}
+					/>
+					<PreparedDatePicker
+						value={maxDate}
+						minDate={{ date: minDate, options: { isPassedDateIncluded: shouldMinDateBeDisabled } }}
+						maxDate={{ date: maxDate, options: { isPassedDateIncluded: shouldMinDateBeDisabled } }}
+						locale={"en"}
+						mode={"single"}
+						view={"month"}
+					/>
+					<div style={{ display: "flex", flexDirection: "column" }}>
+						<label>Should minDate be disabled?</label>
+						<button
+							onClick={() => {
+								setShouldMinDateBeDisabled(!shouldMinDateBeDisabled);
+							}}
+						>
+							{shouldMinDateBeDisabled ? "yes" : "no"}
+						</button>
+					</div>
 				</div>
 			</div>
 		</section>
 	);
 };
-export const CalendarWithMinDatePassed = CalendarWithMinDatePassedTemplate.bind({});
+export const CalendarWithMinDatePassed = CalendarWithMinMaxDatePassedTemplate.bind({});
 export const CalendarWithWeekendDates = CalendarWithWeekendDaysTemplate.bind({});
 export const CalendarWithCustomDisabledDates = CalendarWithCustomDisabledDatesTemplate.bind({});
