@@ -1,15 +1,16 @@
 .datePicker-body__year {
 	display: flex;
 	flex-wrap: wrap;
-	justify-content: space-between;
-	row-gap: 15px;
-	width: 100%;
+	justify-content: flex-start;
+	row-gap: 25px;
+	column-gap: 15px;
 }
 
 .datePicker-body__year-cell {
 	all: unset;
 	user-select: none;
-	width: 100px;
+	width: 90px;
+	flex-shrink: 0;
 	text-align: center;
 	cursor: pointer;
 	height: 55px;

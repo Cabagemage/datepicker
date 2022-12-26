@@ -2,7 +2,8 @@
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: flex-start;
-	gap: 10px;
+	row-gap: 25px;
+	column-gap: 15px;
 }
 
 .datePicker-body__decade-cell {

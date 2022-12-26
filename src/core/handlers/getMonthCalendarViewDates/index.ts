@@ -23,7 +23,12 @@ export const getMonthCalendarViewDates: GetMonthCalendarViewDates = ({
 	const nextMondayOfLastWeekOfMonth = getMonday(lastWeekOfMonth[lastWeekOfMonth.length - 1]);
 	const nextSundayOfLastWeekOfMonth = getSunday(lastWeekOfMonth[lastWeekOfMonth.length - 1]);
 	const lastWeek = getDatesInRange(nextMondayOfLastWeekOfMonth, nextSundayOfLastWeekOfMonth);
-	const temporaryArray = firstWeekOfMonth.concat(currentMonth).concat(lastWeekOfMonth).concat(lastWeek);
+	const previousMonthFirstWeekStart =
+		firstWeekOfMonth.length >= 14 ? firstWeekOfMonth.slice(7) : firstWeekOfMonth;
+	const temporaryArray = previousMonthFirstWeekStart
+		.concat(currentMonth)
+		.concat(lastWeekOfMonth)
+		.concat(lastWeek);
 
 	const excludeRepeatedElements = temporaryArray.filter((day, idx, array) => {
 		return (
