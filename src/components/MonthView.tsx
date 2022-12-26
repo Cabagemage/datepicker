@@ -22,6 +22,7 @@ export const MonthView = ({
 	minDate,
 	disabledDates,
 	selectedDates,
+	maxDate,
 	weekendDays,
 	customDayCellRenderProp,
 }: MonthViewProps) => {
@@ -55,6 +56,7 @@ export const MonthView = ({
 						key={item.toString()}
 						date={item}
 						minDate={minDate}
+						maxDate={maxDate}
 						bannedDates={mappedBannedDates}
 						weekendDays={weekendDays}
 						customMonthClassNames={customMonthClassNames}

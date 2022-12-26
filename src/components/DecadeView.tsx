@@ -8,6 +8,7 @@ const DecadeView = ({
 	years,
 	onYearClick,
 	minDate,
+	maxDate,
 	activeYear,
 	customDecadeClassNames,
 	customYearCellRenderProp,
@@ -26,10 +27,13 @@ const DecadeView = ({
 				// we don't want to disable year for chose year have not passed
 				const isLastDateInMonthEqualToPassedMinDate =
 					minDate?.date.toDateString() === lastDateInMonth.toDateString();
-				const year = isLastDateInMonthEqualToPassedMinDate
+				const minDateYear = isLastDateInMonthEqualToPassedMinDate
 					? minDate.date
 					: subtract({ date: new Date(minDate?.date ?? new Date()), type: "year", count: ONE_YEAR });
-				const isDisabled = minDate !== undefined ? isFirstDateEarlierThanSecondOne(item, year) : false;
+				const isDisabledByMaxDate =
+					maxDate !== undefined ? isFirstDateEarlierThanSecondOne(maxDate.date, item) : false;
+				const isDisabledByMinDate =
+					minDate !== undefined ? isFirstDateEarlierThanSecondOne(item, minDateYear) : false;
 
 				if (customYearCellRenderProp !== undefined) {
 					customYearCellRenderProp({ date: item, onDateClick: onYearClick });
@@ -41,9 +45,9 @@ const DecadeView = ({
 						onClick={() => {
 							return onYearClick(item);
 						}}
-						disabled={isDisabled}
+						disabled={isDisabledByMinDate || isDisabledByMaxDate}
 						className={classNames(decadeViewCellClassName, {
-							[decadeCellDisabledClassName]: isDisabled,
+							[decadeCellDisabledClassName]: isDisabledByMinDate || isDisabledByMaxDate,
 							[decadeCellSelected]: isSelected,
 						})}
 						key={item.toString()}

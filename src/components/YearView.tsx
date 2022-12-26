@@ -1,13 +1,19 @@
 import classNames from "classnames";
 import { initYearCalendarClassNames } from "../core/utils/initYearCalendarClassNames";
 import { YearViewProps } from "../core/types/DatePicker.typedef";
-import { getFormattedMonthToLocale, isFirstDateEarlierThanSecondOne, subtract } from "../core/handlers";
+import {
+	formatDate,
+	getFormattedMonthToLocale,
+	isFirstDateEarlierThanSecondOne,
+	subtract,
+} from "../core/handlers";
 
 const YearView = ({
 	months,
 	onMonthClick,
 	defaultLocale,
 	minDate,
+	maxDate,
 	currentMonthIdx,
 	customYearClassNames,
 	customMonthCellRenderProp,
@@ -24,12 +30,16 @@ const YearView = ({
 				const lastDateInMonth = new Date(item.getFullYear(), item.getMonth() + 1, 0);
 				// we don't want to disable month for chose month have not passed
 				const isLastDateInMonthEqualToPassedMinDate =
-					minDate?.date.toDateString() === lastDateInMonth.toDateString();
-				const disabledMonth = isLastDateInMonthEqualToPassedMinDate
+					minDate !== undefined && formatDate(minDate?.date) === formatDate(lastDateInMonth);
+				const disabledMonthByMinDate = isLastDateInMonthEqualToPassedMinDate
 					? minDate.date
 					: subtract({ date: new Date(minDate?.date ?? new Date()), type: "month", count: 1 });
-				const isDisabled =
-					minDate !== undefined ? isFirstDateEarlierThanSecondOne(item, disabledMonth) : false;
+				const isDisabledByMinDate =
+					minDate !== undefined ? isFirstDateEarlierThanSecondOne(item, disabledMonthByMinDate) : false;
+
+				const isDisabledByMaxDate =
+					maxDate !== undefined ? isFirstDateEarlierThanSecondOne(maxDate.date, item) : false;
+
 				const isSelected = currentMonthIdx === item.getMonth();
 
 				if (customMonthCellRenderProp !== undefined) {
@@ -41,11 +51,12 @@ const YearView = ({
 						onClick={() => {
 							return onMonthClick(item);
 						}}
+						value={item.toDateString()}
 						type="button"
-						disabled={isDisabled}
+						disabled={isDisabledByMinDate || isDisabledByMaxDate}
 						className={classNames(yearViewMonthCellClassName, {
-							[yearViewMonthSelectedClassName]: isSelected && !isDisabled,
-							[yearViewMonthCellDisabledClassName]: isDisabled,
+							[yearViewMonthSelectedClassName]: isSelected && !isDisabledByMinDate && !isDisabledByMaxDate,
+							[yearViewMonthCellDisabledClassName]: isDisabledByMinDate || isDisabledByMaxDate,
 						})}
 						key={item.toString()}
 					>
