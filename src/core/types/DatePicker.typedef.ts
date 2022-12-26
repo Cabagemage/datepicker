@@ -58,11 +58,11 @@ export type DatePickerClassNames = Partial<{
 	decade: Partial<DatePickerDecadeViewClassNames>;
 }>;
 
-export type MinDateOptions = {
+export type AvailableDateOptions = {
 	isPassedDateIncluded?: boolean;
 };
 
-export type MinDate = { date: Date; options?: MinDateOptions };
+export type AvailableDate = { date: Date; options?: AvailableDateOptions };
 
 export type DatePickerControlsProps = {
 	changeCalendarView: () => void;
@@ -76,7 +76,8 @@ type BaseCellRenderProps = { date: Date; onDateClick: (date: Date) => void };
 export interface DatePickerProps {
 	locale?: Intl.LocalesArgument;
 	value: Date | Array<Date> | DatePickerInterval;
-	minDate?: MinDate;
+	minDate?: AvailableDate;
+	maxDate?: AvailableDate;
 	disabledDates?: Array<Date>;
 	customHeaderRenderProp?: (props: DatePickerControlsProps) => JSX.Element;
 	customMonthViewRenderProp?: (props: MonthViewProps) => JSX.Element;
@@ -105,7 +106,8 @@ export type YearViewProps = {
 	defaultLocale: Intl.LocalesArgument;
 	currentMonthIdx: number;
 	customMonthCellRenderProp?: (props: BaseCellRenderProps) => JSX.Element;
-	minDate?: MinDate;
+	minDate?: AvailableDate;
+	maxDate?: AvailableDate;
 	customYearClassNames?: Partial<DatePickerYearViewClassNames>;
 };
 
@@ -113,7 +115,8 @@ export type DecadeViewProps = {
 	years: Array<Date>;
 	onYearClick: (date: Date) => void;
 	customYearCellRenderProp?: (props: BaseCellRenderProps) => JSX.Element;
-	minDate?: MinDate;
+	minDate?: AvailableDate;
+	maxDate?: AvailableDate;
 	activeYear?: number;
 	customDecadeClassNames?: Partial<DatePickerDecadeViewClassNames>;
 };
@@ -121,14 +124,14 @@ export type DecadeViewProps = {
 export type MonthViewProps = {
 	locale: Intl.LocalesArgument;
 	month: Array<Date>;
-
+	maxDate?: AvailableDate;
 	customMonthClassNames?: Partial<DatePickerMonthViewClassNames>;
 	customizedDates?: Array<CustomizedDate>;
 	customDayCellRenderProp?: (props: BaseCellRenderProps) => JSX.Element;
 	currentMonth: number;
 	selectedDates: Array<Date | string>;
 	onDateChange: (date: Date) => void;
-	minDate?: MinDate;
+	minDate?: AvailableDate;
 	disabledDates?: Array<Date | string>;
 	weekendDays?: WeekendDays;
 };
