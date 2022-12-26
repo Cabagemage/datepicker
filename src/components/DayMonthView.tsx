@@ -22,7 +22,7 @@ type DayMonthViewProps = {
 	onDayClick: (date: Date) => void;
 };
 
-const DayMonthView = ({
+export const DayMonthView = ({
 	currentMonthIdx,
 	weekendDays,
 	customizedDates,
@@ -119,5 +119,3 @@ const DayMonthView = ({
 		</button>
 	);
 };
-
-export default DayMonthView;

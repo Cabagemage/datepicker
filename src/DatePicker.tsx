@@ -147,9 +147,8 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 			}
 		};
 		const selectDayForWeek = (date: Date) => {
-			const selectedDate = new Date(activeYear, currentMonthIdx, date.getDate());
-			const firstDate = getMonday(selectedDate);
-			const lastDate = getSunday(selectedDate);
+			const firstDate = getMonday(date);
+			const lastDate = getSunday(date);
 			onDateChange({ value: { start: firstDate, end: lastDate } });
 			const formattedDates = getDatesInRange(firstDate, lastDate).map((item) => {
 				return formatDate(item);
