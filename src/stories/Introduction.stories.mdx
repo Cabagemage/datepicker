@@ -28,7 +28,7 @@ import "./storybook.css";
   `}
 </style>
 
-# loyalreactdatePicker 0.7.0
+# loyalreactdatePicker 0.7.2
 
 Simple and magnificent Date Picker dedicated to Joka and his son Boka - authors of cryptography algorithm
 
@@ -92,9 +92,16 @@ Attention. Its beta version of date picker, possible it'll be changed later
         <td><p>minDate</p></td>
         <td>false</td>
         <td>`{date: Date, options?: {isPassedDateIncluded?: boolean}}`</td>
-        <td>flag need to decide disable until or include passed date</td>
+        <td>flag need to decide start date you can select</td>
         <td>-</td>
     </tr>
+        <tr>
+            <td><p>maxDate</p></td>
+            <td>false</td>
+            <td>`{date: Date, options?: {isPassedDateIncluded?: boolean}}`</td>
+            <td>flag need to decide until what date you can select</td>
+            <td>-</td>
+        </tr>
     <tr>
         <td><p>disabledDates</p></td>
         <td>false</td>
@@ -240,6 +247,13 @@ Attention. Its beta version of date picker, possible it'll be changed later
 <a href="#changelog">
 	<h2 id="changelog">ChangeLog</h2>
 </a>
+
+<div className="subheading">0.7.2</div>
+
+- change width of datepicker header;
+- fix issue with incorrect unselect date chosen by default on partial days select;
+- fix issue with incorrect decade toggle and year pagination.
+- add maxDate prop
 
 <div className="subheading">0.7.1</div>
 
