@@ -1,7 +1,7 @@
 export type {
 	DateType,
-	MinDateOptions,
-	MinDate,
+	AvailableDateOptions,
+	AvailableDate,
 	CustomizedDate,
 	DatePickerClassNames,
 	DatePickerCommonClassNames,

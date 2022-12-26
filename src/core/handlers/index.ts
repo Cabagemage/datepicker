@@ -17,3 +17,4 @@ export { subtract } from "./subtract";
 export { getFirstWeekOfMonth } from "./getFirstWeekOfMonth";
 export { getLastWeekOfMonth } from "./getLastWeekOfMonth";
 export { getYears } from "./getDecade";
+export { isDateBetweenDates } from "./isDateBetweenDates";
