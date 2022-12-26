@@ -42,6 +42,7 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 			value,
 			view,
 			changeCalendarView,
+			maxDate,
 			customHeaderRenderProp,
 			customDecadeViewRenderProp,
 			onYearClick,
@@ -156,9 +157,8 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 			setSelectedDates(formattedDates);
 		};
 		const selectSingleDate = (date: Date, formattedDate: string) => {
-			const selectedDate = new Date(activeYear, currentMonthIdx, date.getDate());
 			setSelectedDates([formattedDate]);
-			onDateChange({ value: selectedDate });
+			onDateChange({ value: date });
 		};
 		const mappedSelectedDatesToFormattedValue = selectedDates.map((item) => {
 			return formatDate(new Date(item));
@@ -173,7 +173,7 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 					onDateChange({
 						value: selectedDates
 							.filter((item) => {
-								return item !== formatDate(date);
+								return formatDate(new Date(item)) !== formatDate(date);
 							})
 							.map((date) => {
 								return new Date(date);
@@ -209,21 +209,14 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 		};
 
 		const [month, setMonth] = useState<Array<Date>>(INITIAL_MONTH_DATES);
-
 		const [currentMonthIdx, setCurrentMonthIdx] = useState(month[MIDDLE_DAY_OF_MONTH].getMonth());
-
 		const [activeYear, setActiveYear] = useState<number>(defaultDate.getFullYear());
-
-		const decadeYears = getYears(
-			subtract({
-				date: new Date(activeYear, currentMonthIdx, new Date().getDate()),
-				type: "year",
-				count: ONE_DECADE,
-			}),
+		const defaultDecadesYears = getYears(
+			subtract({ date: new Date(), type: "year", count: ONE_DECADE }),
 			ONE_DECADE
 		);
-
-		const monthsOfYear = getMonthsOfYear(defaultDate);
+		const [decadeYears, setDecadesYears] = useState(defaultDecadesYears);
+		const [monthsOfYear, setMonthsOfYear] = useState(getMonthsOfYear(defaultDate));
 
 		const clickYear = (date: Date) => {
 			if (onYearClick !== undefined) {
@@ -233,14 +226,10 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 		};
 
 		const changeYear = (action: "add" | "subtract", count: number) => {
-			if (action === "add") {
-				const incrementedYear = add({ date: defaultDate, type: "year", count: count });
-				setActiveYear(incrementedYear.getFullYear());
-			}
-			if (action === "subtract") {
-				const decrementedYear = subtract({ date: defaultDate, type: "year", count: count });
-				setActiveYear(decrementedYear.getFullYear());
-			}
+			const changedYear = action === "add" ? activeYear + count : activeYear - count;
+			const updatedMonths = getMonthsOfYear(new Date(changedYear, currentMonthIdx, defaultDate.getDate()));
+			setMonthsOfYear(updatedMonths);
+			setActiveYear(changedYear);
 		};
 
 		const toNextUnitNavAction = () => {
@@ -251,9 +240,13 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 					setCurrentMonthIdx(nextMonth);
 				}
 				if (isCurrentMonthIsDecember) {
+					const updatedMonths = getMonthsOfYear(
+						new Date(activeYear + 1, JANUARY_ORDINAL_NUMBER, defaultDate.getDate())
+					);
 					setActiveYear((prev) => {
 						return prev + 1;
 					});
+					setMonthsOfYear(updatedMonths);
 					setCurrentMonthIdx(JANUARY_ORDINAL_NUMBER);
 				}
 			}
@@ -266,6 +259,15 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 				setActiveYear((prev) => {
 					return prev + ONE_DECADE;
 				});
+				const updatedDecadeYears = getYears(
+					add({
+						date: new Date(decadeYears[0].getFullYear(), currentMonthIdx, defaultDate.getDate()),
+						type: "year",
+						count: ONE_DECADE,
+					}),
+					ONE_DECADE
+				);
+				setDecadesYears(updatedDecadeYears);
 			}
 		};
 
@@ -277,6 +279,10 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 				}
 				const isCurrentMonthIdxIsJanuary = currentMonthIdx === JANUARY_ORDINAL_NUMBER;
 				if (isCurrentMonthIdxIsJanuary) {
+					const updatedMonths = getMonthsOfYear(
+						new Date(activeYear - 1, DECEMBER_ORDINAL_NUMBER, defaultDate.getDate())
+					);
+					setMonthsOfYear(updatedMonths);
 					setActiveYear((prev) => {
 						return prev - 1;
 					});
@@ -291,6 +297,15 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 				setActiveYear((prev) => {
 					return prev - ONE_DECADE;
 				});
+				const updatedDecadeYears = getYears(
+					subtract({
+						date: new Date(decadeYears[0].getFullYear(), currentMonthIdx, defaultDate.getDate()),
+						type: "year",
+						count: ONE_DECADE,
+					}),
+					ONE_DECADE
+				);
+				setDecadesYears(updatedDecadeYears);
 			}
 		};
 
@@ -298,18 +313,13 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 			if (onMonthClick !== undefined) {
 				onMonthClick(date);
 			}
-			const daysOfMonth = getMonthCalendarViewDates({ initialDate: date });
+			const daysOfMonth = getMonthCalendarViewDates({ initialDate: date, year: activeYear });
 			const newMonthIdx = new Date(daysOfMonth[START_OF_NEW_MONTH_IDX]).getMonth();
 			setMonth(daysOfMonth);
 			setCurrentMonthIdx(newMonthIdx);
 		};
 
 		const headerText = useMemo(() => {
-			const previousDecadeStart = subtract({
-				date: new Date(activeYear, currentMonthIdx, defaultDate.getDate()),
-				count: ONE_DECADE,
-				type: "year",
-			});
 			switch (view) {
 				case "month":
 					return `${getFormattedMonthToLocale({
@@ -319,12 +329,12 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 				case "year":
 					return `${activeYear}`;
 				case "decade": {
-					return `${previousDecadeStart.getFullYear()} — ${activeYear}`;
+					return `${decadeYears[0].getFullYear()} — ${decadeYears[decadeYears.length - 1].getFullYear()}`;
 				}
 				default:
-					return "test";
+					return "not available";
 			}
-		}, [defaultDate, view, month, locale]);
+		}, [defaultDate, view, month, locale, decadeYears]);
 
 		const {
 			datePickerHeadertextCn,
@@ -342,7 +352,7 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 				month: currentMonthIdx,
 			});
 			setMonth(month);
-		}, [currentMonthIdx, activeYear]);
+		}, [currentMonthIdx, activeYear, view]);
 
 		if (isVisible) {
 			return (
@@ -367,14 +377,15 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 					)}
 					{customMonthViewRenderProp !== undefined &&
 						customMonthViewRenderProp({
-							locale: locale,
-							month: month,
-							customizedDates: customizedDates,
+							locale,
+							month,
+							customizedDates,
 							currentMonth: currentMonthIdx,
-							disabledDates: disabledDates,
-							selectedDates: selectedDates,
+							disabledDates,
+							selectedDates,
 							onDateChange: selectDay,
-							minDate: minDate,
+							minDate,
+							maxDate,
 							customMonthClassNames: customizationClassNames?.month,
 						})}
 					{view === "month" && customMonthViewRenderProp === undefined && (
@@ -389,6 +400,7 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 							weekendDays={weekendDays}
 							onDateChange={selectDay}
 							minDate={minDate}
+							maxDate={maxDate}
 							customMonthClassNames={customizationClassNames?.month}
 						/>
 					)}
@@ -396,9 +408,9 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 						customYearViewRenderProp({
 							months: monthsOfYear,
 							currentMonthIdx: currentMonthIdx,
-							minDate: minDate,
-							onMonthClick: clickMonth,
+							minDate,
 							defaultLocale: locale,
+							onMonthClick: clickMonth,
 						})}
 					{view === "year" && customYearViewRenderProp === undefined && (
 						<YearView
@@ -406,6 +418,7 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 							currentMonthIdx={currentMonthIdx}
 							customYearClassNames={customizationClassNames?.year}
 							minDate={minDate}
+							maxDate={maxDate}
 							customMonthCellRenderProp={customMonthCellRenderProp}
 							onMonthClick={clickMonth}
 							defaultLocale={locale}
@@ -422,6 +435,7 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 						<DecadeView
 							activeYear={activeYear}
 							minDate={minDate}
+							maxDate={maxDate}
 							onYearClick={clickYear}
 							years={decadeYears}
 							customYearCellRenderProp={customYearCellRenderProp}
