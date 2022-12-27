@@ -3,7 +3,8 @@ import {
 	add,
 	formatDate,
 	getFormattedShortDayForMonthView,
-	isFirstDateEarlierThanSecondOne, subtract,
+	isFirstDateEarlierThanSecondOne,
+	subtract,
 } from "../core/handlers";
 import { CustomizedDate, DatePickerMonthViewClassNames, AvailableDate } from "../core/types";
 import { initMonthCalendarClassNames } from "../core/utils/initMonthCalendarClassNames";

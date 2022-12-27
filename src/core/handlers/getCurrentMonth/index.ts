@@ -1,11 +1,11 @@
 import { GetCurrentMonth } from "../../types";
-import { MONTHS_IDX_LIST } from "../../constants";
+import { MONTHS_ORDINAL_NUMBERS_LIST } from "../../constants";
 
 export const getCurrentMonth: GetCurrentMonth = ({
 	year = new Date().getFullYear(),
 	month = new Date().getMonth(),
 }) => {
-	if (!MONTHS_IDX_LIST.includes(month)) {
+	if (!MONTHS_ORDINAL_NUMBERS_LIST.includes(month)) {
 		throw new Error("Please, add month between 0 - 11");
 	}
 	const date = new Date(year, month, 1);

@@ -1,9 +1,10 @@
-import { DAYS_IDX_LIST } from "../constants";
+import { DAYS_ORDINAL_NUMBERS_LIST } from "../constants";
 
 export type CalendarViews = "month" | "year" | "decade";
-type DatePickerMode = "single" | "partial" | "interval" | "week";
+export type DatePickerMode = "single" | "partial" | "interval" | "week";
 export type DatePickerInterval = { start: Date | null; end: Date | null };
-export type DatePickerChangeHandler = ({ value }: { value: Array<Date> | Date | DatePickerInterval }) => void;
+export type DatePickerValue = Date | Array<Date> | DatePickerInterval;
+export type DatePickerChangeHandler = ({ value }: { value: DatePickerValue }) => void;
 
 export type CustomizedDate = {
 	className: HTMLButtonElement["className"];
@@ -12,7 +13,7 @@ export type CustomizedDate = {
 	textOnHover?: string;
 };
 
-export type WeekendDays = { weekendDays: typeof DAYS_IDX_LIST; shouldBeDisabled?: boolean };
+export type WeekendDays = { weekendDays: typeof DAYS_ORDINAL_NUMBERS_LIST; shouldBeDisabled?: boolean };
 
 export type DatePickerMonthViewClassNames = {
 	monthViewMonthBody: HTMLDivElement["className"];
@@ -75,7 +76,7 @@ type BaseCellRenderProps = { date: Date; onDateClick: (date: Date) => void };
 
 export interface DatePickerProps {
 	locale?: Intl.LocalesArgument;
-	value: Date | Array<Date> | DatePickerInterval;
+	value: DatePickerValue;
 	minDate?: AvailableDate;
 	maxDate?: AvailableDate;
 	disabledDates?: Array<Date>;

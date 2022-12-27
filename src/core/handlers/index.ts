@@ -16,5 +16,5 @@ export { isFirstDateEarlierThanSecondOne } from "./isFirstDateEarlierThanSecondO
 export { subtract } from "./subtract";
 export { getFirstWeekOfMonth } from "./getFirstWeekOfMonth";
 export { getLastWeekOfMonth } from "./getLastWeekOfMonth";
-export { getYears } from "./getDecade";
+export { getYears } from "./getYears";
 export { isDateBetweenDates } from "./isDateBetweenDates";

@@ -1,5 +1,4 @@
 .nojekyll
-.np-config.js
 .prettierignore
 .prettierrc.json
 .storybook

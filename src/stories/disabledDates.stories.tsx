@@ -72,7 +72,7 @@ const CalendarWithMinMaxDatePassedTemplate: ComponentStory<typeof DatePicker> = 
 	const [minDate, setMinDate] = useState(new Date());
 	const [maxDate, setMaxDate] = useState(new Date());
 	const [shouldMinDateBeDisabled, setShouldMinDateBeDisabled] = useState(true);
-	const [shouldMaxDateBeDisabled, setShouldMaxDateBeDisabled] = useState(true)
+	const [shouldMaxDateBeDisabled, setShouldMaxDateBeDisabled] = useState(true);
 	const changeMinDate = (date: Date) => {
 		setMinDate(date);
 	};
