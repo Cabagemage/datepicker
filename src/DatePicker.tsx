@@ -231,6 +231,8 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 			if (onYearClick !== undefined) {
 				onYearClick(date);
 			}
+			const updatedMonths = getMonthsOfYear(new Date(date.getFullYear(), currentMonthIdx, defaultDate.getDate()));
+			setMonthsOfYear(updatedMonths);
 			setActiveYear(date.getFullYear());
 		};
 
@@ -251,13 +253,7 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 				}
 
 				if (isCurrentMonthIsDecember) {
-					const updatedMonths = getMonthsOfYear(
-						new Date(activeYear, JANUARY_ORDINAL_NUMBER, defaultDate.getDate())
-					);
-					setActiveYear((prev) => {
-						return prev + 1;
-					});
-					setMonthsOfYear(updatedMonths);
+					changeYear("add", ONE_YEAR)
 					setCurrentMonthIdx(JANUARY_ORDINAL_NUMBER);
 				}
 				const month = getMonthCalendarViewDates({
@@ -296,13 +292,7 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 				}
 				const isCurrentMonthIdxIsJanuary = currentMonthIdx === JANUARY_ORDINAL_NUMBER;
 				if (isCurrentMonthIdxIsJanuary) {
-					const updatedMonths = getMonthsOfYear(
-						new Date(activeYear - 1, DECEMBER_ORDINAL_NUMBER, defaultDate.getDate())
-					);
-					setMonthsOfYear(updatedMonths);
-					setActiveYear((prev) => {
-						return prev - 1;
-					});
+					changeYear("subtract", ONE_YEAR)
 					setCurrentMonthIdx(DECEMBER_ORDINAL_NUMBER);
 				}
 				const month = getMonthCalendarViewDates({
