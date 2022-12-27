@@ -1,4 +1,4 @@
-# loyal-react-datePicker (0.7.3)
+# loyal-react-datePicker (0.7.5)
 
 Status: This package in beta at this moment. Feel free to create issues for any bugs or offers to improve this library. 
 
