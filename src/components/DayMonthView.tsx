@@ -3,7 +3,7 @@ import {
 	add,
 	formatDate,
 	getFormattedShortDayForMonthView,
-	isFirstDateEarlierThanSecondOne,
+	isFirstDateEarlierThanSecondOne, subtract,
 } from "../core/handlers";
 import { CustomizedDate, DatePickerMonthViewClassNames, AvailableDate } from "../core/types";
 import { initMonthCalendarClassNames } from "../core/utils/initMonthCalendarClassNames";
@@ -48,7 +48,7 @@ export const DayMonthView = ({
 			: minDate?.date ?? new Date();
 	const maxDateValue =
 		maxDate?.options?.isPassedDateIncluded === true
-			? add({
+			? subtract({
 					date: maxDate?.date ?? new Date(),
 					type: "day",
 					count: 1,
