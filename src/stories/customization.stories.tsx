@@ -270,7 +270,11 @@ const AnimeDatePickerTemplate: ComponentStory<typeof DatePicker> = () => {
 						<>
 							<div className={"animeWeedDays"}>
 								{week.map((item) => {
-									return <div className={"animeWeekDay"}>{item}</div>;
+									return (
+										<div className={"animeWeekDay"} key={item}>
+											{item}
+										</div>
+									);
 								})}
 							</div>
 							<div className={"monthWrapper"}>
@@ -279,7 +283,12 @@ const AnimeDatePickerTemplate: ComponentStory<typeof DatePicker> = () => {
 										<div className={"anime"} key={date.date.toDateString()}>
 											<span className={"anime__text"}>{date.date.toLocaleDateString()}</span>
 											<div className={"anime__description"}></div>
-											<img className={"animeImg"} src={date.image} loading={"lazy"} />
+											<img
+												className={"animeImg"}
+												src={date.image}
+												alt={date.date.toLocaleDateString()}
+												loading={"lazy"}
+											/>
 										</div>
 									);
 								})}

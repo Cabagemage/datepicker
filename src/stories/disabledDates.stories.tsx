@@ -72,6 +72,7 @@ const CalendarWithMinMaxDatePassedTemplate: ComponentStory<typeof DatePicker> = 
 	const [minDate, setMinDate] = useState(new Date());
 	const [maxDate, setMaxDate] = useState(new Date());
 	const [shouldMinDateBeDisabled, setShouldMinDateBeDisabled] = useState(true);
+	const [shouldMaxDateBeDisabled, setShouldMaxDateBeDisabled] = useState(true);
 	const changeMinDate = (date: Date) => {
 		setMinDate(date);
 	};
@@ -123,19 +124,19 @@ const CalendarWithMinMaxDatePassedTemplate: ComponentStory<typeof DatePicker> = 
 					<PreparedDatePicker
 						value={maxDate}
 						minDate={{ date: minDate, options: { isPassedDateIncluded: shouldMinDateBeDisabled } }}
-						maxDate={{ date: maxDate, options: { isPassedDateIncluded: shouldMinDateBeDisabled } }}
+						maxDate={{ date: maxDate, options: { isPassedDateIncluded: shouldMaxDateBeDisabled } }}
 						locale={"en"}
 						mode={"single"}
 						view={"month"}
 					/>
 					<div style={{ display: "flex", flexDirection: "column" }}>
-						<label>Should minDate be disabled?</label>
+						<label>Should latest one be disabled?</label>
 						<button
 							onClick={() => {
-								setShouldMinDateBeDisabled(!shouldMinDateBeDisabled);
+								setShouldMaxDateBeDisabled(!shouldMaxDateBeDisabled);
 							}}
 						>
-							{shouldMinDateBeDisabled ? "yes" : "no"}
+							{shouldMaxDateBeDisabled ? "yes" : "no"}
 						</button>
 					</div>
 				</div>

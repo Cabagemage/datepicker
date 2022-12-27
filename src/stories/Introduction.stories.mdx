@@ -28,7 +28,7 @@ import "./storybook.css";
   `}
 </style>
 
-# loyalreactdatePicker 0.7.3
+# loyalreactdatePicker 0.7.5
 
 Simple and magnificent Date Picker dedicated to Joka and his son Boka - authors of cryptography algorithm
 
@@ -248,7 +248,13 @@ Attention. Its beta version of date picker, possible it'll be changed later
 	<h2 id="changelog">ChangeLog</h2>
 </a>
 
-<div className="subheading">0.7.3</div>
+<div className="subheading">0.7.5</div>
+
+- fix up some issues with maxDate;
+- fix up stories with max date;
+- tech dept (remove extra dev dependencies, move some logic to hooks, clean up code)
+
+<div className="subheading">0.7.4</div>
 
 - interval mode changes: if you select dates after the last selected date or the first one, the interval will not be reset. It will be dropped only if you select selected date
 - fix count of days available in month view. Now its always 42.
@@ -265,7 +271,7 @@ Attention. Its beta version of date picker, possible it'll be changed later
 
 <div className="subheading">0.7.1</div>
 
-- move css to modules.
+- move css to separate files.
 - move style initialization to modules from components.
 - fix bug with partial days select.
 - change default onChange for week mode select. Before it returned one date, now it returns object `{start: Date (monday), end: Date(sunday)}`;
