@@ -1,10 +1,20 @@
+---
+name: Feature request
+about: Suggest an idea for this project
+title: ''
+labels: ''
+assignees: ''
 
-| name            | about                    | title | labels |
-|-----------------|--------------------------|---|------|
-| Feature request | Create a feature request |   |      | 
+---
 
-**Describe the feature you'd love to see**
-A clear and concise description of what you'd love to see added to loyalreactdatepicker.
+**Is your feature request related to a problem? Please describe.**
+A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
 
-**Additional context (optional)**
+**Describe the solution you'd like**
+A clear and concise description of what you want to happen.
+
+**Describe alternatives you've considered**
+A clear and concise description of any alternative solutions or features you've considered.
+
+**Additional context**
 Add any other context or screenshots about the feature request here.
