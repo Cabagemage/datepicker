@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { initYearCalendarClassNames } from "../core/utils/initYearCalendarClassNames";
-import { YearViewProps } from "../core/types/DatePicker.typedef";
+import type { YearViewProps } from "../core/types/DatePicker.typedef";
 import {
 	formatDate,
 	getFormattedMonthToLocale,

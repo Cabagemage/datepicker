@@ -1,4 +1,4 @@
-import { DatePickerDecadeViewClassNames } from "../types/DatePicker.typedef";
+import type { DatePickerDecadeViewClassNames } from "../types/DatePicker.typedef";
 
 export const initDecadeCalendarClassNames = (
 	customDecadeClassNames?: Partial<DatePickerDecadeViewClassNames>

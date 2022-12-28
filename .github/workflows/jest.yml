@@ -1,0 +1,35 @@
+name: jest
+
+on:
+  push:
+    paths:
+      - "src/core/**"
+      - "**.test.ts"
+      - "**.test.tsx"
+      - "**.test.js"
+
+jobs:
+  Jest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: ./.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16.x"
+
+      - name: Install npm dependencies
+        run: npm ci --prefer-offline --cache=./.npm
+
+      - name: Run tests
+        run: npm run test

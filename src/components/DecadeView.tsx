@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { initDecadeCalendarClassNames } from "../core/utils/initDecadeCalendarClassNames";
-import { DecadeViewProps } from "../core/types/DatePicker.typedef";
+import type { DecadeViewProps } from "../core/types/DatePicker.typedef";
 import { isFirstDateEarlierThanSecondOne, subtract } from "../core/handlers";
 import { ONE_YEAR } from "../core/constants";
 

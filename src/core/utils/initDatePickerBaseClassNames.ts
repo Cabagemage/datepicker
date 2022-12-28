@@ -1,4 +1,4 @@
-import { DatePickerCommonClassNames } from "../types";
+import type { DatePickerCommonClassNames } from "../types";
 
 export const initDatePickerBaseClassNames = (
 	customizationClassNames?: Partial<DatePickerCommonClassNames>

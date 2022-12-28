@@ -6,9 +6,9 @@ import {
 	isFirstDateEarlierThanSecondOne,
 	subtract,
 } from "../core/handlers";
-import { CustomizedDate, DatePickerMonthViewClassNames, AvailableDate } from "../core/types";
+import type { CustomizedDate, DatePickerMonthViewClassNames, AvailableDate } from "../core/types";
 import { initMonthCalendarClassNames } from "../core/utils/initMonthCalendarClassNames";
-import { WeekendDays } from "../core/types/DatePicker.typedef";
+import type { WeekendDays } from "../core/types/DatePicker.typedef";
 
 type DayMonthViewProps = {
 	date: Date;
@@ -62,11 +62,10 @@ export const DayMonthView = ({
 	const isSelected = selectedDates.includes(formatDate(date));
 	const isToday = new Date().toDateString() === date.toDateString();
 	const isCustomizedDateIsDisabled = customizedDate !== undefined ? customizedDate.isDisabled : false;
-	const isDateBanned =
-		(bannedDates !== undefined && bannedDates.includes(formatDate(date))) || isCustomizedDateIsDisabled;
 	const isWeekendDay = weekendDays !== undefined && weekendDays.weekendDays.includes(date.getDay());
 	const isWeekendDaysShouldBeDisabled = weekendDays !== undefined ? weekendDays.shouldBeDisabled : false;
 	const customizedDateClassName = customizedDate !== undefined ? customizedDate.className : "";
+
 	const {
 		defaultMonthDayCellBackgroundClassName,
 		monthViewDateIsNotRelatedToMonthClassName,
@@ -78,6 +77,30 @@ export const DayMonthView = ({
 		monthWeekendDayClassName,
 	} = initMonthCalendarClassNames(customMonthClassNames);
 
+	const isDateBannedConditions = () => {
+		if (bannedDates === undefined) {
+			return;
+		}
+		const conditionsForBannedDates = [bannedDates.includes(formatDate(date)), isCustomizedDateIsDisabled];
+
+		return conditionsForBannedDates.some((condition) => {
+			return condition;
+		});
+	};
+	const isMonthDayIsDisabled = () => {
+		const conditionsToDisableMonthDay = [
+			isDisabledByMinDate,
+			isDisabledByMaxDate,
+			isDateBannedConditions(),
+			isWeekendDaysShouldBeDisabled && isWeekendDay,
+		];
+
+		return conditionsToDisableMonthDay.some((condition) => {
+			return condition;
+		});
+	};
+
+	const isMonthDayIsActive = isSelected && !isDateBannedConditions();
 	return (
 		<button
 			type="button"
@@ -100,21 +123,12 @@ export const DayMonthView = ({
 					[monthViewDateIsNotRelatedToMonthClassName]: isDateNotRelatedToCurrentMonth,
 				},
 				{
-					[monthDayCellActiveClassName]: isSelected && !isDateBanned,
-					[monthDayCellDisabledClassName]:
-						isDisabledByMinDate ||
-						isDisabledByMaxDate ||
-						isDateBanned ||
-						(isWeekendDaysShouldBeDisabled && isWeekendDay),
+					[monthDayCellActiveClassName]: isMonthDayIsActive,
+					[monthDayCellDisabledClassName]: isMonthDayIsDisabled(),
 				}
 			)}
 			key={date.toString()}
-			disabled={
-				isDisabledByMinDate ||
-				isDateBanned ||
-				isDisabledByMaxDate ||
-				(isWeekendDaysShouldBeDisabled && isWeekendDay)
-			}
+			disabled={isMonthDayIsDisabled()}
 		>
 			<span className={monthDayCellTextClassName}>{getFormattedShortDayForMonthView(date)}</span>
 		</button>

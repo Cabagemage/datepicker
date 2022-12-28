@@ -1,7 +1,7 @@
 node_modules
 .idea
 package-lock.json
-.next
 README.md
 generated
 storybook-static
+.github

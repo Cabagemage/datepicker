@@ -1,4 +1,4 @@
-import { DatePickerValue } from "../types/DatePicker.typedef";
+import type { DatePickerValue } from "../types/DatePicker.typedef";
 
 export const defineDefaultDate = (value: DatePickerValue) => {
 	if (value instanceof Date) {
