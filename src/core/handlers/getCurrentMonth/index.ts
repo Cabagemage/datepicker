@@ -1,4 +1,4 @@
-import { GetCurrentMonth } from "../../types";
+import type { GetCurrentMonth } from "../../types";
 import { MONTHS_ORDINAL_NUMBERS_LIST } from "../../constants";
 
 export const getCurrentMonth: GetCurrentMonth = ({

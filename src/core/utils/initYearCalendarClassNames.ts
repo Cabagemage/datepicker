@@ -1,4 +1,4 @@
-import { DatePickerYearViewClassNames } from "../types";
+import type { DatePickerYearViewClassNames } from "../types";
 
 export const initYearCalendarClassNames = (customYearClassNames?: Partial<DatePickerYearViewClassNames>) => {
 	const yearViewBodyClassName = customYearClassNames?.yearViewBody

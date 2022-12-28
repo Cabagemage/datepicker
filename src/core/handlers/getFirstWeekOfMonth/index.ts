@@ -2,7 +2,7 @@ import { getFirstDateOfMonth } from "../getFirstDateOfMonth";
 import { getMonday } from "../getMonday";
 import { subtract } from "../subtract";
 import { getDatesInRange } from "../getDatesInRange";
-import { GetDatesOptions } from "../../types/commonTypes";
+import type { GetDatesOptions } from "../../types/commonTypes";
 
 export const getFirstWeekOfMonth = ({
 	initialDate = new Date(),
@@ -22,7 +22,5 @@ export const getFirstWeekOfMonth = ({
 			? getMonday(subtract({ date: firstDayOfMonth, count: 7, type: "day" }))
 			: mondayFromPreviousMonthOrCurrentMonth;
 
-	const week = getDatesInRange(finalStartMonday, nextMonthAfterPreviousMonthOrCurrentMonthMonday);
-
-	return week;
+	return getDatesInRange(finalStartMonday, nextMonthAfterPreviousMonthOrCurrentMonthMonday);
 };

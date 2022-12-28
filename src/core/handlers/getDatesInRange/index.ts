@@ -1,4 +1,4 @@
-import { GetDatesInRange } from "../../types";
+import type { GetDatesInRange } from "../../types";
 import { add } from "../add";
 
 export const getDatesInRange: GetDatesInRange = (startDate, endDate) => {

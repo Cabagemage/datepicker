@@ -1,6 +1,6 @@
 export type GetCurrentMonth = ({ year, month }: { year?: number; month?: number }) => Array<Date>;
 
-export type DateType = "string" | Date | null;
+export type DateType = Date | "string" | null;
 
 export type GetDatesInRange = (start: DateType, end: DateType) => Array<Date>;
 
@@ -13,7 +13,7 @@ export type GetDatesOptions = {
 type GetFormattedMonthParams = {
 	month: Date;
 	locale: Intl.LocalesArgument;
-	format?: "short" | "long";
+	format?: "long" | "short";
 };
 
 export type GetFormattedMonthToLocale = (params: GetFormattedMonthParams) => string;
@@ -22,4 +22,4 @@ export type GetMonthCalendarViewDates = (params: GetDatesOptions) => Array<Date>
 export type GetMonthsOfYear = (date: Date) => Array<Date>;
 
 export type GetFormattedShortDay = (date: Date) => string;
-export type DateUnit = "month" | "year" | "day" | "week";
+export type DateUnit = "day" | "month" | "week" | "year";

@@ -1,9 +1,9 @@
-import { DAYS_ORDINAL_NUMBERS_LIST } from "../constants";
+import type { DAYS_ORDINAL_NUMBERS_LIST } from "../constants";
 
-export type CalendarViews = "month" | "year" | "decade";
-export type DatePickerMode = "single" | "partial" | "interval" | "week";
+export type CalendarViews = "decade" | "month" | "year";
+export type DatePickerMode = "interval" | "partial" | "single" | "week";
 export type DatePickerInterval = { start: Date | null; end: Date | null };
-export type DatePickerValue = Date | Array<Date> | DatePickerInterval;
+export type DatePickerValue = Array<Date> | Date | DatePickerInterval;
 export type DatePickerChangeHandler = ({ value }: { value: DatePickerValue }) => void;
 
 export type CustomizedDate = {
@@ -74,7 +74,7 @@ export type DatePickerControlsProps = {
 
 type BaseCellRenderProps = { date: Date; onDateClick: (date: Date) => void };
 
-export interface DatePickerProps {
+export type DatePickerProps = {
 	locale?: Intl.LocalesArgument;
 	value: DatePickerValue;
 	minDate?: AvailableDate;
@@ -99,7 +99,7 @@ export interface DatePickerProps {
 	view: CalendarViews;
 	footerElement?: JSX.Element;
 	isVisible?: boolean;
-}
+};
 
 export type YearViewProps = {
 	months: Array<Date>;

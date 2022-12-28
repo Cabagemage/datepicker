@@ -1,5 +1,5 @@
 // return formattedDate to short or long format. output: Oct / October
-import { GetFormattedMonthToLocale } from "../../types";
+import type { GetFormattedMonthToLocale } from "../../types";
 
 export const getFormattedMonthToLocale: GetFormattedMonthToLocale = ({ month, format, locale }) => {
 	const monthFormat = format === undefined ? "long" : format;

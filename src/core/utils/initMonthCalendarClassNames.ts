@@ -1,4 +1,4 @@
-import { DatePickerMonthViewClassNames } from "../types";
+import type { DatePickerMonthViewClassNames } from "../types";
 
 export const initMonthCalendarClassNames = (
 	customMonthClassNames?: Partial<DatePickerMonthViewClassNames>

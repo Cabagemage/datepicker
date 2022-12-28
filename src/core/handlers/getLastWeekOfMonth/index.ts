@@ -15,7 +15,5 @@ export const getLastWeekOfMonth = ({
 	const lastMondayOfMonth = getMonday(lastDayOfMonth);
 	const firstMondayOfNextMonth = getMonday(add({ date: lastMondayOfMonth, type: "day", count: 7 }));
 
-	const lastDatePickerWeek = getDatesInRange(lastMondayOfMonth, firstMondayOfNextMonth);
-
-	return lastDatePickerWeek;
+	return getDatesInRange(lastMondayOfMonth, firstMondayOfNextMonth);
 };

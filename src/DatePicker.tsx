@@ -184,7 +184,7 @@ export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
 							customDecadeClassNames={customizationClassNames?.decade}
 						/>
 					)}
-					{footerElement && footerElement}
+					{footerElement !== null && footerElement}
 				</div>
 			);
 		} else {

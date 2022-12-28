@@ -1,4 +1,4 @@
-import { DateUnit } from "../../types/commonTypes";
+import type { DateUnit } from "../../types/commonTypes";
 
 type Subtract = ({ date, count, type }: { date: Date | string; count: number; type: DateUnit }) => Date;
 

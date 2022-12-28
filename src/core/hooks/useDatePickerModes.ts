@@ -1,6 +1,5 @@
-// hook that response for modes of Date picker (interval / week selection / single date);
 import { formatDate, getDatesInRange, getMonday, getSunday } from "../handlers";
-import { DatePickerChangeHandler, DatePickerMode, DatePickerValue } from "../types/DatePicker.typedef";
+import type { DatePickerChangeHandler, DatePickerMode, DatePickerValue } from "../types/DatePicker.typedef";
 import { useState } from "react";
 
 type UseDatePickerModes = {
@@ -10,67 +9,95 @@ type UseDatePickerModes = {
 };
 // hook that implements logic for different datePicker modes
 const useDatePickerModes = ({ value, onChangeDate, mode }: UseDatePickerModes) => {
+	const defineDefaultWeekSelectedDates = () => {
+		if (!(value instanceof Date)) {
+			new Error("Value should be instance of date");
+			return [];
+		}
+		const monday = getMonday(value);
+		const sunday = getSunday(value);
+		return getDatesInRange(monday, sunday).map((item) => {
+			return formatDate(item);
+		});
+	};
+
+	const defineDefaultSingleSelectedDate = () => {
+		if (!(value instanceof Date)) {
+			new Error("Value should be instance of date");
+			return [];
+		}
+		return [value];
+	};
+
 	const defineDefaultSelectedDates = () => {
-		if (mode === "week" && value instanceof Date) {
-			const monday = getMonday(value);
-			const sunday = getSunday(value);
-			const formattedDates = getDatesInRange(monday, sunday).map((item) => {
-				return formatDate(item);
-			});
-			return formattedDates;
+		if (mode === "week") {
+			return defineDefaultWeekSelectedDates();
 		}
 
-		if (value instanceof Date) {
-			return [value];
+		if (mode === "single") {
+			return defineDefaultSingleSelectedDate();
 		}
 
 		if (Array.isArray(value)) {
-			const isFirstDateDefined = value[0] !== undefined ? value[0] : false;
-			const isSecondDateDefined = value[1] !== undefined ? value[1] : false;
-			if (isFirstDateDefined) {
+			const startAndEndDates = [value[0], value[1]];
+			const isStartDateIsDefined = startAndEndDates.some((value) => {
+				return value !== undefined;
+			});
+			const isStartAndEndDateIsDefined = startAndEndDates.every((value) => {
+				return value !== undefined;
+			});
+			if (isStartDateIsDefined) {
 				return [value[0]];
 			}
-			if (isFirstDateDefined && isSecondDateDefined) {
+
+			if (isStartAndEndDateIsDefined) {
 				const firstDate = value[0];
 				const secondDate = value[1];
 				const start = new Date(firstDate) < secondDate ? firstDate : secondDate;
 				const end = new Date(secondDate) > firstDate ? secondDate : firstDate;
 				return getDatesInRange(start, end);
 			}
-		} else {
-			if (value.start !== null && value.end !== null) {
-				return getDatesInRange(value.start, value.end);
-			}
+			return value;
 		}
+
+		if (!(value instanceof Date) && value.start !== null && value.end !== null) {
+			return getDatesInRange(value.start, value.end);
+		}
+
 		return [];
 	};
 
 	const defaultSelectedDates = defineDefaultSelectedDates();
-	const [selectedDates, setSelectedDates] = useState<Array<string | Date>>(defaultSelectedDates);
+	const [selectedDates, setSelectedDates] = useState<Array<Date | string>>(defaultSelectedDates);
 
 	const selectDayForInterval = (date: Date) => {
-		if (value instanceof Date || Array.isArray(value)) {
+		const isNotInterval = value instanceof Date || Array.isArray(value);
+		if (isNotInterval) {
 			return;
 		}
 		const isDateIncluded = selectedDates.includes(formatDate(date));
-		if (value.start && value.end && isDateIncluded) {
+
+		if (isDateIncluded) {
 			onChangeDate({ value: { start: null, end: null } });
 			setSelectedDates([]);
 		}
-		if (value.start && value.end && date > value.end) {
+
+		if (value.start !== null && value.end !== null && date > value.end) {
 			onChangeDate({ value: { start: value.start, end: date } });
 			const formattedDates = getDatesInRange(value.start, date).map((item) => {
 				return formatDate(item);
 			});
 			setSelectedDates(formattedDates);
 		}
-		if (value.start && value.end && date < value.start) {
+
+		if (value.start !== null && value.end !== null && date < value.start) {
 			onChangeDate({ value: { start: date, end: value.end } });
 			const formattedDates = getDatesInRange(date, value.end).map((item) => {
 				return formatDate(item);
 			});
 			setSelectedDates(formattedDates);
 		}
+
 		if (value.start === null) {
 			onChangeDate({ value: { start: date, end: value.end } });
 			setSelectedDates([formatDate(date)]);
@@ -100,9 +127,11 @@ const useDatePickerModes = ({ value, onChangeDate, mode }: UseDatePickerModes) =
 		setSelectedDates([formattedDate]);
 		onChangeDate({ value: date });
 	};
+
 	const mappedSelectedDatesToFormattedValue = selectedDates.map((item) => {
 		return formatDate(new Date(item));
 	});
+
 	const selectDayForPartial = (date: Date) => {
 		if (mappedSelectedDatesToFormattedValue.includes(formatDate(date))) {
 			const filteredDates = selectedDates.filter((item) => {
@@ -134,17 +163,23 @@ const useDatePickerModes = ({ value, onChangeDate, mode }: UseDatePickerModes) =
 
 	const selectDay = (date: Date) => {
 		const formattedDate = formatDate(date);
-		if (mode === "single") {
-			selectSingleDate(date, formattedDate);
-		}
-		if (mode === "partial") {
-			selectDayForPartial(date);
-		}
-		if (mode === "interval") {
-			selectDayForInterval(date);
-		}
-		if (mode === "week") {
-			selectDayForWeek(date);
+		switch (mode) {
+			case "single": {
+				selectSingleDate(date, formattedDate);
+				break;
+			}
+			case "interval": {
+				selectDayForInterval(date);
+				break;
+			}
+			case "partial": {
+				selectDayForPartial(date);
+				break;
+			}
+			case "week": {
+				selectDayForWeek(date);
+				break;
+			}
 		}
 	};
 

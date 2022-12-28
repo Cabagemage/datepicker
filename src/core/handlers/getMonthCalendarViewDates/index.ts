@@ -1,4 +1,4 @@
-import { GetMonthCalendarViewDates } from "../../types/commonTypes";
+import type { GetMonthCalendarViewDates } from "../../types/commonTypes";
 import { formatDate } from "../formatDate";
 import { MAX_DATES_LENGTH } from "../../constants";
 import { getCurrentMonth } from "../getCurrentMonth";
@@ -38,9 +38,7 @@ export const getMonthCalendarViewDates: GetMonthCalendarViewDates = ({
 		);
 	});
 
-	const monthCalendarViewDates =
-		MAX_DATES_LENGTH < excludeRepeatedElements.length
-			? excludeRepeatedElements.slice(0, -7)
-			: excludeRepeatedElements;
-	return monthCalendarViewDates;
+	return MAX_DATES_LENGTH < excludeRepeatedElements.length
+		? excludeRepeatedElements.slice(0, -7)
+		: excludeRepeatedElements;
 };

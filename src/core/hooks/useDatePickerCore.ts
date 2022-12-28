@@ -10,8 +10,8 @@ import {
 	START_OF_NEW_MONTH_IDX,
 } from "../constants";
 import { add, getMonthCalendarViewDates, getMonthsOfYear, getYears, subtract } from "../handlers";
-import { CalendarViews } from "../types";
-import { DatePickerValue } from "../types/DatePicker.typedef";
+import type { CalendarViews } from "../types";
+import type { DatePickerValue } from "../types/DatePicker.typedef";
 import { defineDefaultDate } from "../utils/defineDefaultDate";
 
 type UseDatePickerCore = {

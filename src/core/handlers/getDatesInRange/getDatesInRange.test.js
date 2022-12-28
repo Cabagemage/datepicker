@@ -1,16 +1,18 @@
 import { formatDate } from "../formatDate";
 import { getDatesInRange } from "./index";
 
+const start = "2022-12-12";
+const end = "2022-12-24";
 describe("fn should return prevDate", () => {
 	test("fn should return array of dates", () => {
-		const startDate = new Date("2022-12-12");
-		const endDate = new Date("2022-12-24");
+		const startDate = new Date(start);
+		const endDate = new Date(end);
 		const dates = getDatesInRange(startDate, endDate).map((item) => {
 			return formatDate(item);
 		});
 
 		expect(dates).toEqual([
-			"2022-12-12",
+			start,
 			"2022-12-13",
 			"2022-12-14",
 			"2022-12-15",
@@ -22,13 +24,13 @@ describe("fn should return prevDate", () => {
 			"2022-12-21",
 			"2022-12-22",
 			"2022-12-23",
-			"2022-12-24",
+			end,
 		]);
 	});
 
 	test("array length should be correct", () => {
-		const startDate = new Date("2022-12-12");
-		const endDate = new Date("2022-12-24");
+		const startDate = new Date(start);
+		const endDate = new Date(end);
 		const dates = getDatesInRange(startDate, endDate).map((item) => {
 			return formatDate(item);
 		});
