@@ -1,10 +1,14 @@
 import type { DateUnit } from "../../types/commonTypes";
+import { isDateValid } from "../isDateValid";
+import { InvalidDate } from "../../errors/InvalidDate";
 
 type Add = ({ date, count, type }: { date: Date | string; count: number; type: DateUnit }) => Date;
 
 export const add: Add = ({ date, count, type }) => {
 	const resultDate = new Date(date);
-
+	if (!isDateValid(resultDate)) {
+		throw new InvalidDate(`You pass wrong date for ${add.name} fn`);
+	}
 	switch (type) {
 		case "day": {
 			const msDayCount = 1000 * count;
