@@ -12,3 +12,4 @@ rollup.config.js
 /node_modules
 /.pnp
 .pnp.js
+.github
