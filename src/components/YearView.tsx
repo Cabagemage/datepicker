@@ -1,12 +1,7 @@
-import classNames from "classnames";
 import { initYearCalendarClassNames } from "../core/utils/initYearCalendarClassNames";
 import type { YearViewProps } from "../core/types/DatePicker.typedef";
-import {
-	formatDate,
-	getFormattedMonthToLocale,
-	isFirstDateEarlierThanSecondOne,
-	subtract,
-} from "../core/handlers";
+import { formatDate, isFirstDateEarlierThanSecondOne, subtract } from "../core/handlers";
+import { MonthCell } from "../atoms/MonthCell";
 
 const YearView = ({
 	months,
@@ -26,8 +21,8 @@ const YearView = ({
 	} = initYearCalendarClassNames(customYearClassNames);
 	return (
 		<div className={yearViewBodyClassName}>
-			{months.map((item) => {
-				const lastDateInMonth = new Date(item.getFullYear(), item.getMonth() + 1, 0);
+			{months.map((month) => {
+				const lastDateInMonth = new Date(month.getFullYear(), month.getMonth() + 1, 0);
 				// we don't want to disable month for chose month have not passed
 				const isLastDateInMonthEqualToPassedMinDate =
 					minDate !== undefined && formatDate(minDate?.date) === formatDate(lastDateInMonth);
@@ -35,37 +30,36 @@ const YearView = ({
 					? minDate.date
 					: subtract({ date: new Date(minDate?.date ?? new Date()), type: "month", count: 1 });
 				const isDisabledByMinDate =
-					minDate !== undefined ? isFirstDateEarlierThanSecondOne(item, disabledMonthByMinDate) : false;
+					minDate !== undefined ? isFirstDateEarlierThanSecondOne(month, disabledMonthByMinDate) : false;
 
 				const isDisabledByMaxDate =
-					maxDate !== undefined ? isFirstDateEarlierThanSecondOne(maxDate.date, item) : false;
+					maxDate !== undefined ? isFirstDateEarlierThanSecondOne(maxDate.date, month) : false;
 
-				const isSelected = currentMonthIdx === item.getMonth();
+				const isSelected = currentMonthIdx === month.getMonth();
+				const isDisabled = isDisabledByMinDate || isDisabledByMaxDate;
 
 				if (customMonthCellRenderProp !== undefined) {
-					customMonthCellRenderProp({ date: item, onDateClick: onMonthClick });
+					customMonthCellRenderProp({ date: month, onDateClick: onMonthClick });
 				}
-
 				return (
-					<button
-						onClick={() => {
-							return onMonthClick(item);
-						}}
-						value={item.toDateString()}
-						type="button"
-						disabled={isDisabledByMinDate || isDisabledByMaxDate}
-						className={classNames(yearViewMonthCellClassName, {
-							[yearViewMonthSelectedClassName]: isSelected && !isDisabledByMinDate && !isDisabledByMaxDate,
-							[yearViewMonthCellDisabledClassName]: isDisabledByMinDate || isDisabledByMaxDate,
-						})}
-						key={item.toString()}
-					>
-						{getFormattedMonthToLocale({
-							month: item,
+					<MonthCell
+						formatMonthParams={{
+							month: month,
 							locale: defaultLocale,
 							format: "long",
-						})}
-					</button>
+						}}
+						value={month}
+						isDisabled={isDisabled}
+						isSelected={isSelected}
+						onClick={() => {
+							return onMonthClick(month);
+						}}
+						classes={{
+							defaultClassName: yearViewMonthCellClassName,
+							disabledClassName: yearViewMonthCellDisabledClassName,
+							selectedClassName: yearViewMonthSelectedClassName,
+						}}
+					/>
 				);
 			})}
 		</div>

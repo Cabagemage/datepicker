@@ -1,6 +1,7 @@
 import { formatDate, getDatesInRange, getMonday, getSunday } from "../handlers";
 import type { DatePickerChangeHandler, DatePickerMode, DatePickerValue } from "../types/DatePicker.typedef";
 import { useState } from "react";
+import { defineDefaultSelectedDates } from "../handlers/defineDefaultSelectedDates";
 
 type UseDatePickerModes = {
 	value: DatePickerValue;
@@ -9,65 +10,7 @@ type UseDatePickerModes = {
 };
 // hook that implements logic for different datePicker modes
 const useDatePickerModes = ({ value, onChangeDate, mode }: UseDatePickerModes) => {
-	const defineDefaultWeekSelectedDates = () => {
-		if (!(value instanceof Date)) {
-			new Error("Value should be instance of date");
-			return [];
-		}
-		const monday = getMonday(value);
-		const sunday = getSunday(value);
-		return getDatesInRange(monday, sunday).map((item) => {
-			return formatDate(item);
-		});
-	};
-
-	const defineDefaultSingleSelectedDate = () => {
-		if (!(value instanceof Date)) {
-			new Error("Value should be instance of date");
-			return [];
-		}
-		return [value];
-	};
-
-	const defineDefaultSelectedDates = () => {
-		if (mode === "week") {
-			return defineDefaultWeekSelectedDates();
-		}
-
-		if (mode === "single") {
-			return defineDefaultSingleSelectedDate();
-		}
-
-		if (Array.isArray(value)) {
-			const startAndEndDates = [value[0], value[1]];
-			const isStartDateIsDefined = startAndEndDates.some((value) => {
-				return value !== undefined;
-			});
-			const isStartAndEndDateIsDefined = startAndEndDates.every((value) => {
-				return value !== undefined;
-			});
-			if (isStartDateIsDefined) {
-				return [value[0]];
-			}
-
-			if (isStartAndEndDateIsDefined) {
-				const firstDate = value[0];
-				const secondDate = value[1];
-				const start = new Date(firstDate) < secondDate ? firstDate : secondDate;
-				const end = new Date(secondDate) > firstDate ? secondDate : firstDate;
-				return getDatesInRange(start, end);
-			}
-			return value;
-		}
-
-		if (!(value instanceof Date) && value.start !== null && value.end !== null) {
-			return getDatesInRange(value.start, value.end);
-		}
-
-		return [];
-	};
-
-	const defaultSelectedDates = defineDefaultSelectedDates();
+	const defaultSelectedDates = defineDefaultSelectedDates(mode, value);
 	const [selectedDates, setSelectedDates] = useState<Array<Date | string>>(defaultSelectedDates);
 
 	const selectDayForInterval = (date: Date) => {
@@ -123,6 +66,7 @@ const useDatePickerModes = ({ value, onChangeDate, mode }: UseDatePickerModes) =
 		setSelectedDates(formattedDates);
 		onChangeDate({ value: { start: firstDate, end: lastDate } });
 	};
+
 	const selectSingleDate = (date: Date, formattedDate: string) => {
 		setSelectedDates([formattedDate]);
 		onChangeDate({ value: date });

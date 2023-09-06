@@ -1,4 +1,10 @@
+import { isDateValid } from "../isDateValid";
+import { InvalidDate } from "../../errors/InvalidDate";
+
 export const formatDate = (date: Date, separator = "-"): string => {
+	if (!isDateValid(date)) {
+		throw new InvalidDate(`You pass wrong date for ${formatDate.name} fn`);
+	}
 	const newDate = new Date(date);
 	let month = "" + (newDate.getMonth() + 1);
 	let day = "" + newDate.getDate();

@@ -1,5 +1,4 @@
 import type { DAYS_ORDINAL_NUMBERS_LIST } from "../constants";
-
 export type CalendarViews = "decade" | "month" | "year";
 export type DatePickerMode = "interval" | "partial" | "single" | "week";
 export type DatePickerInterval = { start: Date | null; end: Date | null };
@@ -72,7 +71,7 @@ export type DatePickerControlsProps = {
 	toNextUnitNavAction: () => void;
 };
 
-type BaseCellRenderProps = { date: Date; onDateClick: (date: Date) => void };
+export type BaseCellRenderProps = { date: Date; onDateClick: (date: Date) => void };
 
 export type DatePickerProps = {
 	locale?: Intl.LocalesArgument;
@@ -91,7 +90,6 @@ export type DatePickerProps = {
 	customizationClassNames?: Partial<DatePickerClassNames>;
 	changeCalendarView: () => void;
 	customizedDates?: Array<CustomizedDate>;
-	onChange?: (date: Date) => void;
 	onMonthClick?: (value: Date) => void;
 	onYearClick?: (value: Date) => void;
 	onDateChange: DatePickerChangeHandler;
