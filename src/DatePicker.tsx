@@ -1,4 +1,3 @@
-import type { DatePickerProps } from "./core/types";
 import "./datePicker.css";
 import { getFormattedMonthToLocale } from "./core/handlers";
 import { MIDDLE_DAY_OF_MONTH } from "./core/constants";
@@ -9,8 +8,49 @@ import DecadeView from "./components/DecadeView";
 import { initDatePickerBaseClassNames } from "./core/utils/initDatePickerBaseClassNames";
 import useDatePickerCore from "./core/hooks/useDatePickerCore";
 import useDatePickerModes from "./core/hooks/useDatePickerModes";
+import type {
+	DatePickerMode,
+	DatePickerValue,
+	DecadeViewProps,
+	MonthViewProps,
+	WeekendDays,
+	YearViewProps,
+	AvailableDate,
+	CalendarViews,
+	CustomizedDate,
+	DatePickerChangeHandler,
+	DatePickerClassNames,
+	DatePickerControlsProps,
+	BaseCellRenderProps,
+} from "./core/types/DatePicker.typedef";
 
-export const DatePicker = forwardRef<HTMLDivElement | null, DatePickerProps>(
+export type DatePicker = {
+	locale?: Intl.LocalesArgument;
+	value: DatePickerValue;
+	minDate?: AvailableDate;
+	maxDate?: AvailableDate;
+	disabledDates?: Array<Date>;
+	customHeaderRenderProp?: (props: DatePickerControlsProps) => JSX.Element;
+	customMonthViewRenderProp?: (props: MonthViewProps) => JSX.Element;
+	customYearViewRenderProp?: (props: YearViewProps) => JSX.Element;
+	customDecadeViewRenderProp?: (props: DecadeViewProps) => JSX.Element;
+	customYearCellRenderProp?: (props: BaseCellRenderProps) => JSX.Element;
+	customMonthCellRenderProp?: (props: BaseCellRenderProps) => JSX.Element;
+	customDayCellRenderProp?: (props: BaseCellRenderProps) => JSX.Element;
+	weekendDays?: WeekendDays;
+	customizationClassNames?: Partial<DatePickerClassNames>;
+	changeCalendarView: () => void;
+	customizedDates?: Array<CustomizedDate>;
+	onMonthClick?: (value: Date) => void;
+	onYearClick?: (value: Date) => void;
+	onDateChange: DatePickerChangeHandler;
+	mode?: DatePickerMode;
+	view: CalendarViews;
+	footerElement?: JSX.Element;
+	isVisible?: boolean;
+};
+
+export const DatePicker = forwardRef<HTMLDivElement | null, DatePicker>(
 	(
 		{
 			locale = "en",

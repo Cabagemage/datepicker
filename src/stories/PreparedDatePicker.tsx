@@ -1,7 +1,5 @@
-import type { DatePickerProps, CalendarViews } from "../core/types";
 import { useState } from "react";
 import { DatePicker } from "../index";
-import { DatePickerChangeHandler } from "../core/types";
 
 type PreparedDatePickerProps = {
 	width?: number;
@@ -9,7 +7,8 @@ type PreparedDatePickerProps = {
 	onSingleDateChange?: (date: Date) => void;
 	onWeekChange?: (value: { start: Date | null; end: Date | null }) => void;
 	onIntervalDatesChange?: (value: { start: Date | null; end: Date | null }) => void;
-} & Omit<DatePickerProps, "changeCalendarView" | "onDateChange">;
+} & Omit<DatePicker, "changeCalendarView" | "onDateChange">;
+
 export const PreparedDatePicker = ({
 	width = 360,
 	onPartialChange,
@@ -18,7 +17,7 @@ export const PreparedDatePicker = ({
 	onSingleDateChange,
 	...props
 }: PreparedDatePickerProps) => {
-	const [view, setView] = useState<CalendarViews>(props.view);
+	const [view, setView] = useState<DatePicker["view"]>(props.view);
 
 	const changeCurrentCalendarView = () => {
 		switch (view) {
@@ -46,25 +45,25 @@ export const PreparedDatePicker = ({
 		props.onYearClick && props.onYearClick(date);
 	};
 
-	const onDateChange: DatePickerChangeHandler = (value) => {
-		if (value.value instanceof Date) {
+	const onDateChange: DatePicker["onDateChange"] = ({ value }) => {
+		if (value instanceof Date) {
 			if (onSingleDateChange !== undefined) {
-				onSingleDateChange(value.value);
+				onSingleDateChange(value);
 			}
 			return;
 		}
-		if (Array.isArray(value.value)) {
+		if (Array.isArray(value)) {
 			if (onPartialChange !== undefined) {
-				onPartialChange(value.value);
+				onPartialChange(value);
 			}
 			return;
 		}
 		if (onIntervalDatesChange !== undefined) {
-			onIntervalDatesChange(value.value);
+			onIntervalDatesChange(value);
 			return;
 		}
 		if (onWeekChange !== undefined) {
-			onWeekChange && onWeekChange(value.value);
+			onWeekChange && onWeekChange(value);
 		}
 	};
 	return (

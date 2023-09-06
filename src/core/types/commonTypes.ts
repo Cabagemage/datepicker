@@ -10,13 +10,13 @@ export type GetDatesOptions = {
 	year?: number;
 };
 
-type GetFormattedMonthParams = {
+export type FormatMonthParams = {
 	month: Date;
 	locale: Intl.LocalesArgument;
 	format?: "long" | "short";
 };
 
-export type GetFormattedMonthToLocale = (params: GetFormattedMonthParams) => string;
+export type GetFormattedMonthToLocale = (params: FormatMonthParams) => string;
 
 export type GetMonthCalendarViewDates = (params: GetDatesOptions) => Array<Date>;
 export type GetMonthsOfYear = (date: Date) => Array<Date>;

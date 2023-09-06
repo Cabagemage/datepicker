@@ -1,8 +1,8 @@
-import classNames from "classnames";
 import { initDecadeCalendarClassNames } from "../core/utils/initDecadeCalendarClassNames";
 import type { DecadeViewProps } from "../core/types/DatePicker.typedef";
 import { isFirstDateEarlierThanSecondOne, subtract } from "../core/handlers";
 import { ONE_YEAR } from "../core/constants";
+import { DecadeCell } from "../atoms/DecadeCell";
 
 const DecadeView = ({
 	years,
@@ -39,21 +39,20 @@ const DecadeView = ({
 					customYearCellRenderProp({ date: item, onDateClick: onYearClick });
 				}
 				const isSelected = activeYear === item.getFullYear();
+				const isDisabled = isDisabledByMaxDate || isDisabledByMinDate;
+
 				return (
-					<button
-						type="button"
+					<DecadeCell
+						value={item}
+						disabledClassName={decadeCellDisabledClassName}
+						className={decadeViewCellClassName}
 						onClick={() => {
-							return onYearClick(item);
+							onYearClick(item);
 						}}
-						disabled={isDisabledByMinDate || isDisabledByMaxDate}
-						className={classNames(decadeViewCellClassName, {
-							[decadeCellDisabledClassName]: isDisabledByMinDate || isDisabledByMaxDate,
-							[decadeCellSelected]: isSelected,
-						})}
-						key={item.toString()}
-					>
-						{item.getFullYear()}
-					</button>
+						selectedClassName={decadeCellSelected}
+						isSelected={isSelected}
+						isDisabled={isDisabled}
+					/>
 				);
 			})}
 		</div>

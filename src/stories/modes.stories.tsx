@@ -70,7 +70,7 @@ const SingleTemplate: ComponentStory<typeof DatePicker> = () => {
 };
 
 const PartialTemplate: ComponentStory<typeof DatePicker> = () => {
-	const [pickedDates, setPickedDates] = useState<Array<Date>>([new Date()]);
+	const [pickedDates, setPickedDates] = useState<Array<Date>>([]);
 
 	const changePartialDates = (dates: Array<Date>) => {
 		setPickedDates(dates);
